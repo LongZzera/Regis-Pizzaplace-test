@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Meta tags para melhorar a experiência Fullscreen no iOS (iPhone) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Regis Pizzaplace</title>
@@ -123,6 +122,16 @@
         }
         #exhaust-btn.active { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; border-color: #fff; }
 
+        /* --- CAIXA DE MÚSICA DO FOXY --- */
+        #wind-up-container {
+            position: absolute; bottom: 25%; left: 5%; width: 40%; max-width: 300px; z-index: 25; pointer-events: auto;
+        }
+        #wind-up-title { color: #fff; font-family: 'Courier New', Courier, monospace; font-size: clamp(1rem, 3vw, 1.5rem); margin-bottom: 5px; text-shadow: 2px 2px 0 #000; }
+        #wind-up-bar-bg { width: 100%; height: 20px; border: 2px solid #fff; background: #333; margin-bottom: 10px; }
+        #wind-up-bar-fill { width: 100%; height: 100%; background: #0f0; transition: width 0.1s, background-color 0.3s; }
+        #wind-up-btn { background: #222; color: #fff; border: 2px solid #fff; padding: 10px; width: 100%; font-family: inherit; font-size: clamp(0.8rem, 2vw, 1.1rem); font-weight: bold; cursor: pointer; transition: 0.2s; touch-action: none; }
+        #wind-up-btn:active { background: #fff; color: #000; }
+
         /* --- UI DO PC (TAREFAS & SETTINGS) --- */
         #pc-ui, #settings-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 45; display: flex; justify-content: center; align-items: center; pointer-events: auto; }
         #settings-screen { z-index: 60; }
@@ -131,7 +140,7 @@
             background: #1a0000; border: 15px solid #111; border-radius: 10px; width: 90%; max-width: 600px; height: 75%; 
             padding: 20px; color: #ffcc00; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 30px #f00, inset 0 0 20px #500; 
             display: flex; flex-direction: column; text-shadow: 0 0 5px #ffcc00; 
-            overflow-y: auto; -webkit-overflow-scrolling: touch; /* Permitir scroll vertical em telas horizontais */
+            overflow-y: auto; -webkit-overflow-scrolling: touch; 
         }
         .pc-screen.settings-style { background: #111; border-color: #444; color: #fff; box-shadow: 0 0 20px #000; text-shadow: none; height: auto; max-height: 80%; }
         .pc-screen.settings-style h2 { color: #fff; border-color: #fff; text-shadow: none; flex-shrink: 0; }
@@ -139,9 +148,6 @@
         .pc-screen h2 { border-bottom: 3px solid #f00; padding-bottom: 10px; margin-bottom: 15px; font-size: clamp(1.4rem, 5vw, 1.8rem); text-align: center; color: #ff3333; text-shadow: 0 0 10px #f00; flex-shrink: 0;}
         #pc-status { font-weight: bold; font-size: clamp(1rem, 3vw, 1.2rem); text-align: center; margin-bottom: 10px; flex-shrink: 0;}
         .pc-alert { color: #f00 !important; text-shadow: 0 0 10px #f00 !important; animation: blink 1s infinite; }
-        
-        #pc-file-list { list-style: none; flex-grow: 1; padding-right: 5px; margin-bottom: 10px; }
-        .pc-file-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #800; padding-bottom: 8px; font-size: clamp(0.85rem, 2.5vw, 1.1rem); }
         
         .clean-btn { background: #f00; color: #ffcc00; border: 1px solid #ffcc00; padding: 8px 15px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: clamp(0.8rem, 2.5vw, 1rem); transition: background 0.2s; flex-shrink: 0;}
         .clean-btn:hover:not(:disabled) { background: #ffcc00; color: #f00; }
@@ -151,7 +157,6 @@
         
         .pc-system-container { margin-bottom: 10px; padding: 10px; border: 1px solid #800; display: flex; justify-content: space-between; align-items: center; background: rgba(255,0,0,0.1); font-size: clamp(0.85rem, 2.5vw, 1rem); flex-shrink: 0;}
 
-        /* NOVA ÁREA DE TAREFAS (PEDIDOS) */
         #pc-task-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; margin-bottom: 10px; }
         #order-box { width: 100%; border: 2px dashed #f00; padding: 15px; background: rgba(255,0,0,0.15); box-shadow: inset 0 0 10px #f00; }
         #order-box h3 { color: #f00; margin-bottom: 10px; text-align: center; font-size: clamp(1rem, 3vw, 1.3rem); }
@@ -194,7 +199,6 @@
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-10px, -20px) rotate(-3deg); } 20% { transform: translate(-30px, 0px) rotate(3deg); } 30% { transform: translate(30px, 20px) rotate(0deg); } 40% { transform: translate(10px, -10px) rotate(3deg); } 50% { transform: translate(-10px, 20px) rotate(-3deg); } 60% { transform: translate(-30px, 10px) rotate(0deg); } 70% { transform: translate(30px, 1px) rotate(-3deg); } 80% { transform: translate(-10px, -10px) rotate(3deg); } 90% { transform: translate(10px, 20px) rotate(0deg); } 100% { transform: translate(1px, -20px) rotate(-3deg); } }
         .jumpscare-shake { animation: shake 0.1s infinite; filter: sepia(1) hue-rotate(300deg) saturate(5); }
         
-        /* Mobile Specific Layout Tweaks */
         @media (max-width: 768px) {
             .pc-screen { height: 95%; width: 95%; padding: 10px; border-width: 8px; justify-content: flex-start; }
             .pc-screen h2 { font-size: 1.2rem; margin-bottom: 8px; padding-bottom: 5px; }
@@ -204,17 +208,17 @@
             .order-btn-container { flex-direction: column; gap: 8px; }
             .order-btn-container .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
             #pc-exit-btn { padding: 10px; font-size: 1.1rem; margin-top: 20px;}
-            
             .dialogue-box { bottom: 10px; padding: 12px; }
             .dialogue-text { font-size: 0.95rem; min-height: 45px; }
             .dialogue-name { font-size: 1rem; margin-bottom: 5px; }
+            #wind-up-container { width: 60%; left: 50%; transform: translateX(-50%); bottom: 20%; }
         }
 
-        /* Landscape Mobile Layout Tweaks (Para quando o celular estiver deitado) */
         @media (max-height: 500px) {
             .pc-screen { height: 95%; width: 95%; justify-content: flex-start; padding-bottom: 30px; }
             .pc-system-container { flex-direction: row; margin-bottom: 5px; padding: 5px; }
             #pc-exit-btn { margin-top: 20px; }
+            #wind-up-container { bottom: 15%; width: 35%; left: 2%; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -225,45 +229,39 @@
     
     <div id="toxic-filter"></div>
 
-    <!-- MENU PRINCIPAL -->
     <div id="menu-screen" class="screen">
         <div class="menu-content">
             <h1 class="glitch-title">REGIS PIZZAPLACE</h1>
             <h3 class="menu-subtitle">O Despertar do Alejado</h3>
             <div class="menu-options">
-                <button class="menu-btn" onclick="startGame(1)">> Novo Jogo</button>
-                <button class="menu-btn" onclick="startGame(currentNight)" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
-                <button class="menu-btn" onclick="openSettings()">> Configurações</button>
+                <button class="menu-btn" onclick="window.startGame(1)">> Novo Jogo</button>
+                <button class="menu-btn" onclick="window.continueGame()" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
+                <button class="menu-btn" onclick="window.openSettings()">> Configurações</button>
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
-        <div class="menu-footer">v1.5 - Mobile Fullscreen<br>Feito por Haldo/Long</div>
+        <div class="menu-footer">v1.7 - Error Fixed Edition<br>Feito por Haldo/Long</div>
     </div>
 
-    <!-- TELA DE CONFIGURAÇÕES -->
     <div id="settings-screen" class="screen hidden">
         <div class="pc-screen settings-style">
             <h2>CONFIGURAÇÕES</h2>
             <div style="display:flex; flex-direction:column; gap:20px; align-items:center; margin-top:10px;">
                 <label style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">VOLUME GLOBAL: <span id="vol-label">100%</span>
-                    <br><input type="range" id="vol-slider" min="0" max="1" step="0.1" value="1" style="width: 200px; margin-top:10px; accent-color: #fff;" onchange="updateVolume(this.value)">
+                    <br><input type="range" id="vol-slider" min="0" max="1" step="0.1" value="1" style="width: 200px; margin-top:10px; accent-color: #fff;" onchange="window.updateVolume(this.value)">
                 </label>
-                
                 <div style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">GRÁFICOS: 
-                    <br><button class="clean-btn" id="gfx-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 150px;" onclick="toggleGraphics()">ALTO</button>
+                    <br><button class="clean-btn" id="gfx-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 150px;" onclick="window.toggleGraphics()">ALTO</button>
                 </div>
-                
                 <div style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">TELA CHEIA: 
-                    <br><button class="clean-btn" id="fs-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 150px;" onclick="toggleFullscreen()">ATIVAR</button>
+                    <br><button class="clean-btn" id="fs-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 150px;" onclick="window.toggleFullscreen()">ATIVAR</button>
                 </div>
-
-                <button class="clean-btn" id="reset-save-btn" style="background:#800; color:#fff; border-color:#f00; margin-top: 15px;" onclick="resetSaveData()">APAGAR PROGRESSO</button>
+                <button class="clean-btn" id="reset-save-btn" style="background:#800; color:#fff; border-color:#f00; margin-top: 15px;" onclick="window.resetSaveData()">APAGAR PROGRESSO</button>
             </div>
-            <button id="pc-exit-btn" style="border-color:#fff; color:#fff; margin-top: 30px;" onclick="closeSettings()">VOLTAR</button>
+            <button id="pc-exit-btn" style="border-color:#fff; color:#fff; margin-top: 30px;" onclick="window.closeSettings()">VOLTAR</button>
         </div>
     </div>
 
-    <!-- TELA DE INTRODUÇÃO / CONTRATO -->
     <div id="contract-screen" class="screen hidden">
         <div id="interview-bg">
             <div class="cone-light"></div>
@@ -274,7 +272,6 @@
                 <path d="M 75 90 L 100 110 L 125 90 Z" fill="#050505" />
             </svg>
         </div>
-
         <div class="contract-paper" id="contract-paper">
             <h2>CONTRATO DE RISCO</h2>
             <p>A "Regis Pizzaplace" não se responsabiliza por: desmembramentos, morte, intoxicação fúngica avançada, lobotomia mecânica ou zumbificação durante o turno de trabalho.</p>
@@ -283,24 +280,21 @@
             <div id="signature-area" class="hidden">
                 <label style="font-weight: bold; font-family: sans-serif; font-size: 0.9rem;">Assinatura do Funcionário:</label>
                 <input type="text" id="player-name-input" maxlength="20" placeholder="Assine aqui..." autocomplete="off" spellcheck="false">
-                <button id="sign-btn" onclick="signContract()">ASSINAR E COMEÇAR</button>
+                <button id="sign-btn" onclick="window.signContract()">ASSINAR E COMEÇAR</button>
             </div>
         </div>
-
-        <div class="dialogue-box" id="dialogue-box" onclick="advanceDialogue()">
+        <div class="dialogue-box" id="dialogue-box" onclick="window.advanceDialogue()">
             <div class="dialogue-name">REGIS</div>
             <div class="dialogue-text" id="dialogue-text">...</div>
             <div class="dialogue-prompt">Toque para continuar ▼</div>
         </div>
     </div>
 
-    <!-- TELA DE LORE / JORNAL -->
-    <div id="newspaper-screen" class="screen hidden" onclick="showMinigameOrStory()">
+    <div id="newspaper-screen" class="screen hidden" onclick="window.showMinigameOrStory()">
         <div class="newspaper" id="newspaper-content"></div>
         <div style="position: absolute; bottom: 20px; color:#aaa; animation: flicker 2s infinite;">Toque para continuar</div>
     </div>
 
-    <!-- MINIGAMES RETRO 2D -->
     <div id="minigame-screen" class="screen hidden">
         <div id="mg-ui">
             <h2 id="mg-title">MINIGAME</h2>
@@ -309,13 +303,11 @@
         <canvas id="mg-canvas"></canvas>
     </div>
 
-    <!-- TELA DE HISTÓRIA (12 AM) -->
     <div id="story-screen" class="screen hidden">
         <h2 id="story-time">12:00 AM</h2>
         <h3 id="story-night">Noite 1</h3>
     </div>
 
-    <!-- TELA DE VITÓRIA -->
     <div id="win-screen-7am" class="screen hidden">
         <div class="time-transition">
             <span class="time-digit" id="digit-6">6</span>
@@ -324,253 +316,133 @@
         </div>
     </div>
 
-    <!-- TELA DE GAME OVER -->
     <div id="gameover-screen" class="screen hidden">
         <h1 id="gameover-title">FIM DE JOGO</h1>
         <div style="position: absolute; bottom: 20px; color:#aaa;" onclick="location.reload()">Toque para tentar novamente</div>
     </div>
 
-    <!-- UI DO COMPUTADOR (TAREFAS) -->
     <div id="pc-ui" class="hidden crt">
         <div class="pc-screen">
             <h2>REGIS OS v1.2</h2>
-            
             <div class="pc-system-container" id="pc-audio-container">
                 <span id="pc-audio-text">SISTEMA DE ÁUDIO: ONLINE</span>
-                <button id="pc-audio-fix-btn" class="clean-btn hidden" onclick="fixAudio()">REINICIAR</button>
+                <button id="pc-audio-fix-btn" class="clean-btn hidden" onclick="window.fixAudio()">REINICIAR</button>
             </div>
-            
             <div class="pc-system-container" id="pc-vent-container">
                 <span id="pc-vent-text">VENTILAÇÃO: ONLINE</span>
-                <button id="pc-vent-fix-btn" class="clean-btn hidden" onclick="fixVent()">REINICIAR</button>
+                <button id="pc-vent-fix-btn" class="clean-btn hidden" onclick="window.fixVent()">REINICIAR</button>
             </div>
-
             <div id="pc-status">SISTEMA OK</div>
-            
-            <!-- ÁREA DE PEDIDOS -->
             <div id="pc-task-area">
                 <div id="order-box" class="hidden">
                     <h3>NOVO PEDIDO (URGENTE)</h3>
                     <p><strong>CLIENTE:</strong> <span id="order-client">...</span></p>
                     <p style="margin-bottom: 10px;"><strong>PEDIDO:</strong> <span id="order-desc">...</span></p>
                     <div class="order-btn-container">
-                        <button id="btn-assar" class="clean-btn" style="flex: 1;" onclick="bakeOrder()">ASSAR (-2%)</button>
-                        <button id="btn-entregar" class="clean-btn" style="flex: 1;" onclick="deliverOrder()" disabled>ENTREGAR (-2%)</button>
+                        <button id="btn-assar" class="clean-btn" style="flex: 1;" onclick="window.bakeOrder()">ASSAR (-2%)</button>
+                        <button id="btn-entregar" class="clean-btn" style="flex: 1;" onclick="window.deliverOrder()" disabled>ENTREGAR (-2%)</button>
                     </div>
                 </div>
                 <div id="pc-idle-msg" style="color: #0a0; text-align: center; margin-top: 20px;">NENHUMA TAREFA PENDENTE.</div>
             </div>
-
-            <button id="pc-exit-btn" onclick="closePC()">FECHAR TERMINAL</button>
+            <button id="pc-exit-btn" onclick="window.closePC()">FECHAR TERMINAL</button>
         </div>
     </div>
 
-    <!-- HUD PRINCIPAL DA OFFICE -->
     <div id="hud-layer" class="overlay hidden">
         <div id="time-display" class="hud-text">12 AM</div>
         <div id="night-display" class="hud-text">Noite 1</div>
         <div id="toxicity-display" class="hud-text">Toxicidade: 0%</div>
         <div id="power-display" class="hud-text">Energia: 100%</div>
 
-        <button id="exhaust-btn" onclick="toggleExhaust()">LIGAR EXAUSTOR</button>
+        <button id="exhaust-btn" onclick="window.toggleExhaust()">LIGAR EXAUSTOR</button>
 
         <div id="phone-ui">
             <div id="phone-subtitles"></div>
-            <button id="mute-btn" onclick="muteCall()">Mutar Ligação</button>
+            <button id="mute-btn" onclick="window.muteCall()">Mutar Ligação</button>
         </div>
 
         <div id="office-panels">
             <div id="left-panel" class="panel">
-                <div class="btn-door" id="l-door" onclick="toggleDoor('left')"></div>
-                <div class="btn-light" id="l-light" onclick="toggleLight('left')"></div>
+                <div class="btn-door" id="l-door" onclick="window.toggleDoor('left')"></div>
+                <div class="btn-light" id="l-light" onclick="window.toggleLight('left')"></div>
             </div>
             <div id="right-panel" class="panel">
-                <div class="btn-door" id="r-door" onclick="toggleDoor('right')"></div>
-                <div class="btn-light" id="r-light" onclick="toggleLight('right')"></div>
+                <div class="btn-door" id="r-door" onclick="window.toggleDoor('right')"></div>
+                <div class="btn-light" id="r-light" onclick="window.toggleLight('right')"></div>
             </div>
         </div>
-        <div id="monitor-btn" onclick="toggleMonitor()"></div>
+        <div id="monitor-btn" onclick="window.toggleMonitor()"></div>
     </div>
 
-    <!-- UI DAS CÂMERAS -->
     <div id="camera-ui" class="overlay hidden">
         <div class="static-noise" id="static-overlay"></div>
         <div id="camera-name" class="hud-text">CAM 1A - Palco Principal</div>
         
         <div class="map-container">
             <div class="map-room map-stage"></div><div class="map-room map-dining"></div><div class="map-room map-cove"></div><div class="map-room map-whall"></div><div class="map-room map-ehall"></div>
-            <button class="cam-btn active" id="btn-CAM1A" style="top: 20%; left: 50%;" onclick="switchCam('CAM1A')">CAM 1A</button>
-            <button class="cam-btn" id="btn-CAM1B" style="top: 45%; left: 50%;" onclick="switchCam('CAM1B')">CAM 1B</button>
-            <button class="cam-btn" id="btn-CAM1C" style="top: 50%; left: 20%;" onclick="switchCam('CAM1C')">CAM 1C</button>
-            <button class="cam-btn" id="btn-CAM2A" style="top: 77%; left: 37%;" onclick="switchCam('CAM2A')">CAM 2A</button>
-            <button class="cam-btn" id="btn-CAM4A" style="top: 77%; left: 62%;" onclick="switchCam('CAM4A')">CAM 4A</button>
+            <button class="cam-btn active" id="btn-CAM1A" style="top: 20%; left: 50%;" onclick="window.switchCam('CAM1A')">CAM 1A</button>
+            <button class="cam-btn" id="btn-CAM1B" style="top: 45%; left: 50%;" onclick="window.switchCam('CAM1B')">CAM 1B</button>
+            <button class="cam-btn" id="btn-CAM1C" style="top: 50%; left: 20%;" onclick="window.switchCam('CAM1C')">CAM 1C</button>
+            <button class="cam-btn" id="btn-CAM2A" style="top: 77%; left: 37%;" onclick="window.switchCam('CAM2A')">CAM 2A</button>
+            <button class="cam-btn" id="btn-CAM4A" style="top: 77%; left: 62%;" onclick="window.switchCam('CAM4A')">CAM 4A</button>
         </div>
-        <button id="audio-btn" class="hidden" onclick="playAudioSystem()">[ TOCAR ÁUDIO ]</button>
+        
+        <button id="audio-btn" class="hidden" onclick="window.playAudioSystem()">[ TOCAR ÁUDIO ]</button>
+        
+        <div id="wind-up-container" class="hidden">
+            <div id="wind-up-title">CAIXA DE MÚSICA (CAM1C)</div>
+            <div id="wind-up-bar-bg"><div id="wind-up-bar-fill"></div></div>
+            <button id="wind-up-btn" onmousedown="window.startWinding(event)" onmouseup="window.stopWinding(event)" onmouseleave="window.stopWinding(event)" ontouchstart="window.startWinding(event)" ontouchend="window.stopWinding(event)">[ SEGURE PARA RECARREGAR ]</button>
+        </div>
     </div>
 
-    <!-- CONTAINER 3D -->
     <div id="canvas-container"></div>
 </div>
 
 <script>
-    // --- SISTEMA DE SAVE LOCAL ---
-    function saveGame(night) {
-        try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {}
-    }
-
-    function loadGame() {
-        try {
-            let saved = localStorage.getItem('regis_pizzaplace_night');
-            if (saved !== null) {
-                let n = parseInt(saved);
-                if (n > 1) {
-                    currentNight = n;
-                    const continueBtn = document.getElementById('continue-btn');
-                    if (continueBtn) {
-                        continueBtn.innerText = `> Continuar (Noite ${currentNight})`;
-                        continueBtn.style.color = "#fff";
-                        continueBtn.style.pointerEvents = "auto";
-                    }
-                }
-            }
-        } catch(e) {}
-    }
-
-    // --- PHONE GUY E TEXTOS ---
-    const phoneScripts = {
-        1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
-        2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas câmeras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Se você não olhar para ele, ele corre.", "E sobre aquele cheiro... Lembra que eu falei do Regis?", "Ele tinha um primo, o Martins. A gente chamava ele de Alejado depois que as engrenagens esmagaram as pernas dele.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
-        3: ["Alô, Rafa aqui de novo.", "Cara, as coisas saíram do controle. A pizza tóxica que o Regis inventou... ela fez coisas horríveis.", "O Martins não morreu de verdade. A toxina transformou ele... numa espécie de morto-vivo com fungos.", "Ele se arrasta pelo chão porque não tem pernas. Por isso as câmeras quase não pegam ele direito.", "Se você ouvir algo rastejando no corredor de metal... não hesite. Fecha a porta na cara dele!", "O ódio do Martins pelo Regis é tão grande que ele ataca qualquer guarda que ele vê."],
-        4: ["Alô?! (Som de respiração ofegante)", "Eles tão me seguindo... Os outros funcionários... O Regis colocou os corpos infectados dentro das armaduras!", "Freddy, Bonnie, Chica... são sarcófagos, cara! É por isso que sangram e têm esses cogumelos bizarros...", "O prédio todo tá sendo consumido por raízes. A toxina vazou pelo porão.", "Não deixa eles entrarem! O Martins tá furioso. Ele quer vingança. Tranca tudo!"],
-        5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
-    };
-
-    const loreText = [
-        "", // 0
-        "<h2>ARQUIVO 01: O NOVO EMPREGO</h2><p>Você assumiu o turno da noite na 'Regis Pizzaplace'. O dono, Regis, é tristemente conhecido por cortes de gastos absolutamente ilegais. Recentemente, para evitar a falência da empresa, ele começou a misturar um produto químico radioativo e barato na massa da pizza para fazê-la durar meses a fio. Os clientes pararam de vir devido ao cheiro insuportável de carne podre. Tente ignorar os odores, tranque as portas blindadas apenas se vir algo nos corredores e não se esqueça de limpar os vírus do sistema no terminal do seu computador.</p>",
-        "<h2>ARQUIVO 02: O ACIDENTE DO ALEJADO</h2><p>Esta pizzaria esconde um segredo obscuro sob o seu chão de xadrez sujo. O primo de Regis, Martins, sofreu um acidente aterrador nas engrenagens do palco principal por pura negligência da gerência. Em vez de pagar a indemnização, Regis trancou-o no porão, forçando-o a trabalhar na manutenção sem as pernas. A equipa chamava-lhe cruelmente 'O Alejado'. Dizem as lendas que ele rastejava no escuro, alimentando-se dos restos da pizza tóxica que caíam pelos ralos.</p>",
-        "<h2>ARQUIVO 03: A INFECÇÃO FÚNGICA</h2><p>A toxina na pizza não era apenas um conservante barato, era um fungo parasita altamente agressivo. A equipa de limpeza começou a tossir sangue negro e espesso. O primeiro a cair morto foi o cozinheiro-chefe. Mas o que chocou a todos foi quando, horas depois de ter sido declarado morto, o seu cadáver se levantou. O fungo reanimou as células mortas e os tecidos. A pizzaria está agora infestada por cadáveres controlados por esporos bioluminescentes.</p>",
-        "<h2>ARQUIVO 04: SARCÓFAGOS DE METAL</h2><p>Para esconder o massacre das autoridades locais, Regis teve uma ideia absolutamente doentia. Ele forçou os corpos apodrecidos dos funcionários mortos-vivos para dentro dos pesados trajes dos Animatronics. Freddy, Bonnie, Chica e Foxy... não são robôs programados. São túmulos de metal ambulantes. O aço esmaga os seus ossos, mas o fungo mantém-nos a moverem-se pelos corredores, repletos de dor e fúria contra qualquer humano adulto que encontrem.</p>",
-        "<h2>ARQUIVO 05: A VINGANÇA DO ALEJADO</h2><p>No porão, o Alejado sucumbiu aos restos tóxicos que comeu durante semanas. Ele morreu no escuro e frio. Mas o fungo Cordyceps encontrou o seu corpo e trouxe-o de volta num estado deplorável. Ele não tem um traje de metal para o conter. É um cadáver putrefato puro, rastejando apenas com os braços, com a coluna vertebral exposta e um ódio eterno pelo seu chefe. Ele acha que qualquer guarda noturno é o Regis a voltar para o punir.</p>",
-        "<h2>ARQUIVO 06: O FIM DA LINHA</h2><p>Regis fugiu como um covarde. Aterrorizado pelas suas próprias criações, ele trancou todas as portas por fora e abandonou o edifício, deixando a segurança nas mãos de mercenários descartáveis... como você. Os animatronics estão a perder o resto da sua sanidade humana. O fungo espalhou-se pelas paredes, pelo chão e até infetou o sistema digital das câmaras. Sobreviva mais esta noite. A loucura absoluta tomou conta do lugar.</p>",
-        "<h2>ARQUIVO 07: O PURGATÓRIO DE REGIS</h2><p>As peças não encaixam, pois não? O salário que não existe, as portas soldadas, as memórias que começam a inundar a sua mente. Você não é um segurança contratado. Você É o próprio Regis. Amaldiçoado a reviver noites infinitas no seu próprio inferno, punido pelo que fez ao seu primo Martins e aos seus funcionários. O Alejado chora na porta, ele não quer apenas matar-te, ele quer que sintas a dor excruciante das engrenagens. Para sempre. Enfrente as suas criações na dificuldade máxima.</p>"
-    ];
-
-    // --- CONFIGURAÇÕES ---
-    let masterVolume = 1.0;
-    let isHighQuality = true;
-    let confirmReset = false;
-
-    function openSettings() { document.getElementById('settings-screen').classList.remove('hidden'); }
-    function closeSettings() { document.getElementById('settings-screen').classList.add('hidden'); }
-    
-    function updateVolume(val) {
-        masterVolume = parseFloat(val);
-        document.getElementById('vol-label').innerText = `${Math.round(masterVolume * 100)}%`;
-    }
-    
-    function toggleGraphics() {
-        isHighQuality = !isHighQuality;
-        document.getElementById('gfx-btn').innerText = isHighQuality ? "ALTO" : "BAIXO";
-        document.getElementById('game-container').classList.toggle('off', !isHighQuality);
-        if (renderer) { renderer.setPixelRatio(isHighQuality ? Math.min(window.devicePixelRatio, 2) : 1); }
-    }
-
-    function toggleFullscreen() {
-        let elem = document.documentElement;
-        let isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
-        
-        if (!isFullscreen) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(()=>{});
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            }
-            document.getElementById('fs-btn').innerText = "DESATIVAR";
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
-            document.getElementById('fs-btn').innerText = "ATIVAR";
-        }
-    }
-
-    document.addEventListener('fullscreenchange', updateFsButton);
-    document.addEventListener('webkitfullscreenchange', updateFsButton);
-    
-    function updateFsButton() {
-        let isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
-        let fsBtn = document.getElementById('fs-btn');
-        if (fsBtn) fsBtn.innerText = isFullscreen ? "DESATIVAR" : "ATIVAR";
-    }
-
-    function resetSaveData() {
-        const btn = document.getElementById('reset-save-btn');
-        if (!confirmReset) {
-            btn.innerText = "TEM A CERTEZA?";
-            btn.style.backgroundColor = "#ff0000";
-            confirmReset = true;
-            setTimeout(() => {
-                confirmReset = false;
-                btn.innerText = "APAGAR PROGRESSO";
-                btn.style.backgroundColor = "#800";
-            }, 3000);
-        } else {
-            saveGame(1);
-            currentNight = 1;
-            const contBtn = document.getElementById('continue-btn');
-            if(contBtn) { contBtn.innerText = `> Continuar`; contBtn.style.color = "#444"; contBtn.style.pointerEvents = "none"; }
-            btn.innerText = "APAGADO!";
-            confirmReset = false;
-        }
-    }
-
-    // --- VARIÁVEIS GLOBAIS DO JOGO ---
-    let currentNight = 1; let hour = 0; let power = 100;
-    let gameState = 'MENU'; 
-    let scene, camera, renderer;
-    let menuScene, menuCamera;
+    // --- VARIÁVEIS GLOBAIS ---
+    window.currentNight = 1;
+    let hour = 0, power = 100, gameState = 'MENU';
+    let scene, camera, renderer, menuScene, menuCamera;
     let fanBlades, leftDoorMesh, rightDoorMesh, crtScreenMesh;
     let mainOfficeLight, leftLight, rightLight, cctvLight, ambientLight;
     let coveCurtainL, coveCurtainR;
     
-    let targetRotationY = 0; let mouseX = 0;
-    let isLeftDoorClosed = false; let isRightDoorClosed = false;
-    let isLeftLightOn = false; let isRightLightOn = false;
-    let leftDoorTargetY = 22.5; let rightDoorTargetY = 22.5;
+    let targetRotationY = 0, mouseX = 0;
+    let isLeftDoorClosed = false, isRightDoorClosed = false;
+    let isLeftLightOn = false, isRightLightOn = false;
+    let leftDoorTargetY = 22.5, rightDoorTargetY = 22.5;
     
-    let isMonitorUp = false; let currentCam = 'CAM1A';
+    let isMonitorUp = false, currentCam = 'CAM1A';
     const officeCamPos = new THREE.Vector3(0, 5.5, 2);
     let gameIntervals = [];
-    let phoneAudioCtx = null; let phoneOscillator = null; let phoneGain = null; let isCallMuted = false; let phoneTimeouts = [];
-
+    let phoneAudioCtx = null, phoneOscillator = null, phoneGain = null;
+    let isCallMuted = false, phoneTimeouts = [];
     let playerName = "Guarda";
+    
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
-    let isPCUp = false; 
-    let isTaskActive = false; 
-    let taskTimer = 30; 
-    let taskFailTimer = 20; 
+    let isPCUp = false, isTaskActive = false, taskTimer = 30, taskFailTimer = 20; 
+    let isAudioBroken = false, toxicity = 0, initialToxicity = 0; 
+    let isExhaustOn = false, isVentBroken = false, exhaustAudioCtx = null, exhaustOsc = null;
     
-    let isAudioBroken = false;
-    let toxicity = 0;
-    let initialToxicity = 0; 
-    let isExhaustOn = false;
-    let isVentBroken = false;
-    let exhaustAudioCtx = null;
-    let exhaustOsc = null;
-    
+    let currentOrderClient = "", currentOrderDesc = "", isBaking = false;
+    let box1B = 100, box1C = 100, isWinding = false, foxyTriggered = false;
+    let masterVolume = 1.0, isHighQuality = true, confirmReset = false;
+
+    // --- GLOBAIS DOS MINIGAMES ---
+    let mgCanvas, mgCtx, mgAnimFrame, mgTimerInt;
+    let mgState = { type: '', time: 15, active: false, elements: [], player: null };
+    let mgMouseX = 0, mgMouseY = 0, mgIsDown = false;
+
+    // Constantes e Dados
     const ghostVictims = ["João P.", "Maria S.", "Rafa (Ex-Guarda)", "Criança Chorona", "Primo Martins", "Func. Desconhecido"];
     const ghostPizzas = ["1x Pizza de Carne... Crua", "2x Fatias com Olhos", "1x Pizza de Cordyceps", "1x Especial do Alejado", "1x Massa com Sangue Seco"];
-    let currentOrderClient = "";
-    let currentOrderDesc = "";
-    let isBaking = false;
-
+    
     const animatronics = {
         bonnie: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM2A', 'LeftDoor'], doorWaitTime: 0, attackTimer: 0 },
         chica:  { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 },
-        foxy:   { mesh: null, loc: 'CAM1C', level: 0, state: 0 }, 
+        foxy:   { mesh: null, loc: 'CAM1C', state: 0 }, 
         freddy: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'] }
     };
 
@@ -585,25 +457,6 @@
         'CAM1C': { p: [-45, 12, -35], rx: -0.05, ry: -Math.PI/5 }, 'CAM2A': { p: [-20, 15, -30], rx: -0.1, ry: Math.PI }, 'CAM4A': { p: [20, 15, -30], rx: -0.1, ry: Math.PI }
     };
 
-    // --- CONTROLE DE TELAS E JOGO ---
-    function startGame(night) {
-        saveGame(night);
-        initialToxicity = 0; 
-
-        if (night === 1) {
-            currentNight = 1;
-            const continueBtn = document.getElementById('continue-btn');
-            if(continueBtn) { continueBtn.innerText = `> Continuar`; continueBtn.style.color = "#444"; continueBtn.style.pointerEvents = "none"; }
-            document.getElementById('menu-screen').classList.add('hidden');
-            startContractIntro(); 
-        } else {
-            currentNight = night; hour = 0; power = 100;
-            document.getElementById('menu-screen').classList.add('hidden');
-            showNewspaperForNight(currentNight);
-        }
-        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
-    }
-
     const introDialogues = [
         "Ah, finalmente. Você é o novo candidato à vaga de segurança noturno, não é?",
         "Ótimo. Ignore as manchas escuras no chão... tivemos um 'probleminha' de vazamento no porão ultimamente.",
@@ -612,34 +465,121 @@
         "O pagamento é uma miséria, não temos seguro de saúde e, se você perder algum membro, a responsabilidade é sua.",
         "Aqui está o contrato. Assine na linha pontilhada. E não perca tempo a ler as letras miúdas, é tudo burocracia inútil."
     ];
-    let currentDialogueIdx = 0; let typeWriterInterval = null;
+    let currentDialogueIdx = 0, typeWriterInterval = null;
+
+    const phoneScripts = {
+        1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
+        2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas câmeras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Ele é pior que os outros.", "Para mantê-lo afastado, você precisa recarregar a Caixa de Música nas câmeras 1B e 1C.", "É uma 'dose dupla' de contenção. Se qualquer uma das caixas parar, ele vai te pegar.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
+        3: ["Alô, Rafa aqui de novo.", "Cara, as coisas saíram do controle. A pizza tóxica que o Regis inventou... ela fez coisas horríveis.", "O Martins não morreu de verdade. A toxina transformou ele... numa espécie de morto-vivo com fungos.", "Ele se arrasta pelo chão porque não tem pernas. Por isso as câmeras quase não pegam ele direito.", "Lembre-se: o Martins odeia barulho de exaustor. E o Foxy odeia o silêncio das caixas de música.", "O ódio do Martins pelo Regis é tão grande que ele ataca qualquer guarda que ele vê."],
+        4: ["Alô?! (Som de respiração ofegante)", "Eles tão me seguindo... Os outros funcionários... O Regis colocou os corpos infectados dentro das armaduras!", "Freddy, Bonnie, Chica... são sarcófagos, cara! É por isso que sangram e têm esses cogumelos bizarros...", "O prédio todo tá sendo consumido por raízes. A toxina vazou pelo porão.", "Não deixa eles entrarem! Tranca tudo e recarrega essas caixas de música!"],
+        5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
+    };
+
+    const loreText = [
+        "", // 0
+        "<h2>ARQUIVO 01: O NOVO EMPREGO</h2><p>Você assumiu o turno da noite na 'Regis Pizzaplace'. O dono, Regis, é tristemente conhecido por cortes de gastos absolutamente ilegais. Recentemente, para evitar a falência da empresa, ele começou a misturar um produto químico radioativo e barato na massa da pizza para fazê-la durar meses a fio. Os clientes pararam de vir devido ao cheiro insuportável de carne podre. Tente ignorar os odores, tranque as portas blindadas apenas se vir algo nos corredores e não se esqueça de limpar os vírus do sistema no terminal do seu computador.</p>",
+        "<h2>ARQUIVO 02: O ACIDENTE DO ALEJADO</h2><p>Esta pizzaria esconde um segredo obscuro sob o seu chão de xadrez sujo. O primo de Regis, Martins, sofreu um acidente aterrador nas engrenagens do palco principal por pura negligência da gerência. Em vez de pagar a indemnização, Regis trancou-o no porão, forçando-o a trabalhar na manutenção sem as pernas. A equipa chamava-lhe cruelmente 'O Alejado'. Dizem as lendas que ele rastejava no escuro, alimentando-se dos restos da pizza tóxica que caíam pelos ralos.</p>",
+        "<h2>ARQUIVO 03: A INFECÇÃO FÚNGICA</h2><p>A toxina na pizza não era apenas um conservante barato, era um fungo parasita altamente agressivo. A equipa de limpeza começou a tossir sangue negro e espesso. O primeiro a cair morto foi o cozinheiro-chefe. Mas o que chocou a todos foi quando, horas depois de ter sido declarado morto, o seu cadáver se levantou. O fungo reanimou as células mortas e os tecidos. A pizzaria está agora infestada por cadáveres controlados por esporos bioluminescentes.</p>",
+        "<h2>ARQUIVO 04: SARCÓFAGOS DE METAL</h2><p>Para esconder o massacre das autoridades locais, Regis teve uma ideia absolutamente doentia. Ele forçou os corpos apodrecidos dos funcionários mortos-vivos para dentro dos pesados trajes dos Animatronics. Freddy, Bonnie, Chica e Foxy... não são robôs programados. São túmulos de metal ambulantes. O aço esmaga os seus ossos, mas o fungo mantém-nos a moverem-se pelos corredores, repletos de dor e fúria contra qualquer humano adulto que encontrem.</p>",
+        "<h2>ARQUIVO 05: A VINGANÇA DO ALEJADO</h2><p>No porão, o Alejado sucumbiu aos restos tóxicos que comeu durante semanas. Ele morreu no escuro e frio. Mas o fungo Cordyceps encontrou o seu corpo e trouxe-o de volta num estado deplorável. Ele não tem um traje de metal para o conter. É um cadáver putrefato puro, rastejando apenas com os braços, com a coluna vertebral exposta e um ódio eterno pelo seu chefe. Ele acha que qualquer guarda noturno é o Regis a voltar para o punir.</p>",
+        "<h2>ARQUIVO 06: O FIM DA LINHA</h2><p>Regis fugiu como um covarde. Aterrorizado pelas suas próprias criações, ele trancou todas as portas por fora e abandonou o edifício, deixando a segurança nas mãos de mercenários descartáveis... como você. Os animatronics estão a perder o resto da sua sanidade humana. O fungo espalhou-se pelas paredes, pelo chão e até infetou o sistema digital das câmaras. Sobreviva mais esta noite. A loucura absoluta tomou conta do lugar.</p>",
+        "<h2>ARQUIVO 07: O PURGATÓRIO DE REGIS</h2><p>As peças não encaixam, pois não? O salário que não existe, as portas soldadas, as memórias que começam a inundar a sua mente. Você não é um segurança contratado. Você É o próprio Regis. Amaldiçoado a reviver noites infinitas no seu próprio inferno, punido pelo que fez ao seu primo Martins e aos seus funcionários. O Alejado chora na porta, ele não quer apenas matar-te, ele quer que sintas a dor excruciante das engrenagens. Para sempre. Enfrente as suas criações na dificuldade máxima.</p>"
+    ];
+
+    // --- FUNÇÕES GLOBAIS DE UI ---
+    window.openSettings = function() { document.getElementById('settings-screen').classList.remove('hidden'); };
+    window.closeSettings = function() { document.getElementById('settings-screen').classList.add('hidden'); };
+    window.updateVolume = function(val) { masterVolume = parseFloat(val); document.getElementById('vol-label').innerText = `${Math.round(masterVolume * 100)}%`; };
+    window.toggleGraphics = function() {
+        isHighQuality = !isHighQuality;
+        document.getElementById('gfx-btn').innerText = isHighQuality ? "ALTO" : "BAIXO";
+        document.getElementById('game-container').classList.toggle('off', !isHighQuality);
+        if (renderer) { renderer.setPixelRatio(isHighQuality ? Math.min(window.devicePixelRatio, 2) : 1); }
+    };
+    window.toggleFullscreen = function() {
+        let elem = document.documentElement; let isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!isFullscreen) {
+            if (elem.requestFullscreen) { elem.requestFullscreen().catch(()=>{}); } 
+            else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+            document.getElementById('fs-btn').innerText = "DESATIVAR";
+        } else {
+            if (document.exitFullscreen) { document.exitFullscreen(); } 
+            else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+            document.getElementById('fs-btn').innerText = "ATIVAR";
+        }
+    };
+    document.addEventListener('fullscreenchange', updateFsButton);
+    document.addEventListener('webkitfullscreenchange', updateFsButton);
+    function updateFsButton() { let fsBtn = document.getElementById('fs-btn'); if (fsBtn) fsBtn.innerText = (document.fullscreenElement || document.webkitFullscreenElement) ? "DESATIVAR" : "ATIVAR"; }
+
+    window.resetSaveData = function() {
+        const btn = document.getElementById('reset-save-btn');
+        if (!confirmReset) {
+            btn.innerText = "TEM A CERTEZA?"; btn.style.backgroundColor = "#ff0000"; confirmReset = true;
+            setTimeout(() => { confirmReset = false; btn.innerText = "APAGAR PROGRESSO"; btn.style.backgroundColor = "#800"; }, 3000);
+        } else {
+            saveGame(1); window.currentNight = 1;
+            const contBtn = document.getElementById('continue-btn');
+            if(contBtn) { contBtn.innerText = `> Continuar`; contBtn.style.color = "#444"; contBtn.style.pointerEvents = "none"; }
+            btn.innerText = "APAGADO!"; confirmReset = false;
+        }
+    };
+
+    window.continueGame = function() { if (window.currentNight > 1) window.startGame(window.currentNight); };
+
+    function saveGame(night) { try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {} }
+    function loadGame() {
+        try {
+            let saved = localStorage.getItem('regis_pizzaplace_night');
+            if (saved !== null) {
+                let n = parseInt(saved);
+                if (n > 1) {
+                    window.currentNight = n;
+                    const continueBtn = document.getElementById('continue-btn');
+                    if (continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
+                }
+            }
+        } catch(e) {}
+    }
+
+    // --- LÓGICA DE JOGO ---
+    window.startGame = function(night) {
+        saveGame(night); initialToxicity = 0; 
+        if (night === 1) {
+            window.currentNight = 1;
+            const continueBtn = document.getElementById('continue-btn');
+            if(continueBtn) { continueBtn.innerText = `> Continuar`; continueBtn.style.color = "#444"; continueBtn.style.pointerEvents = "none"; }
+            document.getElementById('menu-screen').classList.add('hidden');
+            startContractIntro(); 
+        } else {
+            window.currentNight = night; hour = 0; power = 100;
+            document.getElementById('menu-screen').classList.add('hidden');
+            showNewspaperForNight(window.currentNight);
+        }
+        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+    };
 
     function startContractIntro() {
         gameState = 'CONTRACT';
-        document.getElementById('contract-screen').classList.remove('hidden');
-        document.getElementById('contract-paper').classList.remove('visible');
-        document.getElementById('signature-area').classList.add('hidden');
-        document.getElementById('dialogue-box').style.pointerEvents = 'auto';
+        document.getElementById('contract-screen').classList.remove('hidden'); document.getElementById('contract-paper').classList.remove('visible');
+        document.getElementById('signature-area').classList.add('hidden'); document.getElementById('dialogue-box').style.pointerEvents = 'auto';
         currentDialogueIdx = 0; typeWriterEffect(introDialogues[currentDialogueIdx]);
     }
 
-    function advanceDialogue() {
+    window.advanceDialogue = function() {
         if (typeWriterInterval) {
             clearInterval(typeWriterInterval); typeWriterInterval = null;
-            document.getElementById('dialogue-text').textContent = introDialogues[currentDialogueIdx];
-            return;
+            document.getElementById('dialogue-text').textContent = introDialogues[currentDialogueIdx]; return;
         }
         currentDialogueIdx++;
         if (currentDialogueIdx < introDialogues.length) {
             typeWriterEffect(introDialogues[currentDialogueIdx]);
         } else {
-            document.getElementById('dialogue-text').textContent = "Estou à espera. Assine logo.";
-            document.getElementById('dialogue-box').style.pointerEvents = 'none';
-            document.querySelector('.dialogue-prompt').classList.add('hidden');
-            document.getElementById('contract-paper').classList.add('visible');
+            document.getElementById('dialogue-text').textContent = "Estou à espera. Assine logo."; document.getElementById('dialogue-box').style.pointerEvents = 'none';
+            document.querySelector('.dialogue-prompt').classList.add('hidden'); document.getElementById('contract-paper').classList.add('visible');
             setTimeout(() => { document.getElementById('signature-area').classList.remove('hidden'); document.getElementById('player-name-input').focus(); }, 1000);
         }
-    }
+    };
 
     function typeWriterEffect(text) {
         const textElement = document.getElementById('dialogue-text'); textElement.textContent = "";
@@ -655,64 +595,45 @@
         if (masterVolume <= 0) return;
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(80, ctx.currentTime);
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(80, ctx.currentTime);
             gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.1);
             osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
         } catch(e) {}
     }
 
-    function signContract() {
+    window.signContract = function() {
         const input = document.getElementById('player-name-input');
         if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
         playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none';
         document.getElementById('dialogue-box').style.pointerEvents = 'auto';
         typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
-        
-        setTimeout(() => {
-            document.getElementById('contract-screen').classList.add('hidden');
-            currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1);
-        }, 4000);
-    }
+        setTimeout(() => { document.getElementById('contract-screen').classList.add('hidden'); window.currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1); }, 4000);
+    };
 
     function showNewspaperForNight(night) {
         gameState = 'NEWSPAPER';
         const content = loreText[night] ? loreText[night] : loreText[7];
         document.getElementById('newspaper-content').innerHTML = content;
-        document.getElementById('win-screen-7am').classList.add('hidden'); 
-        document.getElementById('newspaper-screen').classList.remove('hidden');
+        document.getElementById('win-screen-7am').classList.add('hidden'); document.getElementById('newspaper-screen').classList.remove('hidden');
     }
 
-    function showMinigameOrStory() {
+    window.showMinigameOrStory = function() {
         if(gameState !== 'NEWSPAPER') return;
         document.getElementById('newspaper-screen').classList.add('hidden');
-        
-        if (currentNight < 7) {
-            initMinigame();
-        } else {
-            showStory();
-        }
-    }
+        if (window.currentNight < 7) { initMinigame(); } else { showStory(); }
+    };
 
     function showStory() {
         gameState = 'STORY';
-        document.getElementById('story-night').innerText = `Noite ${currentNight}`;
-        document.getElementById('night-display').innerText = `Noite ${currentNight}`;
+        document.getElementById('story-night').innerText = `Noite ${window.currentNight}`; document.getElementById('night-display').innerText = `Noite ${window.currentNight}`;
         document.getElementById('story-screen').classList.remove('hidden');
         setTimeout(() => startOfficeGameplay(), 3000);
     }
 
     // --- MOTOR DE MINIGAMES RETRO 2D ---
-    let mgCanvas, mgCtx, mgAnimFrame, mgTimerInt;
-    let mgState = { type: '', time: 15, active: false, elements: [], player: null };
-    let mgMouseX = 0, mgMouseY = 0, mgIsDown = false;
-
     function initMinigame() {
-        gameState = 'MINIGAME';
-        document.getElementById('minigame-screen').classList.remove('hidden');
-        mgCanvas = document.getElementById('mg-canvas');
-        mgCtx = mgCanvas.getContext('2d');
-        
+        gameState = 'MINIGAME'; document.getElementById('minigame-screen').classList.remove('hidden');
+        mgCanvas = document.getElementById('mg-canvas'); mgCtx = mgCanvas.getContext('2d');
         const resizeMg = () => { mgCanvas.width = window.innerWidth; mgCanvas.height = window.innerHeight; };
         resizeMg(); window.addEventListener('resize', resizeMg);
 
@@ -726,7 +647,7 @@
         mgCanvas.addEventListener('touchstart', onTouchStart, {passive: false});
         mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
 
-        if (currentNight % 2 !== 0) { setupPizzaMinigame(); } else { setupCleanupMinigame(); }
+        if (window.currentNight % 2 !== 0) { setupPizzaMinigame(); } else { setupCleanupMinigame(); }
 
         mgState.active = true;
         mgTimerInt = setInterval(() => {
@@ -734,7 +655,6 @@
             mgState.time--; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
             if (mgState.time <= 0) endMinigame(false);
         }, 1000);
-
         mgLoop();
     }
 
@@ -744,47 +664,28 @@
         let isMobile = window.innerWidth < 768;
         mgState.pizza = { x: window.innerWidth / 2, y: window.innerHeight * (isMobile ? 0.65 : 0.5), r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) };
         mgState.elements = [];
-
-        let numIng = currentNight === 1 ? 6 : (currentNight === 3 ? 8 : 10);
-        let types = ['pep', 'cheese'];
-        if (currentNight >= 3) types.push('eye', 'mush');
-        if (currentNight >= 5) types = ['eye', 'mush'];
+        let numIng = window.currentNight === 1 ? 6 : (window.currentNight === 3 ? 8 : 10);
+        let types = ['pep', 'cheese']; if (window.currentNight >= 3) types.push('eye', 'mush'); if (window.currentNight >= 5) types = ['eye', 'mush'];
 
         for(let i=0; i<numIng; i++) {
-            let t = types[Math.floor(Math.random() * types.length)];
-            let x, y;
-            if (isMobile) {
-                x = 40 + Math.random() * (window.innerWidth - 80); y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25);
-            } else {
-                x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80);
-                y = 100 + Math.random() * (window.innerHeight - 200);
-            }
+            let t = types[Math.floor(Math.random() * types.length)]; let x, y;
+            if (isMobile) { x = 40 + Math.random() * (window.innerWidth - 80); y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25); } 
+            else { x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80); y = 100 + Math.random() * (window.innerHeight - 200); }
             x = Math.max(30, Math.min(window.innerWidth - 30, x));
-            let r = isMobile ? 20 : 25;
-            mgState.elements.push({ id: i, type: t, x: x, y: y, r: r, isDragging: false, placed: false });
+            mgState.elements.push({ id: i, type: t, x: x, y: y, r: isMobile ? 20 : 25, isDragging: false, placed: false });
         }
     }
 
     function setupCleanupMinigame() {
-        mgState.type = 'cleanup'; mgState.time = 15 - Math.floor(currentNight/2);
+        mgState.type = 'cleanup'; mgState.time = 15 - Math.floor(window.currentNight/2);
         document.getElementById('mg-title').innerText = "LIMPE O PORÃO"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
-        let isMobile = window.innerWidth < 768;
-        mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: isMobile ? 25 : 30 };
-        mgState.elements = []; 
-
-        let numStains = 5 + currentNight;
-        for(let i=0; i<numStains; i++) {
-            mgState.elements.push({
-                x: 40 + Math.random() * (window.innerWidth - 80), y: 100 + Math.random() * (window.innerHeight - 150),
-                r: (isMobile ? 20 : 30) + Math.random() * 30, color: Math.random() > 0.5 ? '#800' : '#080' 
-            });
-        }
+        let isMobile = window.innerWidth < 768; mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: isMobile ? 25 : 30 }; mgState.elements = []; 
+        for(let i=0; i<5 + window.currentNight; i++) { mgState.elements.push({ x: 40 + Math.random() * (window.innerWidth - 80), y: 100 + Math.random() * (window.innerHeight - 150), r: (isMobile ? 20 : 30) + Math.random() * 30, color: Math.random() > 0.5 ? '#800' : '#080' }); }
     }
 
     function mgLoop() {
         if (!mgState.active) return;
         mgAnimFrame = requestAnimationFrame(mgLoop);
-        
         mgCtx.fillStyle = '#111'; mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
 
         if (mgState.type === 'pizza') {
@@ -795,33 +696,19 @@
             for(let i=mgState.elements.length-1; i>=0; i--) {
                 let el = mgState.elements[i];
                 if (!el.placed) allPlaced = false;
-
-                if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) {
-                    let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y);
-                    if (dist < el.r * 2.5) el.isDragging = true; 
-                }
-
+                if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) { let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y); if (dist < el.r * 2.5) el.isDragging = true; }
                 if (el.isDragging) {
                     el.x = mgMouseX; el.y = mgMouseY;
                     if (!mgIsDown) {
                         el.isDragging = false;
-                        let distToPizza = Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y);
-                        if (distToPizza < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); }
+                        if (Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y) < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); }
                     }
                 }
-
                 if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } 
                 else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } 
-                else if (el.type === 'eye') {
-                    mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
-                    mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill();
-                    mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); 
-                } else if (el.type === 'mush') {
-                    mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill();
-                    mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8);
-                }
+                else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } 
+                else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
             }
-
             if (allPlaced) endMinigame(true);
 
         } else if (mgState.type === 'cleanup') {
@@ -835,14 +722,10 @@
             for (let stain of mgState.elements) {
                 if (stain.r > 0) {
                     anyLeft = true; mgCtx.fillStyle = stain.color; mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill();
-                    let dist = Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y);
-                    if (dist < mgState.player.r + stain.r) { stain.r -= 2; if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800); }
+                    if (Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y) < mgState.player.r + stain.r) { stain.r -= 2; if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800); }
                 }
             }
-
-            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); 
-            mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); 
-
+            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); 
             if (!anyLeft) endMinigame(true);
         }
     }
@@ -850,10 +733,8 @@
     function playMgSound(freq) {
         if(masterVolume <= 0) return;
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
             osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
         } catch(e) {}
     }
@@ -866,7 +747,7 @@
         showStory();
     }
 
-
+    // --- GAMEPLAY PRINCIPAL ---
     function startOfficeGameplay() {
         gameState = 'OFFICE';
         document.getElementById('story-screen').classList.add('hidden'); 
@@ -875,7 +756,7 @@
         resetAnimatronics(); updateAnimatronicVisuals(); clearPhoneCall(); isCallMuted = false;
         gameIntervals.forEach(clearInterval); gameIntervals = [];
 
-        if (phoneScripts[currentNight]) setTimeout(() => startPhoneCall(currentNight), 2000);
+        if (phoneScripts[window.currentNight]) setTimeout(() => startPhoneCall(window.currentNight), 2000);
 
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE') return;
@@ -885,80 +766,86 @@
             
             if (Math.floor(hour) >= 7) { triggerWinAnimation(); return; }
 
-            // Lógica de Toxicidade
             if (!isBlackout) {
-                if (isExhaustOn) {
-                    toxicity = Math.max(0, toxicity - 2.5); // Baixa toxicidade
-                } else {
-                    let toxIncrease = isVentBroken ? 1.5 : 0.25; 
-                    toxicity = Math.min(100, toxicity + toxIncrease);
-                }
+                if (isExhaustOn) { toxicity = Math.max(0, toxicity - 2.5); } 
+                else { let toxIncrease = isVentBroken ? 1.5 : 0.25; toxicity = Math.min(100, toxicity + toxIncrease); }
 
-                const toxDisplay = document.getElementById('toxicity-display');
-                toxDisplay.innerText = `Toxicidade: ${Math.floor(toxicity)}%`;
+                const toxDisplay = document.getElementById('toxicity-display'); toxDisplay.innerText = `Toxicidade: ${Math.floor(toxicity)}%`;
 
                 if (toxicity >= 50) {
-                    toxDisplay.style.color = '#f00';
-                    document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, ${(toxicity - 50) / 100})`;
+                    toxDisplay.style.color = '#f00'; document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, ${(toxicity - 50) / 100})`;
                     if (Math.random() < (toxicity / 200)) playHallucination();
                 } else {
-                    toxDisplay.style.color = '#0f0';
-                    document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, 0)`;
+                    toxDisplay.style.color = '#0f0'; document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, 0)`;
                 }
-
                 if (toxicity >= 100) { triggerIntoxicationGameOver(); return; }
             }
 
             if (!isTaskActive && !isBlackout) {
-                taskTimer--;
-                if (taskTimer <= 0) triggerTaskAlert();
+                taskTimer--; if (taskTimer <= 0) triggerTaskAlert();
             } else if (isTaskActive && !isBlackout) {
                 taskFailTimer--;
                 if (isPCUp) {
                     const statusEl = document.getElementById('pc-status');
                     if (statusEl) statusEl.innerText = `ALERTA: PEDIDO PENDENTE! TEMPO: ${taskFailTimer}s`;
                 }
-                if (taskFailTimer <= 0) { power = 0; if (isPCUp) closePC(); }
+                if (taskFailTimer <= 0) { power = 0; if (isPCUp) window.closePC(); }
             }
 
             if (power > 0) {
                 let drain = 0.05; 
-                if (currentNight >= 4) drain += 0.02; if (currentNight >= 6) drain += 0.03; 
+                if (window.currentNight >= 4) drain += 0.02; if (window.currentNight >= 6) drain += 0.03; 
                 if (isLeftDoorClosed) drain += 0.15; if (isRightDoorClosed) drain += 0.15;
                 if (isLeftLightOn) drain += 0.1; if (isRightLightOn) drain += 0.1;
-                if (isMonitorUp) drain += 0.15;
-                if (isTaskActive) drain += 0.2; 
-                if (isExhaustOn) drain += 0.1;
+                if (isMonitorUp) drain += 0.15; if (isTaskActive) drain += 0.2; if (isExhaustOn) drain += 0.1;
 
-                power -= drain;
-                document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+                power -= drain; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
             } else if (!isBlackout) triggerBlackout();
         }, 1000));
 
         gameIntervals.push(setInterval(runAILoop, 5000));
         gameIntervals.push(setInterval(checkDoorsTiming, 1000));
+        
+        gameIntervals.push(setInterval(() => {
+            if (gameState !== 'OFFICE' || power <= 0 || isBlackout || foxyTriggered) return;
+            let foxyDrain = 0.2 + (window.currentNight * 0.1);
+            box1B -= foxyDrain; box1C -= foxyDrain;
+
+            if (isMonitorUp && isWinding) {
+                if (currentCam === 'CAM1B') box1B = Math.min(100, box1B + 3);
+                if (currentCam === 'CAM1C') box1C = Math.min(100, box1C + 3);
+            }
+
+            if (box1B <= 0 || box1C <= 0) { foxyTriggered = true; triggerJumpscare('foxy'); }
+
+            if (isMonitorUp && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
+                let currentBox = currentCam === 'CAM1B' ? box1B : box1C;
+                let fill = document.getElementById('wind-up-bar-fill');
+                if (fill) {
+                    fill.style.width = currentBox + '%';
+                    if (currentBox > 50) fill.style.background = '#0f0'; else if (currentBox > 20) fill.style.background = '#ff0'; else fill.style.background = '#f00';
+                }
+            }
+
+            let data = animatronics['foxy'];
+            if (box1C > 66) data.state = 0; else if (box1C > 33) data.state = 1; else data.state = 2;
+            updateAnimatronicVisuals();
+        }, 100));
     }
 
-    // --- TAREFAS (PEDIDOS) E PC ---
+    // --- MÉTODOS GLOBAIS DE UI (REGIS OS E OFÍCIO) ---
+    window.startWinding = function(e) { if(e) e.preventDefault(); isWinding = true; };
+    window.stopWinding = function(e) { if(e) e.preventDefault(); isWinding = false; };
+
     function triggerTaskAlert() {
         if (gameState !== 'OFFICE' || isBlackout) return;
-        isTaskActive = true; 
-        taskFailTimer = 20; 
-        isBaking = false;
-        
-        currentOrderClient = ghostVictims[Math.floor(Math.random() * ghostVictims.length)];
-        currentOrderDesc = ghostPizzas[Math.floor(Math.random() * ghostPizzas.length)];
-        
-        if (crtScreenMesh) crtScreenMesh.material.color.setHex(0xff0000); 
-        playBuzzer();
-        if (isMonitorUp) {
-            document.getElementById('static-overlay').style.opacity = '0.9';
-            document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO";
-            document.getElementById('camera-name').classList.add('pc-alert');
-        }
+        isTaskActive = true; taskFailTimer = 20; isBaking = false;
+        currentOrderClient = ghostVictims[Math.floor(Math.random() * ghostVictims.length)]; currentOrderDesc = ghostPizzas[Math.floor(Math.random() * ghostPizzas.length)];
+        if (crtScreenMesh) crtScreenMesh.material.color.setHex(0xff0000); playBuzzer();
+        if (isMonitorUp) { document.getElementById('static-overlay').style.opacity = '0.9'; document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO"; document.getElementById('camera-name').classList.add('pc-alert'); }
     }
 
-    function openPC() {
+    window.openPC = function() {
         if (gameState !== 'OFFICE' || isMonitorUp || isBlackout) return;
         isPCUp = true; document.getElementById('pc-ui').classList.remove('hidden'); document.getElementById('office-panels').classList.add('hidden');
         
@@ -970,88 +857,59 @@
         if (isVentBroken) { ventText.innerText = "VENTILAÇÃO: OFFLINE (ERRO)"; ventText.classList.add('pc-alert'); ventFixBtn.classList.remove('hidden'); }
         else { ventText.innerText = "VENTILAÇÃO: ONLINE"; ventText.classList.remove('pc-alert'); ventFixBtn.classList.add('hidden'); }
 
-        const statusEl = document.getElementById('pc-status'); 
-        const orderBox = document.getElementById('order-box');
-        const idleMsg = document.getElementById('pc-idle-msg');
+        const statusEl = document.getElementById('pc-status'); const orderBox = document.getElementById('order-box'); const idleMsg = document.getElementById('pc-idle-msg');
 
         if (isTaskActive) {
             statusEl.innerText = `ALERTA: PEDIDO PENDENTE! TEMPO: ${taskFailTimer}s`; statusEl.className = "pc-alert";
-            idleMsg.classList.add('hidden');
-            orderBox.classList.remove('hidden');
-            
-            document.getElementById('order-client').innerText = currentOrderClient;
-            document.getElementById('order-desc').innerText = currentOrderDesc;
-            
-            const btnAssar = document.getElementById('btn-assar');
-            const btnEntregar = document.getElementById('btn-entregar');
-            
-            if (isBaking) {
-                btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
-                btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
-            } else {
-                btnAssar.disabled = false; btnAssar.style.opacity = '1'; btnAssar.innerText = "ASSAR (-2%)";
-                btnEntregar.disabled = true; btnEntregar.style.opacity = '0.5';
-            }
+            idleMsg.classList.add('hidden'); orderBox.classList.remove('hidden');
+            document.getElementById('order-client').innerText = currentOrderClient; document.getElementById('order-desc').innerText = currentOrderDesc;
+            const btnAssar = document.getElementById('btn-assar'); const btnEntregar = document.getElementById('btn-entregar');
+            if (isBaking) { btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO..."; btnEntregar.disabled = false; btnEntregar.style.opacity = '1'; } 
+            else { btnAssar.disabled = false; btnAssar.style.opacity = '1'; btnAssar.innerText = "ASSAR (-2%)"; btnEntregar.disabled = true; btnEntregar.style.opacity = '0.5'; }
         } else {
-            statusEl.innerText = "SISTEMA OK - AGUARDANDO PEDIDOS"; statusEl.className = "";
-            orderBox.classList.add('hidden');
-            idleMsg.classList.remove('hidden');
+            statusEl.innerText = "SISTEMA OK - AGUARDANDO PEDIDOS"; statusEl.className = ""; orderBox.classList.add('hidden'); idleMsg.classList.remove('hidden');
         }
-    }
+    };
 
-    function bakeOrder() {
-        if (power < 2) return;
-        power -= 2;
-        document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+    window.bakeOrder = function() {
+        if (power < 2) return; power -= 2; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
         isBaking = true;
-        
-        const btnAssar = document.getElementById('btn-assar');
-        const btnEntregar = document.getElementById('btn-entregar');
+        const btnAssar = document.getElementById('btn-assar'); const btnEntregar = document.getElementById('btn-entregar');
         btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
         btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
-        
         playTerminalBeep(300);
-    }
+    };
 
-    function deliverOrder() {
-        if (power < 2) return;
-        power -= 2;
-        document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
-        playTerminalBeep(600);
-        completeTask();
-    }
+    window.deliverOrder = function() {
+        if (power < 2) return; power -= 2; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+        playTerminalBeep(600); completeTask();
+    };
 
     function completeTask() {
         isTaskActive = false;
-        let taskDelay = 35; if (currentNight === 2) taskDelay = 30; else if (currentNight === 3) taskDelay = 25; else if (currentNight >= 4) taskDelay = 20;
+        let taskDelay = 35; if (window.currentNight === 2) taskDelay = 30; else if (window.currentNight === 3) taskDelay = 25; else if (window.currentNight >= 4) taskDelay = 20;
         taskTimer = taskDelay + Math.random() * 10; 
-        
         const statusEl = document.getElementById('pc-status'); statusEl.innerText = "SISTEMA OK - PEDIDO ENTREGUE"; statusEl.className = "";
-        document.getElementById('order-box').classList.add('hidden');
-        document.getElementById('pc-idle-msg').classList.remove('hidden');
-        
+        document.getElementById('order-box').classList.add('hidden'); document.getElementById('pc-idle-msg').classList.remove('hidden');
         if (crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211); 
         document.getElementById('camera-name').classList.remove('pc-alert');
         if(isMonitorUp) { document.getElementById('static-overlay').style.opacity = '0.15'; document.getElementById('camera-name').innerText = camData[currentCam].name; }
-        
-        setTimeout(() => { if(isPCUp) closePC(); }, 1000);
+        setTimeout(() => { if(isPCUp) window.closePC(); }, 1000);
     }
 
-    function closePC() { isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); }
+    window.closePC = function() { isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); };
 
     function playTerminalBeep(freq) {
         if (masterVolume <= 0) return;
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
             osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
             gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
             osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
         } catch(e) {}
     }
 
-    // --- MECÂNICAS DE ÁUDIO E VENTILAÇÃO ---
-    function playAudioSystem() {
+    window.playAudioSystem = function() {
         if (isAudioBroken || power <= 0) return;
         playChildLaugh();
         if (animatronics.freddy.loc !== 'CAM1A') {
@@ -1059,65 +917,36 @@
             updateAnimatronicVisuals(); triggerStaticPulse();
         }
         if (Math.random() < 0.25) breakAudioSystem();
-    }
+    };
 
-    function breakAudioSystem() {
-        isAudioBroken = true;
-        const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.add('broken'); btn.innerText = "[ ÁUDIO OFFLINE ]"; }
-        playBuzzer();
-    }
+    function breakAudioSystem() { isAudioBroken = true; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.add('broken'); btn.innerText = "[ ÁUDIO OFFLINE ]"; } playBuzzer(); }
+    window.fixAudio = function() { isAudioBroken = false; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; } if (isPCUp) window.openPC(); };
+    function breakVentSystem() { isVentBroken = true; playBuzzer(); }
+    window.fixVent = function() { isVentBroken = false; if (isPCUp) window.openPC(); };
 
-    function fixAudio() {
-        isAudioBroken = false;
-        const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; }
-        if (isPCUp) openPC(); 
-    }
-
-    function breakVentSystem() {
-        isVentBroken = true;
-        playBuzzer();
-    }
-
-    function fixVent() {
-        isVentBroken = false;
-        if (isPCUp) openPC();
-    }
-
-    function toggleExhaust() {
+    window.toggleExhaust = function() {
         if (power <= 0) return;
-        isExhaustOn = !isExhaustOn;
-        const btn = document.getElementById('exhaust-btn');
-        if (isExhaustOn) {
-            btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR";
-            playExhaustSound();
-        } else {
-            btn.classList.remove('active'); btn.innerText = "LIGAR EXAUSTOR";
-            stopExhaustSound();
-        }
-    }
+        isExhaustOn = !isExhaustOn; const btn = document.getElementById('exhaust-btn');
+        if (isExhaustOn) { btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR"; playExhaustSound(); } 
+        else { btn.classList.remove('active'); btn.innerText = "LIGAR EXAUSTOR"; stopExhaustSound(); }
+    };
 
     function playExhaustSound() {
         if (masterVolume <= 0 || exhaustAudioCtx) return;
         try {
-            exhaustAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            exhaustOsc = exhaustAudioCtx.createOscillator(); const gain = exhaustAudioCtx.createGain();
+            exhaustAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); exhaustOsc = exhaustAudioCtx.createOscillator(); const gain = exhaustAudioCtx.createGain();
             exhaustOsc.type = 'square'; exhaustOsc.frequency.setValueAtTime(40, exhaustAudioCtx.currentTime);
             const filter = exhaustAudioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 200;
             gain.gain.setValueAtTime(0.1 * masterVolume, exhaustAudioCtx.currentTime);
-            exhaustOsc.connect(filter); filter.connect(gain); gain.connect(exhaustAudioCtx.destination);
-            exhaustOsc.start();
+            exhaustOsc.connect(filter); filter.connect(gain); gain.connect(exhaustAudioCtx.destination); exhaustOsc.start();
         } catch(e) {}
     }
-
-    function stopExhaustSound() {
-        if (exhaustAudioCtx) { exhaustAudioCtx.close(); exhaustAudioCtx = null; exhaustOsc = null; }
-    }
+    function stopExhaustSound() { if (exhaustAudioCtx) { exhaustAudioCtx.close(); exhaustAudioCtx = null; exhaustOsc = null; } }
 
     function playChildLaugh() {
         if (masterVolume <= 0) return;
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle';
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle';
             osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.4);
             gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.5);
             osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5);
@@ -1127,10 +956,8 @@
     function playBuzzer() {
         if (masterVolume <= 0) return;
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(150, ctx.currentTime);
-            gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8);
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, ctx.currentTime); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8);
             osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.8);
         } catch(e){}
     }
@@ -1138,12 +965,9 @@
     function playHallucination() {
         if (masterVolume <= 0) return;
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
-            osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = Math.random() > 0.5 ? 'sine' : 'triangle'; osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime);
+            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
             osc.connect(gain); gain.connect(ctx.destination);
             osc.start(); osc.stop(ctx.currentTime + 1);
         } catch(e) {}
@@ -1153,21 +977,14 @@
         if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout) return;
         mouseVec.x = (clientX / window.innerWidth) * 2 - 1; mouseVec.y = -(clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouseVec, camera);
-        if (crtScreenMesh) { const intersects = raycaster.intersectObject(crtScreenMesh); if (intersects.length > 0) openPC(); }
+        if (crtScreenMesh) { const intersects = raycaster.intersectObject(crtScreenMesh); if (intersects.length > 0) window.openPC(); }
     }
 
     window.addEventListener('click', (e) => handleRaycast(e.clientX, e.clientY));
-    
-    const officeTouch = (e) => { 
-        if(gameState === 'OFFICE' && e.touches.length > 0) {
-            handleRaycast(e.touches[0].clientX, e.touches[0].clientY); 
-        }
-    };
+    const officeTouch = (e) => { if(gameState === 'OFFICE' && e.touches.length > 0) { handleRaycast(e.touches[0].clientX, e.touches[0].clientY); } };
     window.addEventListener('touchstart', officeTouch, {passive: true});
 
-
-    // --- PHONE GUY ---
-    function startPhoneCall(night) {
+    window.startPhoneCall = function(night) {
         if (gameState !== 'OFFICE' || isCallMuted) return;
         const lines = phoneScripts[night]; if (!lines) return;
         const subBox = document.getElementById('phone-subtitles'); const muteBtn = document.getElementById('mute-btn');
@@ -1189,9 +1006,9 @@
             };
             phoneTimeouts.push(setTimeout(playNextLine, 1000));
         }, 4000));
-    }
+    };
 
-    function muteCall() { isCallMuted = true; clearPhoneCall(); }
+    window.muteCall = function() { isCallMuted = true; clearPhoneCall(); };
     function clearPhoneCall() {
         phoneTimeouts.forEach(clearTimeout); phoneTimeouts = [];
         document.getElementById('phone-subtitles').style.display = 'none'; document.getElementById('mute-btn').style.display = 'none';
@@ -1202,8 +1019,7 @@
     function playPhoneRing() {
         if (masterVolume <= 0) return;
         try {
-            phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square';
+            phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square';
             osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.1);
             osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 0.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.3);
             gain.gain.setValueAtTime(0, phoneAudioCtx.currentTime); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 0.4, 0.05);
@@ -1226,16 +1042,14 @@
         } catch (e) {}
     }
 
-    // --- ANIMAÇÕES E IA ---
     function triggerWinAnimation() {
         gameState = 'WIN'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
-        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
+        if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
         
-        if (currentNight >= 7) {
+        if (window.currentNight >= 7) {
             document.getElementById('gameover-screen').innerHTML = '<h1 style="color:#0f0;">VOCÊ SOBREVIVEU</h1><div style="margin-top:20px; font-size:1.5rem;">O Purgatório Terminou.</div><div style="position: absolute; bottom: 20px; color:#aaa; cursor:pointer;" onclick="location.reload()">Toque para voltar ao menu</div>';
             document.getElementById('gameover-screen').classList.remove('hidden');
-            saveGame(1); 
-            return;
+            saveGame(1); return;
         }
 
         const winScreen = document.getElementById('win-screen-7am');
@@ -1254,58 +1068,40 @@
         }, 500);
         setTimeout(() => { d6.classList.add('fade-out'); d7.classList.add('center-up'); }, 3500);
         setTimeout(() => {
-            currentNight++;
+            window.currentNight++;
             const continueBtn = document.getElementById('continue-btn');
-            if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
-            saveGame(currentNight);
-            showNewspaperForNight(currentNight);
+            if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
+            saveGame(window.currentNight); showNewspaperForNight(window.currentNight);
         }, 6500);
     }
 
     function runAILoop() {
         if (gameState !== 'OFFICE' || power <= 0) return;
         let h = Math.floor(hour); 
-        
-        let baseDiff = (currentNight - 1) * 3; 
-        if (currentNight >= 7) baseDiff = 20;
-
+        let baseDiff = (window.currentNight - 1) * 3; if (window.currentNight >= 7) baseDiff = 20;
         let exhaustPenalty = isExhaustOn ? 5 : 0; 
 
-        if (currentNight === 1) {
+        if (window.currentNight === 1) {
             animatronics.bonnie.level = Math.floor(h/2); 
             animatronics.chica.level = Math.max(0, Math.floor(h/2) - 1); 
-            animatronics.foxy.level = 0; 
             animatronics.freddy.level = 0 + Math.floor(exhaustPenalty/2); 
         } else {
             animatronics.bonnie.level = baseDiff + Math.floor(h/2); 
             animatronics.chica.level = Math.max(0, baseDiff - 2) + Math.floor(h/2); 
-            animatronics.foxy.level = Math.max(0, baseDiff - 3) + Math.floor(h/3);
             animatronics.freddy.level = Math.max(0, baseDiff - 1) + Math.floor(h/2) + exhaustPenalty;
         }
         
-        ['bonnie', 'chica', 'foxy', 'freddy'].forEach(anim => { let ai = animatronics[anim].level; if (ai > 0 && Math.random() * 25 <= ai) moveAnimatronic(anim); });
+        ['bonnie', 'chica', 'freddy'].forEach(anim => { let ai = animatronics[anim].level; if (ai > 0 && Math.random() * 25 <= ai) moveAnimatronic(anim); });
 
-        if (Math.random() < 0.05 && !isAudioBroken && currentNight > 1) { breakAudioSystem(); }
-        if (Math.random() < 0.08 && !isVentBroken && currentNight > 2) { breakVentSystem(); }
+        if (Math.random() < 0.05 && !isAudioBroken && window.currentNight > 1) { breakAudioSystem(); }
+        if (Math.random() < 0.08 && !isVentBroken && window.currentNight > 2) { breakVentSystem(); }
     }
 
     function moveAnimatronic(anim) {
         let data = animatronics[anim];
-        if (anim === 'foxy') {
-            if (isMonitorUp && currentCam === 'CAM1C') return;
-            if (data.state < 3) data.state++;
-            if (data.state === 3) {
-                data.loc = 'LeftDoor';
-                setTimeout(() => {
-                    if (gameState === 'OFFICE' && !isLeftDoorClosed) triggerJumpscare('foxy');
-                    else if (isLeftDoorClosed) { data.state = 0; data.loc = 'CAM1C'; power = Math.max(0, power - 5); updateAnimatronicVisuals(); }
-                }, 5000); 
-            }
-        } else {
-            if (data.loc === 'LeftDoor' || data.loc === 'RightDoor') return; 
-            let currentIndex = data.path.indexOf(data.loc);
-            if (currentIndex < data.path.length - 1) data.loc = data.path[currentIndex + 1];
-        }
+        if (data.loc === 'LeftDoor' || data.loc === 'RightDoor') return; 
+        let currentIndex = data.path.indexOf(data.loc);
+        if (currentIndex < data.path.length - 1) data.loc = data.path[currentIndex + 1];
         updateAnimatronicVisuals(); triggerStaticPulse();
     }
 
@@ -1319,9 +1115,9 @@
             if (data.loc === doorLoc) {
                 if (isDoorClosed) {
                     data.doorWaitTime++;
-                    if (data.doorWaitTime >= 5) { data.loc = 'CAM1B'; data.doorWaitTime = 0; data.attackTimer = 0; updateAnimatronicVisuals(); }
+                    if (data.doorWaitTime >= 5) { data.loc = 'CAM1B'; data.doorWaitTime = 0; updateAnimatronicVisuals(); }
                 } else {
-                    data.doorWaitTime = 0; data.attackTimer++;
+                    data.attackTimer++;
                     if (data.attackTimer >= 5) triggerJumpscare(anim);
                 }
             } else { data.doorWaitTime = 0; data.attackTimer = 0; }
@@ -1329,8 +1125,8 @@
     }
 
     function triggerIntoxicationGameOver() {
-        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
-        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
         document.getElementById('game-container').style.filter = 'sepia(1) hue-rotate(90deg) saturate(5)';
         playScreech();
         setTimeout(() => {
@@ -1342,12 +1138,11 @@
 
     function triggerJumpscare(anim) {
         if (gameState !== 'OFFICE') return;
-        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
-        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden'); document.getElementById('game-container').classList.add('jumpscare-shake');
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden'); document.getElementById('game-container').classList.add('jumpscare-shake');
         
-        camera.rotation.set(0, 0, 0); let mesh = animatronics[anim].mesh;
-        mesh.visible = true; 
-        if (anim === 'freddy') { mesh.position.set(0, 0.5, -2.0); mesh.rotation.set(0.3, 0, 0); } 
+        camera.rotation.set(0, 0, 0); let mesh = animatronics[anim].mesh; mesh.visible = true; 
+        if (anim === 'freddy' || anim === 'foxy') { mesh.position.set(0, 0.5, -2.0); mesh.rotation.set(0.3, 0, 0); } 
         else { mesh.position.set(0, -5.0, -2.5); mesh.rotation.set(0, 0, 0); }
         playScreech();
 
@@ -1355,9 +1150,9 @@
     }
 
     function triggerBlackout() {
-        isBlackout = true; clearPhoneCall(); stopExhaustSound();
-        if(isMonitorUp) toggleMonitor(); document.getElementById('monitor-btn').style.display = 'none';
-        if (isLeftDoorClosed) toggleDoor('left'); if (isRightDoorClosed) toggleDoor('right');
+        isBlackout = true; clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        if(isMonitorUp) window.toggleMonitor(); document.getElementById('monitor-btn').style.display = 'none';
+        if (isLeftDoorClosed) window.toggleDoor('left'); if (isRightDoorClosed) window.toggleDoor('right');
         isLeftLightOn = false; isRightLightOn = false; document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
         ambientLight.intensity = 0.02; mainOfficeLight.intensity = 0; leftLight.intensity = 0; rightLight.intensity = 0;
         updateAnimatronicVisuals();
@@ -1375,7 +1170,6 @@
         } catch(e) {}
     }
 
-    // --- TEXTURAS E MODELOS 3D AVANÇADOS ---
     function resetAnimatronics() {
         hour = 0; power = 100;
         document.getElementById('time-display').innerText = '12 AM'; document.getElementById('power-display').innerText = 'Energia: 100%';
@@ -1389,12 +1183,13 @@
         leftDoorTargetY = 22.5; rightDoorTargetY = 22.5;
         document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
         if (leftLight) leftLight.intensity = 0; if (rightLight) rightLight.intensity = 0;
+        
         animatronics.bonnie.loc = 'CAM1A'; animatronics.chica.loc = 'CAM1A'; animatronics.freddy.loc = 'CAM1A';
         animatronics.bonnie.doorWaitTime = 0; animatronics.chica.doorWaitTime = 0; animatronics.bonnie.attackTimer = 0; animatronics.chica.attackTimer = 0;
-        animatronics.foxy.loc = 'CAM1C'; animatronics.foxy.state = 0;
+        animatronics.foxy.state = 0; box1B = 100; box1C = 100; isWinding = false; foxyTriggered = false;
         
         isTaskActive = false; isPCUp = false; 
-        let taskDelay = 40; if(currentNight === 2) taskDelay = 35; else if (currentNight === 3) taskDelay = 30; else if (currentNight >= 4) taskDelay = 20;
+        let taskDelay = 40; if(window.currentNight === 2) taskDelay = 35; else if (window.currentNight === 3) taskDelay = 30; else if (window.currentNight >= 4) taskDelay = 20;
         taskTimer = taskDelay; taskFailTimer = 20;
         
         isAudioBroken = false;
@@ -1402,6 +1197,7 @@
 
         if(crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211);
         document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('camera-name').classList.remove('pc-alert');
+        document.getElementById('wind-up-container').classList.add('hidden');
         isBlackout = false; document.getElementById('monitor-btn').style.display = 'flex';
     }
 
@@ -1416,14 +1212,12 @@
             } else if(data.mesh) data.mesh.visible = false;
         });
         
-        let fData = animatronics.foxy; let fRef = fData.state < 3 ? posData.foxy[`CAM1C_${fData.state}`] : posData.foxy['LeftDoor'];
-        if(fRef && fData.mesh) { 
-            fData.mesh.position.set(...fRef.p); fData.mesh.rotation.y = fRef.r; 
-            if (fData.state >= 3) fData.mesh.visible = isLeftLightOn; else fData.mesh.visible = true;
-        }
+        let fData = animatronics.foxy; let fRef = posData.foxy[`CAM1C_${fData.state}`];
+        if(fRef && fData.mesh) { fData.mesh.position.set(...fRef.p); fData.mesh.rotation.y = fRef.r; fData.mesh.visible = true; }
         if(coveCurtainL && coveCurtainR) { coveCurtainL.position.x = -51 - (fData.state * 1.5); coveCurtainR.position.x = -39 + (fData.state * 1.5); }
     }
 
+    // --- SETUP 3D ---
     function createInfectedSkin(hexColor) {
         const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256; const ctx = canvas.getContext('2d');
         ctx.fillStyle = hexColor; ctx.fillRect(0, 0, 256, 256);
@@ -1732,7 +1526,7 @@
         animate();
     }
 
-    function toggleMonitor() {
+    window.toggleMonitor = function() {
         if (power <= 0 || isPCUp) return; 
         
         if (!isMonitorUp) {
@@ -1743,35 +1537,50 @@
         isMonitorUp = !isMonitorUp;
         document.getElementById('camera-ui').classList.toggle('hidden'); document.getElementById('office-panels').classList.toggle('hidden');
         if (isMonitorUp) { 
-            switchCam(currentCam); mainOfficeLight.intensity = 0; cctvLight.intensity = 1.5; triggerStaticPulse(); 
+            window.switchCam(currentCam); mainOfficeLight.intensity = 0; cctvLight.intensity = 1.5; triggerStaticPulse(); 
             if (isTaskActive) {
                 document.getElementById('static-overlay').style.opacity = '0.9';
                 document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO";
                 document.getElementById('camera-name').classList.add('pc-alert');
             }
         } 
-        else { camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; }
-    }
+        else { 
+            camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; 
+            isWinding = false;
+        }
+    };
 
-    function switchCam(camId) {
+    window.switchCam = function(camId) {
         if (!isMonitorUp || power <= 0) return;
+        isWinding = false;
+        
         currentCam = camId; document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+camId).classList.add('active');
         let cD = camData[camId]; camera.position.set(...cD.p); camera.rotation.set(cD.rx, cD.ry, 0); cctvLight.position.set(cD.p[0], cD.p[1]+2, cD.p[2]);
         
-        if (camId === 'CAM1A') document.getElementById('audio-btn').classList.remove('hidden');
-        else document.getElementById('audio-btn').classList.add('hidden');
+        if (camId === 'CAM1A') {
+            document.getElementById('audio-btn').classList.remove('hidden');
+            document.getElementById('wind-up-container').classList.add('hidden');
+        } else if (camId === 'CAM1B' || camId === 'CAM1C') {
+            document.getElementById('audio-btn').classList.add('hidden');
+            document.getElementById('wind-up-container').classList.remove('hidden');
+            document.getElementById('wind-up-title').innerText = "CAIXA DE MÚSICA (" + camId + ")";
+        } else {
+            document.getElementById('audio-btn').classList.add('hidden');
+            document.getElementById('wind-up-container').classList.add('hidden');
+        }
 
         if(!isTaskActive) triggerStaticPulse();
-    }
+    };
+
     function triggerStaticPulse() { const s = document.getElementById('static-overlay'); if(s) { s.style.opacity = '0.8'; setTimeout(() => s.style.opacity = '0.15', 150); } }
 
-    function toggleDoor(side) {
+    window.toggleDoor = function(side) {
         if (power <= 0) return;
         if (side === 'left') { isLeftDoorClosed = !isLeftDoorClosed; document.getElementById('l-door').classList.toggle('active'); leftDoorTargetY = isLeftDoorClosed ? 7.5 : 22.5; } 
         else { isRightDoorClosed = !isRightDoorClosed; document.getElementById('r-door').classList.toggle('active'); rightDoorTargetY = isRightDoorClosed ? 7.5 : 22.5; }
-    }
+    };
     
-    function toggleLight(side) {
+    window.toggleLight = function(side) {
         if (power <= 0) return;
         if (side === 'left') { 
             isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); leftLight.intensity = isLeftLightOn ? 3.0 : 0; 
@@ -1782,7 +1591,7 @@
             if(isRightLightOn){isLeftLightOn=false; document.getElementById('l-light').classList.remove('active'); leftLight.intensity=0;} 
         }
         updateAnimatronicVisuals();
-    }
+    };
 
     window.addEventListener('mousemove', (e) => { if(gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.clientX/window.innerWidth)) * Math.PI; });
     window.addEventListener('touchmove', (e) => { if(e.touches.length>0 && gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.touches[0].clientX/window.innerWidth)) * Math.PI; }, {passive: false});
