@@ -82,7 +82,7 @@
 
         /* --- MINIGAMES RETRO --- */
         #minigame-screen { background-color: #000; z-index: 65; }
-        #mg-canvas { width: 100%; height: 100%; image-rendering: pixelated; object-fit: contain; }
+        #mg-canvas { width: 100%; height: 100%; image-rendering: pixelated; object-fit: contain; display: block; touch-action: none; }
         #mg-ui { position: absolute; top: 10%; width: 100%; text-align: center; pointer-events: none; }
         #mg-title { color: #f00; font-family: 'Courier New', monospace; font-size: clamp(1.5rem, 5vw, 3rem); text-shadow: 2px 2px #000; margin-bottom: 10px; }
         #mg-timer { color: #fff; font-family: 'Courier New', monospace; font-size: clamp(1.2rem, 4vw, 2rem); }
@@ -609,6 +609,7 @@
         if(gameState !== 'NEWSPAPER') return;
         document.getElementById('newspaper-screen').classList.add('hidden');
         
+        // Decidir se há minigame. Noite 7 não tem minigame, vai direto.
         if (currentNight < 7) {
             initMinigame();
         } else {
@@ -641,11 +642,24 @@
         };
         resizeMg(); window.addEventListener('resize', resizeMg);
 
+        // Previne o scrolling no telemóvel enquanto se joga
+        const onTouchMove = (e) => { 
+            e.preventDefault(); 
+            mgMouseX = e.touches[0].clientX; 
+            mgMouseY = e.touches[0].clientY; 
+        };
+        const onTouchStart = (e) => { 
+            e.preventDefault(); 
+            mgIsDown = true; 
+            mgMouseX = e.touches[0].clientX; 
+            mgMouseY = e.touches[0].clientY; 
+        };
+
         mgCanvas.addEventListener('mousemove', (e) => { mgMouseX = e.clientX; mgMouseY = e.clientY; });
         mgCanvas.addEventListener('mousedown', (e) => { mgIsDown = true; mgMouseX = e.clientX; mgMouseY = e.clientY; });
         mgCanvas.addEventListener('mouseup', () => { mgIsDown = false; });
-        mgCanvas.addEventListener('touchmove', (e) => { mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; }, {passive: false});
-        mgCanvas.addEventListener('touchstart', (e) => { mgIsDown = true; mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; });
+        mgCanvas.addEventListener('touchmove', onTouchMove, {passive: false});
+        mgCanvas.addEventListener('touchstart', onTouchStart, {passive: false});
         mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
 
         if (currentNight % 2 !== 0) {
@@ -671,7 +685,15 @@
         document.getElementById('mg-title').innerText = "PREPARE A PIZZA";
         document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
         
-        mgState.pizza = { x: window.innerWidth/2, y: window.innerHeight/2, r: Math.min(window.innerWidth, window.innerHeight) * 0.3 };
+        let isMobile = window.innerWidth < 768;
+        
+        // No mobile a pizza fica mais para baixo para deixar espaço para os ingredientes em cima
+        mgState.pizza = { 
+            x: window.innerWidth / 2, 
+            y: window.innerHeight * (isMobile ? 0.65 : 0.5), 
+            r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) 
+        };
+        
         mgState.elements = [];
 
         let numIng = currentNight === 1 ? 6 : (currentNight === 3 ? 8 : 10);
@@ -681,12 +703,22 @@
 
         for(let i=0; i<numIng; i++) {
             let t = types[Math.floor(Math.random() * types.length)];
-            let x = Math.random() > 0.5 ? Math.random() * (mgState.pizza.x - mgState.pizza.r - 50) : mgState.pizza.x + mgState.pizza.r + 50 + Math.random() * 100;
-            let y = 100 + Math.random() * (window.innerHeight - 200);
+            let x, y;
             
-            x = Math.max(20, Math.min(window.innerWidth - 20, x));
+            if (isMobile) {
+                // Ingredientes na parte de cima do ecrã
+                x = 40 + Math.random() * (window.innerWidth - 80);
+                y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25);
+            } else {
+                // Ingredientes nos lados
+                x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80);
+                y = 100 + Math.random() * (window.innerHeight - 200);
+            }
+            
+            x = Math.max(30, Math.min(window.innerWidth - 30, x));
+            let r = isMobile ? 20 : 25;
 
-            mgState.elements.push({ id: i, type: t, x: x, y: y, r: 25, isDragging: false, placed: false });
+            mgState.elements.push({ id: i, type: t, x: x, y: y, r: r, isDragging: false, placed: false });
         }
     }
 
@@ -696,15 +728,16 @@
         document.getElementById('mg-title').innerText = "LIMPE O PORÃO";
         document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
         
-        mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: 30 };
+        let isMobile = window.innerWidth < 768;
+        mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: isMobile ? 25 : 30 };
         mgState.elements = []; 
 
         let numStains = 5 + currentNight;
         for(let i=0; i<numStains; i++) {
             mgState.elements.push({
-                x: 50 + Math.random() * (window.innerWidth - 100),
+                x: 40 + Math.random() * (window.innerWidth - 80),
                 y: 100 + Math.random() * (window.innerHeight - 150),
-                r: 30 + Math.random() * 30,
+                r: (isMobile ? 20 : 30) + Math.random() * 30,
                 color: Math.random() > 0.5 ? '#800' : '#080' 
             });
         }
@@ -731,7 +764,7 @@
 
                 if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) {
                     let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y);
-                    if (dist < el.r * 2) el.isDragging = true;
+                    if (dist < el.r * 2.5) el.isDragging = true; // Hitbox um pouco maior para toque
                 }
 
                 if (el.isDragging) {
@@ -749,7 +782,7 @@
                 if (el.type === 'pep') {
                     mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
                 } else if (el.type === 'cheese') {
-                    mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - 15, el.y - 15, 30, 30);
+                    mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2);
                 } else if (el.type === 'eye') {
                     mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
                     mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill();
@@ -768,8 +801,8 @@
             for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
 
             if (mgIsDown || mgMouseX !== 0) { 
-                mgState.player.x += (mgMouseX - mgState.player.x) * 0.1;
-                mgState.player.y += (mgMouseY - mgState.player.y) * 0.1;
+                mgState.player.x += (mgMouseX - mgState.player.x) * 0.15;
+                mgState.player.y += (mgMouseY - mgState.player.y) * 0.15;
             }
 
             let anyLeft = false;
@@ -787,7 +820,7 @@
                 }
             }
 
-            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - 30, mgState.player.y - 10, 60, 20); 
+            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); 
             mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); 
 
             if (!anyLeft) endMinigame(true);
@@ -1060,7 +1093,14 @@
     }
 
     window.addEventListener('click', (e) => handleRaycast(e.clientX, e.clientY));
-    window.addEventListener('touchstart', (e) => { if(e.touches.length > 0) handleRaycast(e.touches[0].clientX, e.touches[0].clientY); });
+    
+    // Ajustado o event listener de toque para o ecrã 3D sem quebrar o canvas
+    const officeTouch = (e) => { 
+        if(gameState === 'OFFICE' && e.touches.length > 0) {
+            handleRaycast(e.touches[0].clientX, e.touches[0].clientY); 
+        }
+    };
+    window.addEventListener('touchstart', officeTouch, {passive: true});
 
 
     // --- PHONE GUY ---
