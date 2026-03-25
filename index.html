@@ -240,7 +240,7 @@
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
-        <div class="menu-footer">v1.7 - Error Fixed Edition<br>Feito por Haldo/Long</div>
+        <div class="menu-footer">v1.8 - Final Bugfix Edition<br>Feito por Haldo/Long</div>
     </div>
 
     <div id="settings-screen" class="screen hidden">
@@ -427,7 +427,7 @@
     let isExhaustOn = false, isVentBroken = false, exhaustAudioCtx = null, exhaustOsc = null;
     
     let currentOrderClient = "", currentOrderDesc = "", isBaking = false;
-    let box1B = 100, box1C = 100, isWinding = false, foxyTriggered = false;
+    window.box1B = 100; window.box1C = 100; window.isWinding = false; window.foxyTriggered = false;
     let masterVolume = 1.0, isHighQuality = true, confirmReset = false;
 
     // --- GLOBAIS DOS MINIGAMES ---
@@ -442,8 +442,8 @@
     const animatronics = {
         bonnie: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM2A', 'LeftDoor'], doorWaitTime: 0, attackTimer: 0 },
         chica:  { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 },
-        foxy:   { mesh: null, loc: 'CAM1C', state: 0 }, 
-        freddy: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'] }
+        foxy:   { mesh: null, loc: 'CAM1C', state: 0, doorWaitTime: 0, attackTimer: 0 }, 
+        freddy: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 }
     };
 
     const posData = {
@@ -756,7 +756,7 @@
         resetAnimatronics(); updateAnimatronicVisuals(); clearPhoneCall(); isCallMuted = false;
         gameIntervals.forEach(clearInterval); gameIntervals = [];
 
-        if (phoneScripts[window.currentNight]) setTimeout(() => startPhoneCall(window.currentNight), 2000);
+        if (phoneScripts[window.currentNight]) setTimeout(() => window.startPhoneCall(window.currentNight), 2000);
 
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE') return;
@@ -807,19 +807,26 @@
         gameIntervals.push(setInterval(checkDoorsTiming, 1000));
         
         gameIntervals.push(setInterval(() => {
-            if (gameState !== 'OFFICE' || power <= 0 || isBlackout || foxyTriggered) return;
+            if (gameState !== 'OFFICE' || power <= 0 || isBlackout || window.foxyTriggered) return;
             let foxyDrain = 0.2 + (window.currentNight * 0.1);
-            box1B -= foxyDrain; box1C -= foxyDrain;
+            window.box1B -= foxyDrain; window.box1C -= foxyDrain;
 
-            if (isMonitorUp && isWinding) {
-                if (currentCam === 'CAM1B') box1B = Math.min(100, box1B + 3);
-                if (currentCam === 'CAM1C') box1C = Math.min(100, box1C + 3);
+            if (isMonitorUp && window.isWinding) {
+                if (currentCam === 'CAM1B') window.box1B = Math.min(100, window.box1B + 3);
+                if (currentCam === 'CAM1C') window.box1C = Math.min(100, window.box1C + 3);
             }
 
-            if (box1B <= 0 || box1C <= 0) { foxyTriggered = true; triggerJumpscare('foxy'); }
+            if (window.box1B <= 0 || window.box1C <= 0) {
+                window.foxyTriggered = true; 
+                animatronics.foxy.loc = 'LeftDoor'; 
+                animatronics.foxy.doorWaitTime = 0; 
+                animatronics.foxy.attackTimer = 0; 
+                updateAnimatronicVisuals(); 
+                triggerStaticPulse(); 
+            }
 
             if (isMonitorUp && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
-                let currentBox = currentCam === 'CAM1B' ? box1B : box1C;
+                let currentBox = currentCam === 'CAM1B' ? window.box1B : window.box1C;
                 let fill = document.getElementById('wind-up-bar-fill');
                 if (fill) {
                     fill.style.width = currentBox + '%';
@@ -828,14 +835,16 @@
             }
 
             let data = animatronics['foxy'];
-            if (box1C > 66) data.state = 0; else if (box1C > 33) data.state = 1; else data.state = 2;
-            updateAnimatronicVisuals();
+            if (!window.foxyTriggered) {
+                if (window.box1C > 66) data.state = 0; else if (window.box1C > 33) data.state = 1; else data.state = 2;
+                updateAnimatronicVisuals();
+            }
         }, 100));
     }
 
     // --- MÉTODOS GLOBAIS DE UI (REGIS OS E OFÍCIO) ---
-    window.startWinding = function(e) { if(e) e.preventDefault(); isWinding = true; };
-    window.stopWinding = function(e) { if(e) e.preventDefault(); isWinding = false; };
+    window.startWinding = function(e) { if(e) e.preventDefault(); window.isWinding = true; };
+    window.stopWinding = function(e) { if(e) e.preventDefault(); window.isWinding = false; };
 
     function triggerTaskAlert() {
         if (gameState !== 'OFFICE' || isBlackout) return;
@@ -1101,23 +1110,33 @@
         let data = animatronics[anim];
         if (data.loc === 'LeftDoor' || data.loc === 'RightDoor') return; 
         let currentIndex = data.path.indexOf(data.loc);
-        if (currentIndex < data.path.length - 1) data.loc = data.path[currentIndex + 1];
+        if (currentIndex < data.path.length - 1) {
+            data.loc = data.path[currentIndex + 1];
+            if (data.loc === 'LeftDoor' || data.loc === 'RightDoor') { data.attackTimer = 0; data.doorWaitTime = 0; }
+        }
         updateAnimatronicVisuals(); triggerStaticPulse();
     }
 
     function checkDoorsTiming() {
         if (gameState !== 'OFFICE' || power <= 0) return;
-        ['bonnie', 'chica', 'freddy'].forEach(anim => {
+        ['bonnie', 'chica', 'freddy', 'foxy'].forEach(anim => {
             let data = animatronics[anim];
-            let doorLoc = anim === 'bonnie' ? 'LeftDoor' : 'RightDoor';
-            let isDoorClosed = anim === 'bonnie' ? isLeftDoorClosed : isRightDoorClosed;
+            let doorLoc = (anim === 'bonnie' || anim === 'foxy') ? 'LeftDoor' : 'RightDoor';
+            let isDoorClosed = (anim === 'bonnie' || anim === 'foxy') ? isLeftDoorClosed : isRightDoorClosed;
 
             if (data.loc === doorLoc) {
                 if (isDoorClosed) {
                     data.doorWaitTime++;
-                    if (data.doorWaitTime >= 5) { data.loc = 'CAM1B'; data.doorWaitTime = 0; updateAnimatronicVisuals(); }
+                    if (data.doorWaitTime >= 5) {
+                        if (anim === 'foxy') {
+                            data.loc = 'CAM1C'; data.state = 0; window.box1B = 100; window.box1C = 100; window.foxyTriggered = false;
+                        } else {
+                            data.loc = 'CAM1B'; 
+                        }
+                        data.doorWaitTime = 0; data.attackTimer = 0; updateAnimatronicVisuals();
+                    }
                 } else {
-                    data.attackTimer++;
+                    data.doorWaitTime = 0; data.attackTimer++;
                     if (data.attackTimer >= 5) triggerJumpscare(anim);
                 }
             } else { data.doorWaitTime = 0; data.attackTimer = 0; }
@@ -1125,7 +1144,7 @@
     }
 
     function triggerIntoxicationGameOver() {
-        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); window.isWinding = false;
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
         document.getElementById('game-container').style.filter = 'sepia(1) hue-rotate(90deg) saturate(5)';
         playScreech();
@@ -1138,7 +1157,7 @@
 
     function triggerJumpscare(anim) {
         if (gameState !== 'OFFICE') return;
-        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); window.isWinding = false;
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden'); document.getElementById('game-container').classList.add('jumpscare-shake');
         
         camera.rotation.set(0, 0, 0); let mesh = animatronics[anim].mesh; mesh.visible = true; 
@@ -1150,7 +1169,7 @@
     }
 
     function triggerBlackout() {
-        isBlackout = true; clearPhoneCall(); stopExhaustSound(); isWinding = false;
+        isBlackout = true; clearPhoneCall(); stopExhaustSound(); window.isWinding = false;
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('monitor-btn').style.display = 'none';
         if (isLeftDoorClosed) window.toggleDoor('left'); if (isRightDoorClosed) window.toggleDoor('right');
         isLeftLightOn = false; isRightLightOn = false; document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
@@ -1176,7 +1195,7 @@
         
         toxicity = initialToxicity; isExhaustOn = false; isVentBroken = false; stopExhaustSound();
         const exBtn = document.getElementById('exhaust-btn'); exBtn.classList.remove('active'); exBtn.innerText = "LIGAR EXAUSTOR";
-        document.getElementById('toxicity-display').innerText = `Toxicidade: ${toxicity}%`; document.getElementById('toxicity-display').style.color = '#0f0';
+        document.getElementById('toxicity-display').innerText = `Toxicidade: ${Math.floor(toxicity)}%`; document.getElementById('toxicity-display').style.color = '#0f0';
         document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, ${toxicity > 50 ? (toxicity-50)/100 : 0})`;
 
         isLeftDoorClosed = false; isRightDoorClosed = false; isLeftLightOn = false; isRightLightOn = false;
@@ -1184,9 +1203,11 @@
         document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
         if (leftLight) leftLight.intensity = 0; if (rightLight) rightLight.intensity = 0;
         
+        ['bonnie', 'chica', 'freddy', 'foxy'].forEach(a => { animatronics[a].doorWaitTime = 0; animatronics[a].attackTimer = 0; });
         animatronics.bonnie.loc = 'CAM1A'; animatronics.chica.loc = 'CAM1A'; animatronics.freddy.loc = 'CAM1A';
-        animatronics.bonnie.doorWaitTime = 0; animatronics.chica.doorWaitTime = 0; animatronics.bonnie.attackTimer = 0; animatronics.chica.attackTimer = 0;
-        animatronics.foxy.state = 0; box1B = 100; box1C = 100; isWinding = false; foxyTriggered = false;
+        animatronics.foxy.loc = 'CAM1C'; animatronics.foxy.state = 0; 
+        
+        window.box1B = 100; window.box1C = 100; window.isWinding = false; window.foxyTriggered = false;
         
         isTaskActive = false; isPCUp = false; 
         let taskDelay = 40; if(window.currentNight === 2) taskDelay = 35; else if (window.currentNight === 3) taskDelay = 30; else if (window.currentNight >= 4) taskDelay = 20;
@@ -1212,9 +1233,16 @@
             } else if(data.mesh) data.mesh.visible = false;
         });
         
-        let fData = animatronics.foxy; let fRef = posData.foxy[`CAM1C_${fData.state}`];
-        if(fRef && fData.mesh) { fData.mesh.position.set(...fRef.p); fData.mesh.rotation.y = fRef.r; fData.mesh.visible = true; }
-        if(coveCurtainL && coveCurtainR) { coveCurtainL.position.x = -51 - (fData.state * 1.5); coveCurtainR.position.x = -39 + (fData.state * 1.5); }
+        let fData = animatronics.foxy; 
+        let fRef = (fData.loc === 'LeftDoor') ? posData.foxy['LeftDoor'] : posData.foxy[`CAM1C_${fData.state}`];
+        if(fRef && fData.mesh) { 
+            fData.mesh.position.set(...fRef.p); fData.mesh.rotation.y = fRef.r; 
+            if (fData.loc === 'LeftDoor') fData.mesh.visible = isLeftLightOn; else fData.mesh.visible = true;
+        }
+        if(coveCurtainL && coveCurtainR) { 
+            let s = fData.loc === 'LeftDoor' ? 3 : fData.state;
+            coveCurtainL.position.x = -51 - (s * 1.5); coveCurtainR.position.x = -39 + (s * 1.5); 
+        }
     }
 
     // --- SETUP 3D ---
@@ -1546,13 +1574,13 @@
         } 
         else { 
             camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; 
-            isWinding = false;
+            window.isWinding = false;
         }
     };
 
     window.switchCam = function(camId) {
         if (!isMonitorUp || power <= 0) return;
-        isWinding = false;
+        window.isWinding = false;
         
         currentCam = camId; document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+camId).classList.add('active');
         let cD = camData[camId]; camera.position.set(...cD.p); camera.rotation.set(cD.rx, cD.ry, 0); cctvLight.position.set(cD.p[0], cD.p[1]+2, cD.p[2]);
