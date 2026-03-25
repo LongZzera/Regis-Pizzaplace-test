@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Regis Pizzaplace</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+        body { background-color: #000; color: #fff; font-family: 'Courier New', Courier, monospace; overflow: hidden; width: 100vw; height: 100vh; touch-action: none; }
+        #game-container { position: relative; width: 100%; height: 100%; }
+
+        .crt::before {
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100; background-size: 100% 3px, 3px 100%; pointer-events: none; opacity: 0.6; transition: opacity 0.3s;
+        }
+        .crt.off::before { display: none; }
+
+        #toxic-filter {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(50, 150, 50, 0); pointer-events: none; z-index: 18;
+            mix-blend-mode: overlay; transition: background 1s;
+        }
+
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block; }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #000; z-index: 50; transition: opacity 0.5s ease-in-out; }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 20; pointer-events: none; }
+        .hidden { display: none !important; }
+
+        /* --- Menus e Telas --- */
+        #menu-screen { background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.95) 100%); justify-content: center; align-items: flex-start; padding-left: 8%; }
+        .menu-content { display: flex; flex-direction: column; align-items: flex-start; z-index: 2; }
+        .glitch-title { font-size: clamp(2.5rem, 8vw, 6rem); margin-bottom: 0.5rem; color: #fff; text-transform: uppercase; font-family: 'Arial Black', Impact, sans-serif; letter-spacing: -2px; text-shadow: 3px 3px 0 #8a2929, -3px -3px 0 #333; position: relative; animation: glitch-anim 3s infinite linear alternate-reverse; }
+        .menu-subtitle { font-size: clamp(0.9rem, 3vw, 1.5rem); color: #ddd; margin-bottom: 3rem; letter-spacing: 5px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 10px; text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; }
+        .menu-options { display: flex; flex-direction: column; gap: 15px; }
+        .menu-btn { background: none; border: none; color: #fff; font-size: clamp(1rem, 4vw, 1.8rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 5px 15px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+        .menu-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(138, 41, 41, 0.2); transition: left 0.3s; z-index: -1; }
+        .menu-btn:hover::before { left: 0; }
+        .menu-btn:hover, .menu-btn:active { color: #ff4444; transform: translateX(15px); text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+        .menu-footer { position: absolute; bottom: 20px; right: 20px; color: #bbb; font-size: 0.9rem; text-align: right; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+        .rec-indicator { position: absolute; top: 30px; right: 40px; color: #fff; font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Arial', sans-serif; display: flex; align-items: center; gap: 10px; opacity: 0.8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+        .red-dot { width: 15px; height: 15px; background-color: #f00; border-radius: 50%; box-shadow: 0 0 10px #f00; animation: blink 1s infinite; }
+
+        @keyframes glitch-anim { 0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 10% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 30% { clip-path: inset(40% 0 20% 0); transform: translate(2px, -2px); } 40% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 50% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 60% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 2px); } 70% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); } 80% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 90% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); } 100% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 2px); } }
+
+        #newspaper-screen { background-color: #222; }
+        .newspaper { background-color: #ddd; color: #000; padding: 25px; width: 90%; max-width: 600px; border: 2px solid #555; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); transform: rotate(-1deg); font-family: 'Times New Roman', Times, serif; text-align: center; overflow-y: auto; max-height: 80vh; }
+        .newspaper h2 { font-size: clamp(1.2rem, 4vw, 1.8rem); margin-bottom: 10px; border-bottom: 3px solid #000; }
+        .newspaper p { font-size: clamp(0.85rem, 2vw, 1.05rem); line-height: 1.5; text-align: justify; margin-bottom: 10px; letter-spacing: 0.5px; }
+
+        /* --- TELA DE CONTRATO E DIÁLOGO --- */
+        #contract-screen { background-color: #050505; justify-content: center; align-items: center; overflow: hidden; }
+        #interview-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: flex-end; z-index: 0; }
+        .cone-light { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 150vw; height: 150vh; background: linear-gradient(to bottom, rgba(200,200,220,0.15) 0%, rgba(150,150,180,0.05) 50%, transparent 100%); clip-path: polygon(45% 0, 55% 0, 80% 100%, 20% 100%); pointer-events: none; }
+        .glow-behind { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 60vw; height: 60vw; max-width: 600px; max-height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(180,190,200,0.6) 0%, rgba(80,90,100,0.2) 30%, transparent 60%); animation: pulse-glow 4s infinite alternate; pointer-events: none; }
+        .silhouette { position: relative; width: 90vw; max-width: 500px; height: auto; z-index: 1; filter: drop-shadow(0 -10px 20px rgba(0,0,0,0.9)); }
+        @keyframes pulse-glow { 0% { opacity: 0.8; transform: translate(-50%, -50%) scale(0.95); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } }
+
+        .contract-paper { 
+            background: #d4cbb3; color: #111; width: 90%; max-width: 500px; 
+            padding: clamp(15px, 4vw, 25px); 
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.3), 0 0 40px rgba(0,0,0,1); 
+            transform: rotate(2deg) translateY(50px); font-family: 'Times New Roman', Times, serif; 
+            transition: opacity 1s, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); opacity: 0; pointer-events: none;
+            background-image: repeating-linear-gradient(rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 25px);
+            z-index: 5; position: relative;
+            max-height: 60vh; overflow-y: auto; 
+        }
+        .contract-paper.visible { opacity: 1; pointer-events: auto; transform: rotate(-1deg) translateY(-15px); }
+        .contract-paper h2 { text-align: center; border-bottom: 2px solid #333; margin-bottom: 8px; font-size: clamp(1.1rem, 5vw, 1.8rem); }
+        .contract-paper p { font-size: clamp(0.75rem, 3vw, 1.1rem); line-height: 1.4; text-align: justify; margin-bottom: 8px; letter-spacing: 0.5px; }
+        
+        #signature-area { margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
+        #player-name-input { background: transparent; border: none; border-bottom: 2px dashed #333; font-family: 'Brush Script MT', 'Lucida Handwriting', cursive; font-size: clamp(1rem, 5vw, 1.8rem); color: #000; padding: 2px; outline: none; text-align: center; }
+        #sign-btn { background: #8a2929; color: #fff; border: 2px solid #441111; padding: clamp(6px, 2vw, 10px); font-family: 'Courier New', Courier, monospace; font-size: clamp(0.9rem, 3.5vw, 1.2rem); cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        #sign-btn:hover { background: #ff4444; }
+
+        .dialogue-box { position: absolute; bottom: 20px; width: 90%; max-width: 800px; background: rgba(0,0,0,0.85); border: 2px solid #444; border-top: 4px solid #8a2929; padding: 20px; color: #fff; cursor: pointer; z-index: 10; box-shadow: 0 0 15px rgba(0,0,0,0.9); }
+        .dialogue-name { font-weight: bold; color: #ff5555; margin-bottom: 5px; font-size: clamp(1.1rem, 3vw, 1.3rem); font-family: 'Arial Black', sans-serif; text-shadow: 1px 1px 0 #000; }
+        .dialogue-text { font-size: clamp(1rem, 3vw, 1.2rem); min-height: 50px; font-family: 'Courier New', Courier, monospace; line-height: 1.5; white-space: pre-wrap; letter-spacing: 0.5px; }
+        .dialogue-prompt { position: absolute; right: 20px; bottom: 10px; font-size: 0.8rem; color: #888; animation: blink 1.5s infinite; }
+
+        /* --- MINIGAMES RETRO --- */
+        #minigame-screen { background-color: #000; z-index: 65; }
+        #mg-canvas { width: 100%; height: 100%; image-rendering: pixelated; object-fit: contain; }
+        #mg-ui { position: absolute; top: 10%; width: 100%; text-align: center; pointer-events: none; }
+        #mg-title { color: #f00; font-family: 'Courier New', monospace; font-size: clamp(1.5rem, 5vw, 3rem); text-shadow: 2px 2px #000; margin-bottom: 10px; }
+        #mg-timer { color: #fff; font-family: 'Courier New', monospace; font-size: clamp(1.2rem, 4vw, 2rem); }
+
+        #story-screen h2 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: normal; }
+        #story-screen h3 { font-size: clamp(1.5rem, 5vw, 2rem); color: #888; margin-top: 10px; font-weight: normal; }
+        #gameover-screen { background-color: #000; z-index: 90; }
+        #gameover-screen h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: #800; animation: flicker 2s infinite; text-align: center; padding: 0 10px; }
+
+        /* --- ANIMAÇÃO DE VITÓRIA (7 AM) --- */
+        #win-screen-7am { background-color: #000; z-index: 80; }
+        .time-transition { position: relative; font-size: clamp(4rem, 15vw, 8rem); font-family: 'Courier New', Courier, monospace; font-weight: bold; display: flex; align-items: center; justify-content: center; width: 100%; height: 200px; }
+        .time-digit { position: absolute; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1); opacity: 0; }
+        #digit-6 { left: -200px; } #digit-7 { right: -200px; }
+        .time-am { position: absolute; right: calc(50% - clamp(60px, 20vw, 130px)); font-size: clamp(1.5rem, 6vw, 3rem); opacity: 0; transition: opacity 1s; }
+        #digit-6.slide-in { left: calc(50% - clamp(35px, 10vw, 70px)); opacity: 1; }
+        #digit-7.slide-in { right: calc(50% - clamp(35px, 10vw, 70px)); opacity: 1; }
+        .time-am.show { opacity: 1; }
+        #digit-6.fade-out { opacity: 0; transform: translateY(-50px); }
+        #digit-7.center-up { right: calc(50% - clamp(20px, 5vw, 40px)); }
+
+        /* --- HUD --- */
+        .hud-text { position: absolute; font-size: clamp(1.1rem, 4vw, 1.5rem); font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 20; pointer-events: auto; }
+        #time-display { top: 5%; right: 5%; } 
+        #night-display { top: 12%; right: 5%; font-size: clamp(0.9rem, 3vw, 1.2rem); color: #ccc;} 
+        #toxicity-display { top: 19%; right: 5%; font-size: clamp(0.9rem, 3vw, 1.2rem); color: #0f0;} 
+        #power-display { bottom: 5%; left: 5%; }
+        #camera-name { top: 5%; left: 5%; font-size: clamp(1.2rem, 5vw, 2rem); }
+
+        #exhaust-btn {
+            position: absolute; bottom: calc(clamp(30px, 5vw, 40px) + 30px); left: 50%; transform: translateX(-50%);
+            background: #222; color: #aaa; border: 2px solid #555; padding: clamp(6px, 2vw, 10px) clamp(10px, 3vw, 20px);
+            font-family: inherit; font-size: clamp(0.8rem, 2.5vw, 1.2rem); font-weight: bold;
+            cursor: pointer; z-index: 25; transition: 0.2s; pointer-events: auto; border-radius: 5px;
+        }
+        #exhaust-btn.active { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; border-color: #fff; }
+
+        /* --- UI DO PC (TAREFAS & SETTINGS) --- */
+        #pc-ui, #settings-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 45; display: flex; justify-content: center; align-items: center; pointer-events: auto; }
+        #settings-screen { z-index: 60; }
+        
+        .pc-screen { background: #1a0000; border: 15px solid #111; border-radius: 10px; width: 90%; max-width: 600px; height: 75%; padding: 20px; color: #ffcc00; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 30px #f00, inset 0 0 20px #500; display: flex; flex-direction: column; text-shadow: 0 0 5px #ffcc00; }
+        .pc-screen.settings-style { background: #111; border-color: #444; color: #fff; box-shadow: 0 0 20px #000; text-shadow: none; height: auto; max-height: 500px; }
+        .pc-screen.settings-style h2 { color: #fff; border-color: #fff; text-shadow: none; }
+        
+        .pc-screen h2 { border-bottom: 3px solid #f00; padding-bottom: 10px; margin-bottom: 15px; font-size: clamp(1.4rem, 5vw, 1.8rem); text-align: center; color: #ff3333; text-shadow: 0 0 10px #f00;}
+        #pc-status { font-weight: bold; font-size: clamp(1rem, 3vw, 1.2rem); text-align: center; margin-bottom: 10px; }
+        .pc-alert { color: #f00 !important; text-shadow: 0 0 10px #f00 !important; animation: blink 1s infinite; }
+        
+        #pc-file-list { list-style: none; flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 10px; }
+        .pc-file-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #800; padding-bottom: 8px; font-size: clamp(0.85rem, 2.5vw, 1.1rem); }
+        
+        .clean-btn { background: #f00; color: #ffcc00; border: 1px solid #ffcc00; padding: 8px 15px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: clamp(0.8rem, 2.5vw, 1rem); transition: background 0.2s; }
+        .clean-btn:hover { background: #ffcc00; color: #f00; }
+        
+        #pc-exit-btn { background: #220000; color: #ffcc00; border: 2px solid #f00; padding: 12px; cursor: pointer; margin-top: auto; font-family: inherit; font-size: clamp(1rem, 3vw, 1.2rem); font-weight: bold; }
+        #pc-exit-btn:hover { background: #f00; color: #ffcc00; }
+        
+        .pc-system-container { margin-bottom: 10px; padding: 10px; border: 1px solid #800; display: flex; justify-content: space-between; align-items: center; background: rgba(255,0,0,0.1); font-size: clamp(0.85rem, 2.5vw, 1rem); }
+
+        /* --- O RESTO --- */
+        #phone-ui { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; z-index: 25; pointer-events: none; display: flex; flex-direction: column; align-items: center; }
+        #phone-subtitles { background: rgba(0, 0, 0, 0.8); border: 1px solid #555; padding: 10px 15px; font-size: clamp(0.9rem, 2.5vw, 1.2rem); text-align: center; border-radius: 5px; margin-bottom: 10px; color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.8); display: none; white-space: pre-wrap; letter-spacing: 0.5px; }
+        #mute-btn { pointer-events: auto; background: #333; color: #fff; border: 1px solid #888; padding: 5px 15px; cursor: pointer; font-family: inherit; font-size: 0.9rem; border-radius: 3px; display: none; }
+        #mute-btn:hover { background: #555; }
+
+        .panel { position: absolute; top: 50%; transform: translateY(-50%); width: clamp(60px, 10vw, 80px); height: clamp(150px, 25vw, 200px); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px; pointer-events: auto; opacity: 0.3; transition: opacity 0.3s; }
+        .panel:hover, .panel:active { opacity: 1; }
+        #left-panel { left: 1%; } #right-panel { right: 1%; }
+        .btn-door, .btn-light { width: clamp(40px, 7vw, 50px); height: clamp(40px, 7vw, 50px); border-radius: 8px; border: 3px solid #222; cursor: pointer; box-shadow: inset 0 0 10px #000; transition: background-color 0.2s, box-shadow 0.2s; }
+        .btn-door { background-color: #800; } .btn-door.active { background-color: #f00; box-shadow: 0 0 20px #f00; border-color: #ffaaaa;}
+        .btn-light { background-color: #040; } .btn-light.active { background-color: #0f0; box-shadow: 0 0 20px #0f0; border-color: #aaffaa;}
+
+        #monitor-btn { position: absolute; bottom: 0; left: 25%; width: 50%; height: clamp(30px, 5vw, 40px); background-color: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255,255,255,0.3); border-bottom: none; border-radius: 10px 10px 0 0; cursor: pointer; pointer-events: auto; z-index: 30; transition: height 0.2s, background-color 0.2s; display: flex; justify-content: center; align-items: center; }
+        #monitor-btn:hover, #monitor-btn:active { height: clamp(45px, 8vw, 60px); background-color: rgba(255, 255, 255, 0.3); }
+        #monitor-btn::after { content: ""; width: 50px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 5px; }
+
+        #camera-ui { display: flex; justify-content: flex-end; align-items: flex-end; padding: 5%; z-index: 15; }
+        .static-noise { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.15; z-index: 15; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); animation: staticAnim 0.2s infinite; }
+        
+        .map-container { position: relative; width: clamp(160px, 35vw, 350px); aspect-ratio: 1/1; border: 2px solid #555; background: rgba(0,0,0,0.7); pointer-events: auto; z-index: 20; }
+        .map-room { position: absolute; border: 2px solid #fff; box-sizing: border-box; }
+        .map-stage { top: 10%; left: 30%; width: 40%; height: 20%; } .map-dining { top: 30%; left: 30%; width: 40%; height: 30%; border-top: none;} .map-cove { top: 40%; left: 10%; width: 20%; height: 20%; } .map-whall { top: 60%; left: 30%; width: 15%; height: 35%; border-top: none;} .map-ehall { top: 60%; right: 30%; width: 15%; height: 35%; border-top: none;}
+        
+        .cam-btn { position: absolute; background: #000; color: #fff; border: 1px solid #fff; padding: clamp(2px, 1vw, 5px); font-size: clamp(0.6rem, 1.5vw, 1rem); cursor: pointer; font-family: 'Courier New', Courier, monospace; transform: translate(-50%, -50%); }
+        .cam-btn.active { background: #fff; color: #000; font-weight: bold; }
+        
+        #audio-btn { position: absolute; bottom: 20%; left: 5%; background: #111; color: #fff; border: 2px solid #fff; padding: clamp(8px, 2vw, 15px); font-family: 'Courier New', Courier, monospace; font-size: clamp(0.9rem, 2.5vw, 1.2rem); font-weight: bold; cursor: pointer; z-index: 25; transition: 0.2s; pointer-events: auto; }
+        #audio-btn:hover { background: #fff; color: #000; }
+        #audio-btn.broken { border-color: #f00; color: #f00; text-shadow: 0 0 5px #f00; pointer-events: none; }
+
+        @keyframes flicker { 0% { opacity: 1; } 3% { opacity: 0.4; } 6% { opacity: 1; } 7% { opacity: 0.4; } 8% { opacity: 1; } 9% { opacity: 1; } 10% { opacity: 0.1; } 11% { opacity: 1; } 100% { opacity: 1; } }
+        @keyframes staticAnim { 0% { background-position: 0 0; } 25% { background-position: 10% 20%; } 50% { background-position: -20% -10%; } 75% { background-position: 30% -30%; } 100% { background-position: -10% 40%; } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-10px, -20px) rotate(-3deg); } 20% { transform: translate(-30px, 0px) rotate(3deg); } 30% { transform: translate(30px, 20px) rotate(0deg); } 40% { transform: translate(10px, -10px) rotate(3deg); } 50% { transform: translate(-10px, 20px) rotate(-3deg); } 60% { transform: translate(-30px, 10px) rotate(0deg); } 70% { transform: translate(30px, 1px) rotate(-3deg); } 80% { transform: translate(-10px, -10px) rotate(3deg); } 90% { transform: translate(10px, 20px) rotate(0deg); } 100% { transform: translate(1px, -20px) rotate(-3deg); } }
+        .jumpscare-shake { animation: shake 0.1s infinite; filter: sepia(1) hue-rotate(300deg) saturate(5); }
+        
+        /* Mobile Specific Layout Tweaks */
+        @media (max-width: 768px) {
+            .pc-screen { height: 95%; width: 95%; padding: 10px; border-width: 8px; }
+            .pc-screen h2 { font-size: 1.2rem; margin-bottom: 8px; padding-bottom: 5px; }
+            .pc-system-container { flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
+            .pc-system-container .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
+            #pc-status { font-size: 1rem; margin-bottom: 8px; }
+            .pc-file-item { flex-direction: column; align-items: stretch; gap: 5px; padding-bottom: 10px; }
+            .pc-file-item span { font-size: 0.8rem; text-align: left; }
+            .pc-file-item .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
+            #pc-exit-btn { padding: 10px; font-size: 1.1rem; }
+            
+            .dialogue-box { bottom: 10px; padding: 12px; }
+            .dialogue-text { font-size: 0.95rem; min-height: 45px; }
+            .dialogue-name { font-size: 1rem; margin-bottom: 5px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<div id="game-container" class="crt">
+    
+    <div id="toxic-filter"></div>
+
+    <!-- MENU PRINCIPAL -->
+    <div id="menu-screen" class="screen">
+        <div class="menu-content">
+            <h1 class="glitch-title">REGIS PIZZAPLACE</h1>
+            <h3 class="menu-subtitle">O Despertar do Alejado</h3>
+            <div class="menu-options">
+                <button class="menu-btn" onclick="startGame(1)">> Novo Jogo</button>
+                <button class="menu-btn" onclick="startGame(currentNight)" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
+                <button class="menu-btn" onclick="openSettings()">> Configurações</button>
+            </div>
+        </div>
+        <div class="rec-indicator"><span class="red-dot"></span> REC</div>
+        <div class="menu-footer">v1.3 - Minigames Update<br>Feito por Haldo/Long</div>
+    </div>
+
+    <!-- TELA DE CONFIGURAÇÕES -->
+    <div id="settings-screen" class="screen hidden">
+        <div class="pc-screen settings-style">
+            <h2>CONFIGURAÇÕES</h2>
+            <div style="display:flex; flex-direction:column; gap:20px; align-items:center; margin-top:10px;">
+                <label style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">VOLUME GLOBAL: <span id="vol-label">100%</span>
+                    <br><input type="range" id="vol-slider" min="0" max="1" step="0.1" value="1" style="width: 200px; margin-top:10px; accent-color: #fff;" onchange="updateVolume(this.value)">
+                </label>
+                <div style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">GRÁFICOS: 
+                    <br><button class="clean-btn" id="gfx-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 100px;" onclick="toggleGraphics()">ALTO</button>
+                </div>
+                <button class="clean-btn" id="reset-save-btn" style="background:#800; color:#fff; border-color:#f00; margin-top: 15px;" onclick="resetSaveData()">APAGAR PROGRESSO</button>
+            </div>
+            <button id="pc-exit-btn" style="border-color:#fff; color:#fff; margin-top: 30px;" onclick="closeSettings()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- TELA DE INTRODUÇÃO / CONTRATO -->
+    <div id="contract-screen" class="screen hidden">
+        <div id="interview-bg">
+            <div class="cone-light"></div>
+            <div class="glow-behind"></div>
+            <svg class="silhouette" viewBox="0 0 200 200" preserveAspectRatio="xMidYMax meet">
+                <path d="M 30 200 C 30 110, 50 90, 100 90 C 150 90, 170 110, 170 200 Z" fill="#020202" />
+                <ellipse cx="100" cy="55" rx="26" ry="36" fill="#020202" />
+                <path d="M 75 90 L 100 110 L 125 90 Z" fill="#050505" />
+            </svg>
+        </div>
+
+        <div class="contract-paper" id="contract-paper">
+            <h2>CONTRATO DE RISCO</h2>
+            <p>A "Regis Pizzaplace" não se responsabiliza por: desmembramentos, morte, intoxicação fúngica avançada, lobotomia mecânica ou zumbificação durante o turno de trabalho.</p>
+            <p>O funcionário concorda em não questionar o cheiro de carne podre proveniente dos animatrônicos, nem os ruídos no porão.</p>
+            <p>Salário: R$ 120,50/semana.</p>
+            <div id="signature-area" class="hidden">
+                <label style="font-weight: bold; font-family: sans-serif; font-size: 0.9rem;">Assinatura do Funcionário:</label>
+                <input type="text" id="player-name-input" maxlength="20" placeholder="Assine aqui..." autocomplete="off" spellcheck="false">
+                <button id="sign-btn" onclick="signContract()">ASSINAR E COMEÇAR</button>
+            </div>
+        </div>
+
+        <div class="dialogue-box" id="dialogue-box" onclick="advanceDialogue()">
+            <div class="dialogue-name">REGIS</div>
+            <div class="dialogue-text" id="dialogue-text">...</div>
+            <div class="dialogue-prompt">Toque para continuar ▼</div>
+        </div>
+    </div>
+
+    <!-- TELA DE LORE / JORNAL -->
+    <div id="newspaper-screen" class="screen hidden" onclick="showMinigameOrStory()">
+        <div class="newspaper" id="newspaper-content"></div>
+        <div style="position: absolute; bottom: 20px; color:#aaa; animation: flicker 2s infinite;">Toque para continuar</div>
+    </div>
+
+    <!-- MINIGAMES RETRO 2D -->
+    <div id="minigame-screen" class="screen hidden">
+        <div id="mg-ui">
+            <h2 id="mg-title">MINIGAME</h2>
+            <h3 id="mg-timer">Tempo: 15</h3>
+        </div>
+        <canvas id="mg-canvas"></canvas>
+    </div>
+
+    <!-- TELA DE HISTÓRIA (12 AM) -->
+    <div id="story-screen" class="screen hidden">
+        <h2 id="story-time">12:00 AM</h2>
+        <h3 id="story-night">Noite 1</h3>
+    </div>
+
+    <!-- TELA DE VITÓRIA -->
+    <div id="win-screen-7am" class="screen hidden">
+        <div class="time-transition">
+            <span class="time-digit" id="digit-6">6</span>
+            <span class="time-digit" id="digit-7">7</span>
+            <span class="time-am" id="digit-am">AM</span>
+        </div>
+    </div>
+
+    <!-- TELA DE GAME OVER -->
+    <div id="gameover-screen" class="screen hidden">
+        <h1 id="gameover-title">FIM DE JOGO</h1>
+        <div style="position: absolute; bottom: 20px; color:#aaa;" onclick="location.reload()">Toque para tentar novamente</div>
+    </div>
+
+    <!-- UI DO COMPUTADOR (TAREFAS) -->
+    <div id="pc-ui" class="hidden crt">
+        <div class="pc-screen">
+            <h2>REGIS OS v1.2</h2>
+            
+            <div class="pc-system-container" id="pc-audio-container">
+                <span id="pc-audio-text">SISTEMA DE ÁUDIO: ONLINE</span>
+                <button id="pc-audio-fix-btn" class="clean-btn hidden" onclick="fixAudio()">REINICIAR</button>
+            </div>
+            
+            <div class="pc-system-container" id="pc-vent-container">
+                <span id="pc-vent-text">VENTILAÇÃO: ONLINE</span>
+                <button id="pc-vent-fix-btn" class="clean-btn hidden" onclick="fixVent()">REINICIAR</button>
+            </div>
+
+            <div id="pc-status">SISTEMA OK</div>
+            <ul id="pc-file-list">
+                <!-- Ficheiros gerados por JS -->
+            </ul>
+            <button id="pc-exit-btn" onclick="closePC()">FECHAR TERMINAL</button>
+        </div>
+    </div>
+
+    <!-- HUD PRINCIPAL DA OFFICE -->
+    <div id="hud-layer" class="overlay hidden">
+        <div id="time-display" class="hud-text">12 AM</div>
+        <div id="night-display" class="hud-text">Noite 1</div>
+        <div id="toxicity-display" class="hud-text">Toxicidade: 0%</div>
+        <div id="power-display" class="hud-text">Energia: 100%</div>
+
+        <button id="exhaust-btn" onclick="toggleExhaust()">LIGAR EXAUSTOR</button>
+
+        <div id="phone-ui">
+            <div id="phone-subtitles"></div>
+            <button id="mute-btn" onclick="muteCall()">Mutar Ligação</button>
+        </div>
+
+        <div id="office-panels">
+            <div id="left-panel" class="panel">
+                <div class="btn-door" id="l-door" onclick="toggleDoor('left')"></div>
+                <div class="btn-light" id="l-light" onclick="toggleLight('left')"></div>
+            </div>
+            <div id="right-panel" class="panel">
+                <div class="btn-door" id="r-door" onclick="toggleDoor('right')"></div>
+                <div class="btn-light" id="r-light" onclick="toggleLight('right')"></div>
+            </div>
+        </div>
+        <div id="monitor-btn" onclick="toggleMonitor()"></div>
+    </div>
+
+    <!-- UI DAS CÂMERAS -->
+    <div id="camera-ui" class="overlay hidden">
+        <div class="static-noise" id="static-overlay"></div>
+        <div id="camera-name" class="hud-text">CAM 1A - Palco Principal</div>
+        
+        <div class="map-container">
+            <div class="map-room map-stage"></div><div class="map-room map-dining"></div><div class="map-room map-cove"></div><div class="map-room map-whall"></div><div class="map-room map-ehall"></div>
+            <button class="cam-btn active" id="btn-CAM1A" style="top: 20%; left: 50%;" onclick="switchCam('CAM1A')">CAM 1A</button>
+            <button class="cam-btn" id="btn-CAM1B" style="top: 45%; left: 50%;" onclick="switchCam('CAM1B')">CAM 1B</button>
+            <button class="cam-btn" id="btn-CAM1C" style="top: 50%; left: 20%;" onclick="switchCam('CAM1C')">CAM 1C</button>
+            <button class="cam-btn" id="btn-CAM2A" style="top: 77%; left: 37%;" onclick="switchCam('CAM2A')">CAM 2A</button>
+            <button class="cam-btn" id="btn-CAM4A" style="top: 77%; left: 62%;" onclick="switchCam('CAM4A')">CAM 4A</button>
+        </div>
+        <button id="audio-btn" class="hidden" onclick="playAudioSystem()">[ TOCAR ÁUDIO ]</button>
+    </div>
+
+    <!-- CONTAINER 3D -->
+    <div id="canvas-container"></div>
+</div>
+
+<script>
+    // --- SISTEMA DE SAVE LOCAL ---
+    function saveGame(night) {
+        try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {}
+    }
+
+    function loadGame() {
+        try {
+            let saved = localStorage.getItem('regis_pizzaplace_night');
+            if (saved !== null) {
+                let n = parseInt(saved);
+                if (n > 1) {
+                    currentNight = n;
+                    const continueBtn = document.getElementById('continue-btn');
+                    if (continueBtn) {
+                        continueBtn.innerText = `> Continuar (Noite ${currentNight})`;
+                        continueBtn.style.color = "#fff";
+                        continueBtn.style.pointerEvents = "auto";
+                    }
+                }
+            }
+        } catch(e) {}
+    }
+
+    // --- PHONE GUY E TEXTOS ---
+    const phoneScripts = {
+        1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
+        2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas câmeras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Se você não olhar para ele, ele corre.", "E sobre aquele cheiro... Lembra que eu falei do Regis?", "Ele tinha um primo, o Martins. A gente chamava ele de Alejado depois que as engrenagens esmagaram as pernas dele.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
+        3: ["Alô, Rafa aqui de novo.", "Cara, as coisas saíram do controle. A pizza tóxica que o Regis inventou... ela fez coisas horríveis.", "O Martins não morreu de verdade. A toxina transformou ele... numa espécie de morto-vivo com fungos.", "Ele se arrasta pelo chão porque não tem pernas. Por isso as câmeras quase não pegam ele direito.", "Se você ouvir algo rastejando no corredor de metal... não hesite. Fecha a porta na cara dele!", "O ódio do Martins pelo Regis é tão grande que ele ataca qualquer guarda que ele vê."],
+        4: ["Alô?! (Som de respiração ofegante)", "Eles tão me seguindo... Os outros funcionários... O Regis colocou os corpos infectados dentro das armaduras!", "Freddy, Bonnie, Chica... são sarcófagos, cara! É por isso que sangram e têm esses cogumelos bizarros...", "O prédio todo tá sendo consumido por raízes. A toxina vazou pelo porão.", "Não deixa eles entrarem! O Martins tá furioso. Ele quer vingança. Tranca tudo!"],
+        5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
+    };
+
+    const loreText = [
+        "", // 0
+        "<h2>ARQUIVO 01: O NOVO EMPREGO</h2><p>Você assumiu o turno da noite na 'Regis Pizzaplace'. O dono, Regis, é tristemente conhecido por cortes de gastos absolutamente ilegais. Recentemente, para evitar a falência da empresa, ele começou a misturar um produto químico radioativo e barato na massa da pizza para fazê-la durar meses a fio. Os clientes pararam de vir devido ao cheiro insuportável de carne podre. Tente ignorar os odores, tranque as portas blindadas apenas se vir algo nos corredores e não se esqueça de limpar os vírus do sistema no terminal do seu computador.</p>",
+        "<h2>ARQUIVO 02: O ACIDENTE DO ALEJADO</h2><p>Esta pizzaria esconde um segredo obscuro sob o seu chão de xadrez sujo. O primo de Regis, Martins, sofreu um acidente aterrador nas engrenagens do palco principal por pura negligência da gerência. Em vez de pagar a indemnização, Regis trancou-o no porão, forçando-o a trabalhar na manutenção sem as pernas. A equipa chamava-lhe cruelmente 'O Alejado'. Dizem as lendas que ele rastejava no escuro, alimentando-se dos restos da pizza tóxica que caíam pelos ralos.</p>",
+        "<h2>ARQUIVO 03: A INFECÇÃO FÚNGICA</h2><p>A toxina na pizza não era apenas um conservante barato, era um fungo parasita altamente agressivo. A equipa de limpeza começou a tossir sangue negro e espesso. O primeiro a cair morto foi o cozinheiro-chefe. Mas o que chocou a todos foi quando, horas depois de ter sido declarado morto, o seu cadáver se levantou. O fungo reanimou as células mortas e os tecidos. A pizzaria está agora infestada por cadáveres controlados por esporos bioluminescentes.</p>",
+        "<h2>ARQUIVO 04: SARCÓFAGOS DE METAL</h2><p>Para esconder o massacre das autoridades locais, Regis teve uma ideia absolutamente doentia. Ele forçou os corpos apodrecidos dos funcionários mortos-vivos para dentro dos pesados trajes dos Animatronics. Freddy, Bonnie, Chica e Foxy... não são robôs programados. São túmulos de metal ambulantes. O aço esmaga os seus ossos, mas o fungo mantém-nos a moverem-se pelos corredores, repletos de dor e fúria contra qualquer humano adulto que encontrem.</p>",
+        "<h2>ARQUIVO 05: A VINGANÇA DO ALEJADO</h2><p>No porão, o Alejado sucumbiu aos restos tóxicos que comeu durante semanas. Ele morreu no escuro e frio. Mas o fungo Cordyceps encontrou o seu corpo e trouxe-o de volta num estado deplorável. Ele não tem um traje de metal para o conter. É um cadáver putrefato puro, rastejando apenas com os braços, com a coluna vertebral exposta e um ódio eterno pelo seu chefe. Ele acha que qualquer guarda noturno é o Regis a voltar para o punir.</p>",
+        "<h2>ARQUIVO 06: O FIM DA LINHA</h2><p>Regis fugiu como um covarde. Aterrorizado pelas suas próprias criações, ele trancou todas as portas por fora e abandonou o edifício, deixando a segurança nas mãos de mercenários descartáveis... como você. Os animatronics estão a perder o resto da sua sanidade humana. O fungo espalhou-se pelas paredes, pelo chão e até infetou o sistema digital das câmaras. Sobreviva mais esta noite. A loucura absoluta tomou conta do lugar.</p>",
+        "<h2>ARQUIVO 07: O PURGATÓRIO DE REGIS</h2><p>As peças não encaixam, pois não? O salário que não existe, as portas soldadas, as memórias que começam a inundar a sua mente. Você não é um segurança contratado. Você É o próprio Regis. Amaldiçoado a reviver noites infinitas no seu próprio inferno, punido pelo que fez ao seu primo Martins e aos seus funcionários. O Alejado chora na porta, ele não quer apenas matar-te, ele quer que sintas a dor excruciante das engrenagens. Para sempre. Enfrente as suas criações na dificuldade máxima.</p>"
+    ];
+
+    // --- CONFIGURAÇÕES ---
+    let masterVolume = 1.0;
+    let isHighQuality = true;
+    let confirmReset = false;
+
+    function openSettings() { document.getElementById('settings-screen').classList.remove('hidden'); }
+    function closeSettings() { document.getElementById('settings-screen').classList.add('hidden'); }
+    
+    function updateVolume(val) {
+        masterVolume = parseFloat(val);
+        document.getElementById('vol-label').innerText = `${Math.round(masterVolume * 100)}%`;
+    }
+    
+    function toggleGraphics() {
+        isHighQuality = !isHighQuality;
+        document.getElementById('gfx-btn').innerText = isHighQuality ? "ALTO" : "BAIXO";
+        document.getElementById('game-container').classList.toggle('off', !isHighQuality);
+        if (renderer) { renderer.setPixelRatio(isHighQuality ? Math.min(window.devicePixelRatio, 2) : 1); }
+    }
+
+    function resetSaveData() {
+        const btn = document.getElementById('reset-save-btn');
+        if (!confirmReset) {
+            btn.innerText = "TEM A CERTEZA?";
+            btn.style.backgroundColor = "#ff0000";
+            confirmReset = true;
+            setTimeout(() => {
+                confirmReset = false;
+                btn.innerText = "APAGAR PROGRESSO";
+                btn.style.backgroundColor = "#800";
+            }, 3000);
+        } else {
+            saveGame(1);
+            currentNight = 1;
+            const contBtn = document.getElementById('continue-btn');
+            if(contBtn) { contBtn.innerText = `> Continuar`; contBtn.style.color = "#444"; contBtn.style.pointerEvents = "none"; }
+            btn.innerText = "APAGADO!";
+            confirmReset = false;
+        }
+    }
+
+    // --- VARIÁVEIS GLOBAIS DO JOGO ---
+    let currentNight = 1; let hour = 0; let power = 100;
+    let gameState = 'MENU'; 
+    let scene, camera, renderer;
+    let menuScene, menuCamera;
+    let fanBlades, leftDoorMesh, rightDoorMesh, crtScreenMesh;
+    let mainOfficeLight, leftLight, rightLight, cctvLight, ambientLight;
+    let coveCurtainL, coveCurtainR;
+    
+    let targetRotationY = 0; let mouseX = 0;
+    let isLeftDoorClosed = false; let isRightDoorClosed = false;
+    let isLeftLightOn = false; let isRightLightOn = false;
+    let leftDoorTargetY = 22.5; let rightDoorTargetY = 22.5;
+    
+    let isMonitorUp = false; let currentCam = 'CAM1A';
+    const officeCamPos = new THREE.Vector3(0, 5.5, 2);
+    let gameIntervals = [];
+    let phoneAudioCtx = null; let phoneOscillator = null; let phoneGain = null; let isCallMuted = false; let phoneTimeouts = [];
+
+    let playerName = "Guarda";
+    const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
+    let isPCUp = false; let isTaskActive = false; let filesToClean = 0; let taskTimer = 30; let taskFailTimer = 15; 
+    let isAudioBroken = false;
+
+    let toxicity = 0;
+    let initialToxicity = 0; // Usado pelos minigames
+    let isExhaustOn = false;
+    let isVentBroken = false;
+    let exhaustAudioCtx = null;
+    let exhaustOsc = null;
+
+    const animatronics = {
+        bonnie: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM2A', 'LeftDoor'], doorWaitTime: 0, attackTimer: 0 },
+        chica:  { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 },
+        foxy:   { mesh: null, loc: 'CAM1C', level: 0, state: 0 }, 
+        freddy: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'] }
+    };
+
+    const posData = {
+        bonnie: { 'CAM1A': { p: [-8, 0, -137], r: Math.PI/8 }, 'CAM1B': { p: [-10, 0, -65], r: Math.PI/4 }, 'CAM2A': { p: [-18, 0, -30], r: Math.PI }, 'LeftDoor': { p: [-18.5, 0, 1], r: Math.PI/2.2 } },
+        chica: { 'CAM1A': { p: [8, 0, -137], r: -Math.PI/8 }, 'CAM1B': { p: [10, 0, -55], r: -Math.PI/4 }, 'CAM4A': { p: [18, 0, -30], r: Math.PI }, 'RightDoor': { p: [18.5, 0, 1], r: -Math.PI/2.2 } },
+        freddy: { 'CAM1A': { p: [0, 0, -137], r: 0 }, 'CAM1B': { p: [0, 0, -75], r: 0 }, 'CAM4A': { p: [20, 0, -45], r: -Math.PI/2 }, 'RightDoor': { p: [18.5, 0, 2], r: -Math.PI/2.2 } },
+        foxy: { 'CAM1C_0': { p: [-45, 0, -52], r: Math.PI/2 }, 'CAM1C_1': { p: [-45, 0, -48], r: Math.PI/6 }, 'CAM1C_2': { p: [-45, 0, -44], r: 0 }, 'LeftDoor': { p: [-18.5, 0, 1], r: Math.PI/2.2 } }
+    };
+    const camData = {
+        'CAM1A': { p: [0, 16, -115], rx: -0.1, ry: 0 }, 'CAM1B': { p: [-25, 18, -40], rx: -0.2, ry: Math.PI/3.5 },
+        'CAM1C': { p: [-45, 12, -35], rx: -0.05, ry: -Math.PI/5 }, 'CAM2A': { p: [-20, 15, -30], rx: -0.1, ry: Math.PI }, 'CAM4A': { p: [20, 15, -30], rx: -0.1, ry: Math.PI }
+    };
+
+    // --- CONTROLE DE TELAS E JOGO ---
+    function startGame(night) {
+        saveGame(night);
+        initialToxicity = 0; // Reset na toxicidade do minigame
+
+        if (night === 1) {
+            currentNight = 1;
+            const continueBtn = document.getElementById('continue-btn');
+            if(continueBtn) { continueBtn.innerText = `> Continuar`; continueBtn.style.color = "#444"; continueBtn.style.pointerEvents = "none"; }
+            document.getElementById('menu-screen').classList.add('hidden');
+            startContractIntro(); 
+        } else {
+            currentNight = night; hour = 0; power = 100;
+            document.getElementById('menu-screen').classList.add('hidden');
+            showNewspaperForNight(currentNight);
+        }
+        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+    }
+
+    const introDialogues = [
+        "Ah, finalmente. Você é o novo candidato à vaga de segurança noturno, não é?",
+        "Ótimo. Ignore as manchas escuras no chão... tivemos um 'probleminha' de vazamento no porão ultimamente.",
+        "O seu trabalho é ridicularmente simples: sente na cadeira, olhe as câmeras e certifique-se de que ninguém entra...",
+        "...e de que os nossos adoráveis mascotes não saem do prédio durante a noite. Eles ficam meio... inquietos.",
+        "O pagamento é uma miséria, não temos seguro de saúde e, se você perder algum membro, a responsabilidade é sua.",
+        "Aqui está o contrato. Assine na linha pontilhada. E não perca tempo a ler as letras miúdas, é tudo burocracia inútil."
+    ];
+    let currentDialogueIdx = 0; let typeWriterInterval = null;
+
+    function startContractIntro() {
+        gameState = 'CONTRACT';
+        document.getElementById('contract-screen').classList.remove('hidden');
+        document.getElementById('contract-paper').classList.remove('visible');
+        document.getElementById('signature-area').classList.add('hidden');
+        document.getElementById('dialogue-box').style.pointerEvents = 'auto';
+        currentDialogueIdx = 0; typeWriterEffect(introDialogues[currentDialogueIdx]);
+    }
+
+    function advanceDialogue() {
+        if (typeWriterInterval) {
+            clearInterval(typeWriterInterval); typeWriterInterval = null;
+            document.getElementById('dialogue-text').textContent = introDialogues[currentDialogueIdx];
+            return;
+        }
+        currentDialogueIdx++;
+        if (currentDialogueIdx < introDialogues.length) {
+            typeWriterEffect(introDialogues[currentDialogueIdx]);
+        } else {
+            document.getElementById('dialogue-text').textContent = "Estou à espera. Assine logo.";
+            document.getElementById('dialogue-box').style.pointerEvents = 'none';
+            document.querySelector('.dialogue-prompt').classList.add('hidden');
+            document.getElementById('contract-paper').classList.add('visible');
+            setTimeout(() => { document.getElementById('signature-area').classList.remove('hidden'); document.getElementById('player-name-input').focus(); }, 1000);
+        }
+    }
+
+    function typeWriterEffect(text) {
+        const textElement = document.getElementById('dialogue-text'); textElement.textContent = "";
+        let i = 1; if(typeWriterInterval) clearInterval(typeWriterInterval);
+        playMumble(); 
+        typeWriterInterval = setInterval(() => {
+            textElement.textContent = text.substring(0, i); i++;
+            if (i > text.length) { clearInterval(typeWriterInterval); typeWriterInterval = null; }
+        }, 30); 
+    }
+
+    function playMumble() {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(80, ctx.currentTime);
+            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } catch(e) {}
+    }
+
+    function signContract() {
+        const input = document.getElementById('player-name-input');
+        if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
+        playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none';
+        document.getElementById('dialogue-box').style.pointerEvents = 'auto';
+        typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
+        
+        setTimeout(() => {
+            document.getElementById('contract-screen').classList.add('hidden');
+            currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1);
+        }, 4000);
+    }
+
+    function showNewspaperForNight(night) {
+        gameState = 'NEWSPAPER';
+        const content = loreText[night] ? loreText[night] : loreText[7];
+        document.getElementById('newspaper-content').innerHTML = content;
+        document.getElementById('win-screen-7am').classList.add('hidden'); 
+        document.getElementById('newspaper-screen').classList.remove('hidden');
+    }
+
+    function showMinigameOrStory() {
+        if(gameState !== 'NEWSPAPER') return;
+        document.getElementById('newspaper-screen').classList.add('hidden');
+        
+        if (currentNight < 7) {
+            initMinigame();
+        } else {
+            showStory();
+        }
+    }
+
+    function showStory() {
+        gameState = 'STORY';
+        document.getElementById('story-night').innerText = `Noite ${currentNight}`;
+        document.getElementById('night-display').innerText = `Noite ${currentNight}`;
+        document.getElementById('story-screen').classList.remove('hidden');
+        setTimeout(() => startOfficeGameplay(), 3000);
+    }
+
+    // --- MOTOR DE MINIGAMES RETRO 2D ---
+    let mgCanvas, mgCtx, mgAnimFrame, mgTimerInt;
+    let mgState = { type: '', time: 15, active: false, elements: [], player: null };
+    let mgMouseX = 0, mgMouseY = 0, mgIsDown = false;
+
+    function initMinigame() {
+        gameState = 'MINIGAME';
+        document.getElementById('minigame-screen').classList.remove('hidden');
+        mgCanvas = document.getElementById('mg-canvas');
+        mgCtx = mgCanvas.getContext('2d');
+        
+        const resizeMg = () => {
+            mgCanvas.width = window.innerWidth;
+            mgCanvas.height = window.innerHeight;
+        };
+        resizeMg(); window.addEventListener('resize', resizeMg);
+
+        mgCanvas.addEventListener('mousemove', (e) => { mgMouseX = e.clientX; mgMouseY = e.clientY; });
+        mgCanvas.addEventListener('mousedown', (e) => { mgIsDown = true; mgMouseX = e.clientX; mgMouseY = e.clientY; });
+        mgCanvas.addEventListener('mouseup', () => { mgIsDown = false; });
+        mgCanvas.addEventListener('touchmove', (e) => { mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; }, {passive: false});
+        mgCanvas.addEventListener('touchstart', (e) => { mgIsDown = true; mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; });
+        mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
+
+        if (currentNight % 2 !== 0) {
+            setupPizzaMinigame();
+        } else {
+            setupCleanupMinigame();
+        }
+
+        mgState.active = true;
+        mgTimerInt = setInterval(() => {
+            if(!mgState.active) return;
+            mgState.time--;
+            document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+            if (mgState.time <= 0) endMinigame(false);
+        }, 1000);
+
+        mgLoop();
+    }
+
+    function setupPizzaMinigame() {
+        mgState.type = 'pizza';
+        mgState.time = 15;
+        document.getElementById('mg-title').innerText = "PREPARE A PIZZA";
+        document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+        
+        mgState.pizza = { x: window.innerWidth/2, y: window.innerHeight/2, r: Math.min(window.innerWidth, window.innerHeight) * 0.3 };
+        mgState.elements = [];
+
+        let numIng = currentNight === 1 ? 6 : (currentNight === 3 ? 8 : 10);
+        let types = ['pep', 'cheese'];
+        if (currentNight >= 3) types.push('eye', 'mush');
+        if (currentNight >= 5) types = ['eye', 'mush'];
+
+        for(let i=0; i<numIng; i++) {
+            let t = types[Math.floor(Math.random() * types.length)];
+            let x = Math.random() > 0.5 ? Math.random() * (mgState.pizza.x - mgState.pizza.r - 50) : mgState.pizza.x + mgState.pizza.r + 50 + Math.random() * 100;
+            let y = 100 + Math.random() * (window.innerHeight - 200);
+            
+            x = Math.max(20, Math.min(window.innerWidth - 20, x));
+
+            mgState.elements.push({ id: i, type: t, x: x, y: y, r: 25, isDragging: false, placed: false });
+        }
+    }
+
+    function setupCleanupMinigame() {
+        mgState.type = 'cleanup';
+        mgState.time = 15 - Math.floor(currentNight/2);
+        document.getElementById('mg-title').innerText = "LIMPE O PORÃO";
+        document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+        
+        mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: 30 };
+        mgState.elements = []; 
+
+        let numStains = 5 + currentNight;
+        for(let i=0; i<numStains; i++) {
+            mgState.elements.push({
+                x: 50 + Math.random() * (window.innerWidth - 100),
+                y: 100 + Math.random() * (window.innerHeight - 150),
+                r: 30 + Math.random() * 30,
+                color: Math.random() > 0.5 ? '#800' : '#080' 
+            });
+        }
+    }
+
+    function mgLoop() {
+        if (!mgState.active) return;
+        mgAnimFrame = requestAnimationFrame(mgLoop);
+        
+        mgCtx.fillStyle = '#111';
+        mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
+
+        if (mgState.type === 'pizza') {
+            mgCtx.fillStyle = '#d1a15e';
+            mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r, 0, Math.PI*2); mgCtx.fill();
+            mgCtx.fillStyle = '#a12b2b'; 
+            mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r*0.9, 0, Math.PI*2); mgCtx.fill();
+
+            let allPlaced = true;
+
+            for(let i=mgState.elements.length-1; i>=0; i--) {
+                let el = mgState.elements[i];
+                if (!el.placed) allPlaced = false;
+
+                if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) {
+                    let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y);
+                    if (dist < el.r * 2) el.isDragging = true;
+                }
+
+                if (el.isDragging) {
+                    el.x = mgMouseX; el.y = mgMouseY;
+                    if (!mgIsDown) {
+                        el.isDragging = false;
+                        let distToPizza = Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y);
+                        if (distToPizza < mgState.pizza.r * 0.8) {
+                            el.placed = true;
+                            playMgSound(400); 
+                        }
+                    }
+                }
+
+                if (el.type === 'pep') {
+                    mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
+                } else if (el.type === 'cheese') {
+                    mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - 15, el.y - 15, 30, 30);
+                } else if (el.type === 'eye') {
+                    mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
+                    mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill();
+                    mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); 
+                } else if (el.type === 'mush') {
+                    mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill();
+                    mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8);
+                }
+            }
+
+            if (allPlaced) endMinigame(true);
+
+        } else if (mgState.type === 'cleanup') {
+            mgCtx.strokeStyle = '#222'; mgCtx.lineWidth = 2;
+            for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); }
+            for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
+
+            if (mgIsDown || mgMouseX !== 0) { 
+                mgState.player.x += (mgMouseX - mgState.player.x) * 0.1;
+                mgState.player.y += (mgMouseY - mgState.player.y) * 0.1;
+            }
+
+            let anyLeft = false;
+            for (let stain of mgState.elements) {
+                if (stain.r > 0) {
+                    anyLeft = true;
+                    mgCtx.fillStyle = stain.color;
+                    mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill();
+                    
+                    let dist = Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y);
+                    if (dist < mgState.player.r + stain.r) {
+                        stain.r -= 2; 
+                        if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800);
+                    }
+                }
+            }
+
+            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - 30, mgState.player.y - 10, 60, 20); 
+            mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); 
+
+            if (!anyLeft) endMinigame(true);
+        }
+    }
+
+    function playMgSound(freq) {
+        if(masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } catch(e) {}
+    }
+
+    function endMinigame(success) {
+        if(!mgState.active) return;
+        mgState.active = false;
+        cancelAnimationFrame(mgAnimFrame);
+        clearInterval(mgTimerInt);
+        document.getElementById('minigame-screen').classList.add('hidden');
+
+        if (mgState.type === 'cleanup' && !success) {
+            initialToxicity = 40; 
+        } else {
+            initialToxicity = 0;
+        }
+
+        showStory();
+    }
+
+
+    function startOfficeGameplay() {
+        gameState = 'OFFICE';
+        document.getElementById('story-screen').classList.add('hidden'); 
+        document.getElementById('hud-layer').classList.remove('hidden');
+        
+        resetAnimatronics(); updateAnimatronicVisuals(); clearPhoneCall(); isCallMuted = false;
+        gameIntervals.forEach(clearInterval); gameIntervals = [];
+
+        if (phoneScripts[currentNight]) setTimeout(() => startPhoneCall(currentNight), 2000);
+
+        gameIntervals.push(setInterval(() => {
+            if (gameState !== 'OFFICE') return;
+            hour += 7/180; 
+            let displayHour = Math.floor(hour) === 0 ? 12 : Math.floor(hour);
+            document.getElementById('time-display').innerText = `${displayHour} AM`;
+            
+            if (Math.floor(hour) >= 7) { triggerWinAnimation(); return; }
+
+            // Lógica de Toxicidade
+            if (!isBlackout) {
+                if (isExhaustOn) {
+                    toxicity = Math.max(0, toxicity - 2.5); // Baixa toxicidade
+                } else {
+                    let toxIncrease = isVentBroken ? 1.5 : 0.25; 
+                    toxicity = Math.min(100, toxicity + toxIncrease);
+                }
+
+                const toxDisplay = document.getElementById('toxicity-display');
+                toxDisplay.innerText = `Toxicidade: ${Math.floor(toxicity)}%`;
+
+                if (toxicity >= 50) {
+                    toxDisplay.style.color = '#f00';
+                    document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, ${(toxicity - 50) / 100})`;
+                    if (Math.random() < (toxicity / 200)) playHallucination();
+                } else {
+                    toxDisplay.style.color = '#0f0';
+                    document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, 0)`;
+                }
+
+                if (toxicity >= 100) {
+                    triggerIntoxicationGameOver();
+                    return;
+                }
+            }
+
+            if (!isTaskActive && !isBlackout) {
+                taskTimer--;
+                if (taskTimer <= 0) triggerTaskAlert();
+            } else if (isTaskActive && !isBlackout) {
+                taskFailTimer--;
+                if (isPCUp) {
+                    const statusEl = document.getElementById('pc-status');
+                    if (statusEl) statusEl.innerText = `ALERTA: FUNGOS DIGITAIS! TEMPO: ${taskFailTimer}s`;
+                }
+                if (taskFailTimer <= 0) { power = 0; if (isPCUp) closePC(); }
+            }
+
+            if (power > 0) {
+                let drain = 0.05; 
+                if (currentNight >= 4) drain += 0.02; if (currentNight >= 6) drain += 0.03; 
+                if (isLeftDoorClosed) drain += 0.15; if (isRightDoorClosed) drain += 0.15;
+                if (isLeftLightOn) drain += 0.1; if (isRightLightOn) drain += 0.1;
+                if (isMonitorUp) drain += 0.15;
+                if (isTaskActive) drain += 0.4; 
+                if (isExhaustOn) drain += 0.1;
+
+                power -= drain;
+                document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+            } else if (!isBlackout) triggerBlackout();
+        }, 1000));
+
+        gameIntervals.push(setInterval(runAILoop, 5000));
+        gameIntervals.push(setInterval(checkDoorsTiming, 1000));
+    }
+
+    // --- TAREFAS E PC ---
+    function triggerTaskAlert() {
+        if (gameState !== 'OFFICE' || isBlackout) return;
+        isTaskActive = true; taskFailTimer = 15; filesToClean = 3 + Math.floor(Math.random() * 3); 
+        if (crtScreenMesh) crtScreenMesh.material.color.setHex(0xff0000); 
+        playBuzzer();
+        if (isMonitorUp) {
+            document.getElementById('static-overlay').style.opacity = '0.9';
+            document.getElementById('camera-name').innerText = "SINAL PERDIDO - ERRO NO SISTEMA";
+            document.getElementById('camera-name').classList.add('pc-alert');
+        }
+    }
+
+    function openPC() {
+        if (gameState !== 'OFFICE' || isMonitorUp || isBlackout) return;
+        isPCUp = true; document.getElementById('pc-ui').classList.remove('hidden'); document.getElementById('office-panels').classList.add('hidden');
+        
+        const audioText = document.getElementById('pc-audio-text'); const audioFixBtn = document.getElementById('pc-audio-fix-btn');
+        if (isAudioBroken) { audioText.innerText = "SISTEMA DE ÁUDIO: OFFLINE (ERRO)"; audioText.classList.add('pc-alert'); audioFixBtn.classList.remove('hidden'); } 
+        else { audioText.innerText = "SISTEMA DE ÁUDIO: ONLINE"; audioText.classList.remove('pc-alert'); audioFixBtn.classList.add('hidden'); }
+
+        const ventText = document.getElementById('pc-vent-text'); const ventFixBtn = document.getElementById('pc-vent-fix-btn');
+        if (isVentBroken) { ventText.innerText = "VENTILAÇÃO: OFFLINE (ERRO)"; ventText.classList.add('pc-alert'); ventFixBtn.classList.remove('hidden'); }
+        else { ventText.innerText = "VENTILAÇÃO: ONLINE"; ventText.classList.remove('pc-alert'); ventFixBtn.classList.add('hidden'); }
+
+        const statusEl = document.getElementById('pc-status'); const listEl = document.getElementById('pc-file-list'); listEl.innerHTML = '';
+        if (isTaskActive) {
+            statusEl.innerText = `ALERTA: FUNGOS DIGITAIS! TEMPO: ${taskFailTimer}s`; statusEl.className = "pc-alert";
+            const fileNames = ["esporo_rad.sys", "nervo_morto.exe", "veia_cortada.dll", "cordyceps.bat", "carne_podre.log"];
+            for(let i = 0; i < filesToClean; i++) {
+                let li = document.createElement('li'); li.className = 'pc-file-item';
+                let fName = fileNames[Math.floor(Math.random() * fileNames.length)];
+                li.innerHTML = `<span>C:\\REGIS_OS\\${fName}</span> <button class="clean-btn" onclick="cleanFile(this)">LIMPAR</button>`;
+                listEl.appendChild(li);
+            }
+        } else {
+            statusEl.innerText = "SISTEMA OK - NENHUMA AMEAÇA DETECTADA"; statusEl.className = "";
+            listEl.innerHTML = "<li style='text-align:center; margin-top: 50px; color:#050;'>Tudo limpo... por enquanto.</li>";
+        }
+    }
+
+    function cleanFile(btn) { btn.parentElement.remove(); filesToClean--; if (filesToClean <= 0) completeTask(); }
+
+    function completeTask() {
+        isTaskActive = false;
+        let taskDelay = 35; if (currentNight === 2) taskDelay = 30; else if (currentNight === 3) taskDelay = 25; else if (currentNight >= 4) taskDelay = 20;
+        taskTimer = taskDelay + Math.random() * 10; 
+        const statusEl = document.getElementById('pc-status'); statusEl.innerText = "SISTEMA OK - AMEAÇAS REMOVIDAS"; statusEl.className = "";
+        if (crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211); 
+        document.getElementById('camera-name').classList.remove('pc-alert');
+        if(isMonitorUp) { document.getElementById('static-overlay').style.opacity = '0.15'; document.getElementById('camera-name').innerText = camData[currentCam].name; }
+        setTimeout(() => { if(isPCUp) closePC(); }, 1000);
+    }
+
+    function closePC() { isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); }
+
+    // --- MECÂNICAS DE ÁUDIO E VENTILAÇÃO ---
+    function playAudioSystem() {
+        if (isAudioBroken || power <= 0) return;
+        playChildLaugh();
+        if (animatronics.freddy.loc !== 'CAM1A') {
+            animatronics.freddy.loc = 'CAM1A'; animatronics.freddy.doorWaitTime = 0; animatronics.freddy.attackTimer = 0;
+            updateAnimatronicVisuals(); triggerStaticPulse();
+        }
+        if (Math.random() < 0.25) breakAudioSystem();
+    }
+
+    function breakAudioSystem() {
+        isAudioBroken = true;
+        const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.add('broken'); btn.innerText = "[ ÁUDIO OFFLINE ]"; }
+        playBuzzer();
+    }
+
+    function fixAudio() {
+        isAudioBroken = false;
+        const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; }
+        if (isPCUp) openPC(); 
+    }
+
+    function breakVentSystem() {
+        isVentBroken = true;
+        playBuzzer();
+    }
+
+    function fixVent() {
+        isVentBroken = false;
+        if (isPCUp) openPC();
+    }
+
+    function toggleExhaust() {
+        if (power <= 0) return;
+        isExhaustOn = !isExhaustOn;
+        const btn = document.getElementById('exhaust-btn');
+        if (isExhaustOn) {
+            btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR";
+            playExhaustSound();
+        } else {
+            btn.classList.remove('active'); btn.innerText = "LIGAR EXAUSTOR";
+            stopExhaustSound();
+        }
+    }
+
+    function playExhaustSound() {
+        if (masterVolume <= 0 || exhaustAudioCtx) return;
+        try {
+            exhaustAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            exhaustOsc = exhaustAudioCtx.createOscillator(); const gain = exhaustAudioCtx.createGain();
+            exhaustOsc.type = 'square'; exhaustOsc.frequency.setValueAtTime(40, exhaustAudioCtx.currentTime);
+            const filter = exhaustAudioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 200;
+            gain.gain.setValueAtTime(0.1 * masterVolume, exhaustAudioCtx.currentTime);
+            exhaustOsc.connect(filter); filter.connect(gain); gain.connect(exhaustAudioCtx.destination);
+            exhaustOsc.start();
+        } catch(e) {}
+    }
+
+    function stopExhaustSound() {
+        if (exhaustAudioCtx) { exhaustAudioCtx.close(); exhaustAudioCtx = null; exhaustOsc = null; }
+    }
+
+    function playChildLaugh() {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle';
+            osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.5);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5);
+        } catch(e) {}
+    }
+
+    function playBuzzer() {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.8);
+        } catch(e){}
+    }
+
+    function playHallucination() {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = Math.random() > 0.5 ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime);
+            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 1);
+        } catch(e) {}
+    }
+
+    function handleRaycast(clientX, clientY) {
+        if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout) return;
+        mouseVec.x = (clientX / window.innerWidth) * 2 - 1; mouseVec.y = -(clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouseVec, camera);
+        if (crtScreenMesh) { const intersects = raycaster.intersectObject(crtScreenMesh); if (intersects.length > 0) openPC(); }
+    }
+
+    window.addEventListener('click', (e) => handleRaycast(e.clientX, e.clientY));
+    window.addEventListener('touchstart', (e) => { if(e.touches.length > 0) handleRaycast(e.touches[0].clientX, e.touches[0].clientY); });
+
+
+    // --- PHONE GUY ---
+    function startPhoneCall(night) {
+        if (gameState !== 'OFFICE' || isCallMuted) return;
+        const lines = phoneScripts[night]; if (!lines) return;
+        const subBox = document.getElementById('phone-subtitles'); const muteBtn = document.getElementById('mute-btn');
+        subBox.style.display = 'block'; muteBtn.style.display = 'block'; subBox.textContent = "*Ringing*";
+        playPhoneRing();
+
+        phoneTimeouts.push(setTimeout(() => {
+            if (isCallMuted) return;
+            subBox.textContent = "Call connected."; startMumbleVoice(); let currentLine = 0;
+            const playNextLine = () => {
+                if (isCallMuted || currentLine >= lines.length || gameState !== 'OFFICE') { clearPhoneCall(); return; }
+                let text = lines[currentLine]; subBox.textContent = text;
+                if(phoneGain && phoneAudioCtx && masterVolume > 0) {
+                    phoneGain.gain.setTargetAtTime((0.05 + Math.random()*0.05) * masterVolume, phoneAudioCtx.currentTime + 0.1, 0.05);
+                    phoneOscillator.frequency.setTargetAtTime(100 + Math.random()*50, phoneAudioCtx.currentTime + 0.1, 0.05);
+                }
+                let readTime = Math.max(text.length * 60, 2000); 
+                currentLine++; phoneTimeouts.push(setTimeout(playNextLine, readTime));
+            };
+            phoneTimeouts.push(setTimeout(playNextLine, 1000));
+        }, 4000));
+    }
+
+    function muteCall() { isCallMuted = true; clearPhoneCall(); }
+    function clearPhoneCall() {
+        phoneTimeouts.forEach(clearTimeout); phoneTimeouts = [];
+        document.getElementById('phone-subtitles').style.display = 'none'; document.getElementById('mute-btn').style.display = 'none';
+        if (phoneOscillator) { try { phoneOscillator.stop(); } catch(e){} phoneOscillator = null; }
+        if (phoneAudioCtx) { phoneAudioCtx.close(); phoneAudioCtx = null; }
+    }
+
+    function playPhoneRing() {
+        if (masterVolume <= 0) return;
+        try {
+            phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square';
+            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 0.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0, phoneAudioCtx.currentTime); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 0.4, 0.05);
+            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.0); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.1);
+            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.3);
+            gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime + 2.0, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 2.4, 0.05);
+            osc.connect(gain); gain.connect(phoneAudioCtx.destination); osc.start(); osc.stop(phoneAudioCtx.currentTime + 3);
+        } catch(e) {}
+    }
+
+    function startMumbleVoice() {
+        if (masterVolume <= 0) return;
+        try {
+            if (!phoneAudioCtx || phoneAudioCtx.state === 'closed') phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            phoneOscillator = phoneAudioCtx.createOscillator(); phoneGain = phoneAudioCtx.createGain();
+            phoneOscillator.type = 'triangle'; phoneOscillator.frequency.setValueAtTime(120, phoneAudioCtx.currentTime); 
+            const filter = phoneAudioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1000;
+            phoneGain.gain.setValueAtTime(0.05 * masterVolume, phoneAudioCtx.currentTime);
+            phoneOscillator.connect(filter); filter.connect(phoneGain); phoneGain.connect(phoneAudioCtx.destination); phoneOscillator.start();
+        } catch (e) {}
+    }
+
+    // --- ANIMAÇÕES E IA ---
+    function triggerWinAnimation() {
+        gameState = 'WIN'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
+        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
+        
+        if (currentNight >= 7) {
+            document.getElementById('gameover-screen').innerHTML = '<h1 style="color:#0f0;">VOCÊ SOBREVIVEU</h1><div style="margin-top:20px; font-size:1.5rem;">O Purgatório Terminou.</div><div style="position: absolute; bottom: 20px; color:#aaa; cursor:pointer;" onclick="location.reload()">Toque para voltar ao menu</div>';
+            document.getElementById('gameover-screen').classList.remove('hidden');
+            saveGame(1); 
+            return;
+        }
+
+        const winScreen = document.getElementById('win-screen-7am');
+        const d6 = document.getElementById('digit-6'); const d7 = document.getElementById('digit-7'); const am = document.getElementById('digit-am');
+        d6.className = 'time-digit'; d7.className = 'time-digit'; am.className = 'time-am'; winScreen.classList.remove('hidden');
+
+        setTimeout(() => {
+            d6.classList.add('slide-in'); d7.classList.add('slide-in'); am.classList.add('show');
+            if (masterVolume > 0) {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, ctx.currentTime); gain.gain.setValueAtTime(1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 3);
+                    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 3);
+                } catch(e) {}
+            }
+        }, 500);
+        setTimeout(() => { d6.classList.add('fade-out'); d7.classList.add('center-up'); }, 3500);
+        setTimeout(() => {
+            currentNight++;
+            const continueBtn = document.getElementById('continue-btn');
+            if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
+            saveGame(currentNight);
+            showNewspaperForNight(currentNight);
+        }, 6500);
+    }
+
+    function runAILoop() {
+        if (gameState !== 'OFFICE' || power <= 0) return;
+        let h = Math.floor(hour); 
+        
+        let baseDiff = (currentNight - 1) * 3; 
+        if (currentNight >= 7) baseDiff = 20;
+
+        let exhaustPenalty = isExhaustOn ? 5 : 0; 
+
+        if (currentNight === 1) {
+            animatronics.bonnie.level = Math.floor(h/2); 
+            animatronics.chica.level = Math.max(0, Math.floor(h/2) - 1); 
+            animatronics.foxy.level = 0; 
+            animatronics.freddy.level = 0 + Math.floor(exhaustPenalty/2); 
+        } else {
+            animatronics.bonnie.level = baseDiff + Math.floor(h/2); 
+            animatronics.chica.level = Math.max(0, baseDiff - 2) + Math.floor(h/2); 
+            animatronics.foxy.level = Math.max(0, baseDiff - 3) + Math.floor(h/3);
+            animatronics.freddy.level = Math.max(0, baseDiff - 1) + Math.floor(h/2) + exhaustPenalty;
+        }
+        
+        ['bonnie', 'chica', 'foxy', 'freddy'].forEach(anim => { let ai = animatronics[anim].level; if (ai > 0 && Math.random() * 25 <= ai) moveAnimatronic(anim); });
+
+        if (Math.random() < 0.05 && !isAudioBroken && currentNight > 1) { breakAudioSystem(); }
+        if (Math.random() < 0.08 && !isVentBroken && currentNight > 2) { breakVentSystem(); }
+    }
+
+    function moveAnimatronic(anim) {
+        let data = animatronics[anim];
+        if (anim === 'foxy') {
+            if (isMonitorUp && currentCam === 'CAM1C') return;
+            if (data.state < 3) data.state++;
+            if (data.state === 3) {
+                data.loc = 'LeftDoor';
+                setTimeout(() => {
+                    if (gameState === 'OFFICE' && !isLeftDoorClosed) triggerJumpscare('foxy');
+                    else if (isLeftDoorClosed) { data.state = 0; data.loc = 'CAM1C'; power = Math.max(0, power - 5); updateAnimatronicVisuals(); }
+                }, 5000); 
+            }
+        } else {
+            if (data.loc === 'LeftDoor' || data.loc === 'RightDoor') return; 
+            let currentIndex = data.path.indexOf(data.loc);
+            if (currentIndex < data.path.length - 1) data.loc = data.path[currentIndex + 1];
+        }
+        updateAnimatronicVisuals(); triggerStaticPulse();
+    }
+
+    function checkDoorsTiming() {
+        if (gameState !== 'OFFICE' || power <= 0) return;
+        ['bonnie', 'chica', 'freddy'].forEach(anim => {
+            let data = animatronics[anim];
+            let doorLoc = anim === 'bonnie' ? 'LeftDoor' : 'RightDoor';
+            let isDoorClosed = anim === 'bonnie' ? isLeftDoorClosed : isRightDoorClosed;
+
+            if (data.loc === doorLoc) {
+                if (isDoorClosed) {
+                    data.doorWaitTime++;
+                    if (data.doorWaitTime >= 5) { data.loc = 'CAM1B'; data.doorWaitTime = 0; data.attackTimer = 0; updateAnimatronicVisuals(); }
+                } else {
+                    data.doorWaitTime = 0; data.attackTimer++;
+                    if (data.attackTimer >= 5) triggerJumpscare(anim);
+                }
+            } else { data.doorWaitTime = 0; data.attackTimer = 0; }
+        });
+    }
+
+    function triggerIntoxicationGameOver() {
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
+        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
+        document.getElementById('game-container').style.filter = 'sepia(1) hue-rotate(90deg) saturate(5)';
+        playScreech();
+        setTimeout(() => {
+            document.getElementById('game-container').style.filter = '';
+            document.getElementById('gameover-title').innerText = "INTOXICAÇÃO LETAL";
+            document.getElementById('gameover-screen').classList.remove('hidden');
+        }, 1500);
+    }
+
+    function triggerJumpscare(anim) {
+        if (gameState !== 'OFFICE') return;
+        gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
+        if(isMonitorUp) toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden'); document.getElementById('game-container').classList.add('jumpscare-shake');
+        
+        camera.rotation.set(0, 0, 0); let mesh = animatronics[anim].mesh;
+        mesh.visible = true; 
+        if (anim === 'freddy') { mesh.position.set(0, 0.5, -2.0); mesh.rotation.set(0.3, 0, 0); } 
+        else { mesh.position.set(0, -5.0, -2.5); mesh.rotation.set(0, 0, 0); }
+        playScreech();
+
+        setTimeout(() => { document.getElementById('game-container').classList.remove('jumpscare-shake'); document.getElementById('gameover-title').innerText = "FIM DE JOGO"; document.getElementById('gameover-screen').classList.remove('hidden'); }, 1500);
+    }
+
+    function triggerBlackout() {
+        isBlackout = true; clearPhoneCall(); stopExhaustSound();
+        if(isMonitorUp) toggleMonitor(); document.getElementById('monitor-btn').style.display = 'none';
+        if (isLeftDoorClosed) toggleDoor('left'); if (isRightDoorClosed) toggleDoor('right');
+        isLeftLightOn = false; isRightLightOn = false; document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
+        ambientLight.intensity = 0.02; mainOfficeLight.intensity = 0; leftLight.intensity = 0; rightLight.intensity = 0;
+        updateAnimatronicVisuals();
+        setTimeout(() => triggerJumpscare('freddy'), 5000 + Math.random() * 10000);
+    }
+
+    function playScreech() {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 0.3); osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 1.2);
+            gain.gain.setValueAtTime(1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 1.5);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1.5);
+        } catch(e) {}
+    }
+
+    // --- TEXTURAS E MODELOS 3D AVANÇADOS ---
+    function resetAnimatronics() {
+        hour = 0; power = 100;
+        document.getElementById('time-display').innerText = '12 AM'; document.getElementById('power-display').innerText = 'Energia: 100%';
+        
+        toxicity = initialToxicity; isExhaustOn = false; isVentBroken = false; stopExhaustSound();
+        const exBtn = document.getElementById('exhaust-btn'); exBtn.classList.remove('active'); exBtn.innerText = "LIGAR EXAUSTOR";
+        document.getElementById('toxicity-display').innerText = `Toxicidade: ${toxicity}%`; document.getElementById('toxicity-display').style.color = '#0f0';
+        document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, ${toxicity > 50 ? (toxicity-50)/100 : 0})`;
+
+        isLeftDoorClosed = false; isRightDoorClosed = false; isLeftLightOn = false; isRightLightOn = false;
+        leftDoorTargetY = 22.5; rightDoorTargetY = 22.5;
+        document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
+        if (leftLight) leftLight.intensity = 0; if (rightLight) rightLight.intensity = 0;
+        animatronics.bonnie.loc = 'CAM1A'; animatronics.chica.loc = 'CAM1A'; animatronics.freddy.loc = 'CAM1A';
+        animatronics.bonnie.doorWaitTime = 0; animatronics.chica.doorWaitTime = 0; animatronics.bonnie.attackTimer = 0; animatronics.chica.attackTimer = 0;
+        animatronics.foxy.loc = 'CAM1C'; animatronics.foxy.state = 0;
+        
+        isTaskActive = false; isPCUp = false; 
+        let taskDelay = 40; if(currentNight === 2) taskDelay = 35; else if (currentNight === 3) taskDelay = 30; else if (currentNight >= 4) taskDelay = 20;
+        taskTimer = taskDelay; taskFailTimer = 15;
+        
+        isAudioBroken = false;
+        const aBtn = document.getElementById('audio-btn'); if(aBtn) { aBtn.classList.remove('broken'); aBtn.innerText = "[ TOCAR ÁUDIO ]"; }
+
+        if(crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211);
+        document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('camera-name').classList.remove('pc-alert');
+        isBlackout = false; document.getElementById('monitor-btn').style.display = 'flex';
+    }
+
+    function updateAnimatronicVisuals() {
+        ['bonnie', 'chica', 'freddy'].forEach(anim => {
+            let data = animatronics[anim]; let posRef = posData[anim][data.loc];
+            if(posRef && data.mesh) { 
+                data.mesh.position.set(...posRef.p); data.mesh.rotation.y = posRef.r; 
+                if (data.loc === 'LeftDoor') data.mesh.visible = isLeftLightOn;
+                else if (data.loc === 'RightDoor') data.mesh.visible = isRightLightOn;
+                else data.mesh.visible = true; 
+            } else if(data.mesh) data.mesh.visible = false;
+        });
+        
+        let fData = animatronics.foxy; let fRef = fData.state < 3 ? posData.foxy[`CAM1C_${fData.state}`] : posData.foxy['LeftDoor'];
+        if(fRef && fData.mesh) { 
+            fData.mesh.position.set(...fRef.p); fData.mesh.rotation.y = fRef.r; 
+            if (fData.state >= 3) fData.mesh.visible = isLeftLightOn; else fData.mesh.visible = true;
+        }
+        if(coveCurtainL && coveCurtainR) { coveCurtainL.position.x = -51 - (fData.state * 1.5); coveCurtainR.position.x = -39 + (fData.state * 1.5); }
+    }
+
+    function createInfectedSkin(hexColor) {
+        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = hexColor; ctx.fillRect(0, 0, 256, 256);
+        for(let i=0; i<300; i++) { ctx.fillStyle = Math.random() > 0.6 ? '#111' : '#3a4a2d'; ctx.beginPath(); ctx.arc(Math.random()*256, Math.random()*256, Math.random()*6, 0, Math.PI*2); ctx.fill(); }
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; 
+        for(let i=0; i<40; i++) { ctx.beginPath(); ctx.moveTo(Math.random()*256, Math.random()*256); ctx.lineTo(Math.random()*256 + (Math.random()-0.5)*30, Math.random()*256 + (Math.random()-0.5)*30); ctx.stroke(); }
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function buildAnimatronic(type) {
+        const group = new THREE.Group(); 
+        let hex = '#5c3a21'; if(type === 'bonnie') hex = '#504080'; if(type === 'chica') hex = '#e8c138'; if(type === 'foxy') hex = '#8a2929';
+        
+        const tex = createInfectedSkin(hex); 
+        const matBody = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.3 });
+        const matBone = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.6, metalness: 0.8 });
+        const matFungus = new THREE.MeshStandardMaterial({ color: 0x889977, roughness: 1.0 });
+
+        const torsoGroup = new THREE.Group();
+        const chest = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.5, 2.2), matBody); chest.position.y = 1.5; torsoGroup.add(chest);
+        const abdomen = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.0, 1.8), matBody); abdomen.position.y = -0.8; torsoGroup.add(abdomen);
+
+        for(let i=0; i<3; i++) {
+            const ribL = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.2, 0.2), matBone); ribL.position.set(-1.0, 0.5 - i*0.7, 1.1); ribL.rotation.z = Math.PI/6; torsoGroup.add(ribL);
+            const ribR = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.2, 0.2), matBone); ribR.position.set(1.0, 0.5 - i*0.7, 1.1); ribR.rotation.z = -Math.PI/6; torsoGroup.add(ribR);
+        }
+
+        const headGroup = new THREE.Group();
+        const skull = new THREE.Mesh(new THREE.BoxGeometry(2.8, 2.5, 2.8), matBody); skull.position.y = 0.5; headGroup.add(skull);
+        const jaw = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.8, 2.6), matBody); jaw.position.set(0, -1.2, 0.2); if(type === 'chica') jaw.rotation.x = Math.PI/4; headGroup.add(jaw);
+
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0xddffdd }); 
+        for(let i of [-1, 1]) {
+            if(type === 'foxy' && i === 1) continue; 
+            const socket = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.2), new THREE.MeshBasicMaterial({color: 0x000})); socket.position.set(0.7 * i, 0.5, 1.45); headGroup.add(socket);
+            const eye = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), eyeMat); eye.position.set(0.7 * i, 0.5, 1.55); headGroup.add(eye);
+        }
+
+        const buildArm = (isFoxyHook) => {
+            const armGroup = new THREE.Group();
+            const shoulder = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), matBone); armGroup.add(shoulder);
+            const bicep = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.5, 0.8), matBody); bicep.position.y = -1.5; armGroup.add(bicep);
+            const elbow = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), matBone); elbow.position.y = -3.0; armGroup.add(elbow);
+            if (isFoxyHook) {
+                const hookBase = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.5, 0.4), matBone); hookBase.position.y = -4.5; armGroup.add(hookBase);
+                const hook1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 0.2), matBone); hook1.position.set(0, -6.0, 0); armGroup.add(hook1);
+                const hook2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 0.2), matBone); hook2.position.set(0.3, -6.6, 0); armGroup.add(hook2);
+                const hook3 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.8, 0.2), matBone); hook3.position.set(0.6, -6.3, 0); armGroup.add(hook3);
+            } else {
+                const forearm = new THREE.Mesh(new THREE.BoxGeometry(0.7, 2.5, 0.7), matBody); forearm.position.y = -4.5; armGroup.add(forearm);
+                const hand = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.2, 0.8), matBody); hand.position.y = -6.0; armGroup.add(hand);
+            }
+            return armGroup;
+        };
+
+        const lArm = buildArm(false); const rArm = buildArm(type === 'foxy');
+        const addFungus = (parent, count, spread) => { 
+            for(let i=0; i<count; i++) { 
+                const spore = new THREE.Mesh(new THREE.OctahedronGeometry(0.3 + Math.random()*0.5), matFungus); 
+                spore.position.set((Math.random()-0.5)*spread, (Math.random()-0.5)*spread, (Math.random()-0.5)*spread); 
+                spore.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0); parent.add(spore); 
+            } 
+        };
+
+        if (type === 'freddy') { 
+            torsoGroup.rotation.x = Math.PI / 2 - 0.2; torsoGroup.position.set(0, 1.0, 0); headGroup.position.set(0, 3.5, 2.0); headGroup.rotation.x = -Math.PI / 3; 
+            lArm.position.set(-2.4, 1.5, 1.5); lArm.rotation.set(Math.PI/2, 0, Math.PI/4); rArm.position.set(2.4, 1.5, 1.5); rArm.rotation.set(Math.PI/2, 0, -Math.PI/4);
+            for(let i=0; i<6; i++) { const vert = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), matBone); vert.position.set(0, -2.0 - i*0.8, -0.5); vert.rotation.z = Math.PI/4; torsoGroup.add(vert); }
+            const hatBase = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 2.2), new THREE.MeshStandardMaterial({color:0x111})); hatBase.position.y = 1.8; headGroup.add(hatBase);
+            const hatTop = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.4), new THREE.MeshStandardMaterial({color:0x111})); hatTop.position.y = 2.6; headGroup.add(hatTop);
+            addFungus(torsoGroup, 25, 3); addFungus(headGroup, 10, 2.5);
+        } else {
+            torsoGroup.position.y = 5.5; headGroup.position.set(0, 9, 0); headGroup.rotation.set(Math.random()*0.4-0.2, Math.random()*0.4-0.2, Math.random()*0.4-0.2); 
+            lArm.position.set(-2.4, 7.5, 0); lArm.rotation.set(-Math.PI/6, 0, Math.PI/8); rArm.position.set(2.4, 7.5, 0); rArm.rotation.set(-Math.PI/6, 0, -Math.PI/8);
+            const buildLeg = () => {
+                const legGroup = new THREE.Group(); const thigh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 3.5, 1.0), matBody); thigh.position.y = -1.5; legGroup.add(thigh);
+                const knee = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), matBone); knee.position.y = -3.5; legGroup.add(knee);
+                const calf = new THREE.Mesh(new THREE.BoxGeometry(0.9, 3.5, 0.9), matBody); calf.position.y = -5.5; legGroup.add(calf);
+                const foot = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 2.2), matBody); foot.position.set(0, -7.5, 0.4); legGroup.add(foot); return legGroup;
+            };
+            const lLeg = buildLeg(); lLeg.position.set(-1.2, 5.5, 0); group.add(lLeg); const rLeg = buildLeg(); rLeg.position.set(1.2, 5.5, 0); group.add(rLeg);
+            addFungus(headGroup, 15, 2.5); addFungus(torsoGroup, 12, 3);
+            if (type === 'bonnie') {
+                const earL = new THREE.Mesh(new THREE.BoxGeometry(0.8, 3.5, 0.4), matBody); earL.position.set(-1.2, 3.5, 0); earL.rotation.z = -0.2; headGroup.add(earL);
+                const earR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.5, 0.3), matBone); earR.position.set(1.2, 3.0, 0); earR.rotation.z = 0.5; headGroup.add(earR); 
+            } else if (type === 'chica') {
+                const beakMat = new THREE.MeshStandardMaterial({color:0xd1781f, roughness:0.9}); const beak = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.6, 1.5), beakMat); beak.position.set(0, 0.0, 1.5); headGroup.add(beak);
+                jaw.position.y = -1.5; jaw.rotation.x = Math.PI/4; jaw.material = beakMat; jaw.geometry = new THREE.BoxGeometry(2.2, 0.6, 1.5); jaw.position.z = 1.0;
+            } else if (type === 'foxy') {
+                const patch = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), new THREE.MeshBasicMaterial({color:0x000})); patch.position.set(0.8, 0.5, 1.45); headGroup.add(patch);
+                torsoGroup.rotation.x = Math.PI/6; torsoGroup.position.z = 1; headGroup.position.set(0, 8.5, 2); headGroup.rotation.x = -Math.PI/8; lLeg.rotation.x = -Math.PI/8; rLeg.rotation.x = -Math.PI/8;
+            }
+        }
+        
+        group.add(torsoGroup); group.add(headGroup); group.add(lArm); group.add(rArm);
+        group.traverse(c => { if(c.isMesh) { c.castShadow = true; c.receiveShadow = true; }}); 
+        return group;
+    }
+
+    function createDetailedWallTexture() {
+        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#444c52'; ctx.fillRect(0,0,512,512);
+        for(let i=0; i<3000; i++) { ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.15})`; ctx.fillRect(Math.random()*512, Math.random()*512, Math.random()*15, Math.random()*5); }
+        for(let i=0; i<300; i++) { ctx.fillStyle = `rgba(20,40,15,${Math.random()*0.25})`; ctx.beginPath(); ctx.arc(Math.random()*512, 512 - Math.random()*150, Math.random()*30, 0, Math.PI*2); ctx.fill(); }
+        const tex = new THREE.CanvasTexture(canvas); tex.wrapS=THREE.RepeatWrapping; tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(4,3); return tex;
+    }
+
+    function createDirtyCheckeredFloor() {
+        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#111'; ctx.fillRect(0,0,512,512); ctx.fillStyle = '#bbb'; ctx.fillRect(0,0,256,256); ctx.fillRect(256,256,256,256);
+        for(let i=0; i<800; i++) { ctx.fillStyle = `rgba(10,5,0,${Math.random()*0.2})`; ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*512, Math.random()*20, 0, Math.PI*2); ctx.fill(); }
+        const tex = new THREE.CanvasTexture(canvas); tex.wrapS=THREE.RepeatWrapping; tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(16,24); return tex;
+    }
+
+    function createHazardTexture() {
+        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#cca000'; ctx.fillRect(0,0,256,256); ctx.fillStyle = '#111';
+        for(let i=-256; i<512; i+=50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i+25, 0); ctx.lineTo(i-231, 256); ctx.lineTo(i-256, 256); ctx.fill(); }
+        const tex = new THREE.CanvasTexture(canvas); tex.wrapS=THREE.RepeatWrapping; tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(1, 6); return tex;
+    }
+
+    function createPaperTexture() {
+        const canvas = document.createElement('canvas'); canvas.width = 128; canvas.height = 128; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#eee'; ctx.fillRect(0,0,128,128); ctx.fillStyle = '#444';
+        for(let i=10; i<110; i+=15) { ctx.fillRect(10, i, 80 + Math.random()*20, 2); }
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function createCreepyPoster() {
+        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 384; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#d4c4a8'; ctx.fillRect(0, 0, 256, 384); ctx.strokeStyle = '#222'; ctx.lineWidth = 10; ctx.strokeRect(5, 5, 246, 374);
+        ctx.fillStyle = '#6b0000'; ctx.font = 'bold 36px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText("PROCURE O", 128, 150); ctx.fillText("ALEJADO", 128, 220);
+        for(let i=0; i<150; i++) { ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.15})`; ctx.beginPath(); ctx.arc(Math.random()*256, Math.random()*384, Math.random()*8, 0, Math.PI*2); ctx.fill(); }
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function createStoreSign(mainText, subText, bgColor, textColor) {
+        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 128; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = bgColor; ctx.fillRect(0, 0, 512, 128); ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = 'bold 50px "Arial Black", sans-serif'; ctx.fillText(mainText, 256, 50); ctx.font = 'bold 24px Arial'; ctx.fillText(subText, 256, 100);
+        for(let i=0; i<100; i++) { ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.2})`; ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*128, Math.random()*4, 0, Math.PI*2); ctx.fill(); }
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    function createRollerDoorTexture() {
+        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#333'; ctx.fillRect(0, 0, 256, 256); ctx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { ctx.fillRect(0, y, 256, 3); }
+        const tex = new THREE.CanvasTexture(canvas); tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(2, 2); return tex;
+    }
+
+    function createFungusTexture() {
+        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 512, 512); ctx.strokeStyle = '#ffffff'; ctx.fillStyle = '#ffffff'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        function drawBranch(x, y, angle, length, width, depth) {
+            if (depth === 0) return;
+            const endX = x + Math.cos(angle) * length; const endY = y + Math.sin(angle) * length;
+            ctx.lineWidth = width; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(endX, endY); ctx.stroke();
+            if (Math.random() > 0.5) { ctx.beginPath(); ctx.arc(endX, endY, width * 1.5, 0, Math.PI * 2); ctx.fill(); }
+            const numBranches = Math.random() > 0.2 ? 2 : 1;
+            for (let i = 0; i < numBranches; i++) {
+                const newAngle = angle + (Math.random() - 0.5) * 1.8; const newLength = length * (0.6 + Math.random() * 0.3); const newWidth = width * 0.7;
+                drawBranch(endX, endY, newAngle, newLength, newWidth, depth - 1);
+            }
+        }
+        for(let i=0; i<6; i++) { drawBranch(Math.random() * 512, 512, -Math.PI/2 + (Math.random()-0.5), 60 + Math.random()*60, 12 + Math.random()*8, 7); drawBranch(0, Math.random() * 512, 0 + (Math.random()-0.5), 60 + Math.random()*60, 12 + Math.random()*8, 7); }
+        ctx.globalCompositeOperation = 'destination-out'; for(let i=0; i<150; i++) { ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*512, 2 + Math.random()*15, 0, Math.PI*2); ctx.fill(); }
+        ctx.globalCompositeOperation = 'source-over'; return new THREE.CanvasTexture(canvas);
+    }
+
+    function buildExteriorMenu() {
+        menuScene = new THREE.Scene(); menuScene.background = new THREE.Color(0x050505); menuScene.fog = new THREE.Fog(0x050505, 20, 60);
+        menuCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200); menuCamera.position.set(0, 8, 35);
+        const topMat = new THREE.MeshStandardMaterial({color: 0x666666, roughness: 0.9}); const topBuilding = new THREE.Mesh(new THREE.BoxGeometry(45, 12, 10), topMat); topBuilding.position.set(0, 16, -5); menuScene.add(topBuilding);
+        const winMat = new THREE.MeshStandardMaterial({color: 0x000000, roughness: 0.1}); [-12, 0, 12].forEach(x => { const win = new THREE.Mesh(new THREE.PlaneGeometry(5, 4), winMat); win.position.set(x, 16, 0.05); menuScene.add(win); });
+        const leftMat = new THREE.MeshStandardMaterial({color: 0x444444, roughness: 0.9}); const leftStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), leftMat); leftStore.position.set(-15, 5, -5); menuScene.add(leftStore);
+        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("Curitibana", "Panificadora", "#111111", "#ffffff")})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
+        const centerMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.9}); const centerStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); centerStore.position.set(0, 5, -5); menuScene.add(centerStore);
+        const entrance = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshBasicMaterial({color: 0x000000})); entrance.position.set(0, 3.5, 0.05); menuScene.add(entrance);
+        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("COSTELÃO", "ASSADOS", "#ffffff", "#000000")})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
+        for(let i of [-4, 4]) { const table = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), new THREE.MeshStandardMaterial({color: 0x111111})); table.position.set(i, 1, 4); menuScene.add(table); }
+        const rightStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); rightStore.position.set(15, 5, -5); menuScene.add(rightStore);
+        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({map: createRollerDoorTexture(), metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
+        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("REGGI'S", "PIZZARIA", "#222222", "#ffffff")})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
+        const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(50, 0.5, 10), new THREE.MeshStandardMaterial({color: 0x333333})); sidewalk.position.set(0, 0.25, 5); menuScene.add(sidewalk);
+        const street = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), new THREE.MeshStandardMaterial({color: 0x111111})); street.rotation.x = -Math.PI/2; street.position.set(0, 0, 25); menuScene.add(street);
+        
+        const fungusTex = createFungusTexture(); const fungusMat = new THREE.MeshBasicMaterial({ map: fungusTex, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.6, depthWrite: false });
+        for(let i = 0; i < 10; i++) { const size = 5 + Math.random() * 8; const patch = new THREE.Mesh(new THREE.PlaneGeometry(size, size), fungusMat); patch.position.set((Math.random() - 0.5) * 45, 2 + Math.random() * 18, 0.15 + Math.random() * 0.5); patch.rotation.z = Math.random() * Math.PI * 2; menuScene.add(patch); }
+        for(let i = 0; i < 6; i++) { const size = 6 + Math.random() * 10; const floorPatch = new THREE.Mesh(new THREE.PlaneGeometry(size, size), fungusMat); floorPatch.rotation.x = -Math.PI / 2; floorPatch.position.set((Math.random() - 0.5) * 45, 0.55, 3 + Math.random() * 8); floorPatch.rotation.z = Math.random() * Math.PI * 2; menuScene.add(floorPatch); }
+        
+        menuScene.add(new THREE.AmbientLight(0x222222, 1.0)); const dl = new THREE.DirectionalLight(0xffffff, 1.5); dl.position.set(-10, 20, 20); menuScene.add(dl);
+    }
+
+    function buildOffice() {
+        const wallMat = new THREE.MeshStandardMaterial({ map: createDetailedWallTexture(), roughness: 0.95 });
+        const deskMat = new THREE.MeshStandardMaterial({ color: 0x22150d, roughness: 0.8 }); 
+        const metalMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.8 });
+        const hazardMat = new THREE.MeshStandardMaterial({ map: createHazardTexture(), roughness: 0.7 });
+
+        const frontWall = new THREE.Mesh(new THREE.BoxGeometry(30, 20, 1), wallMat); frontWall.position.set(0, 10, -10); scene.add(frontWall);
+        const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, 20, 1), wallMat); backWall.position.set(0, 10, 10); scene.add(backWall);
+        const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat); ceiling.rotation.x = Math.PI / 2; ceiling.position.y = 20; scene.add(ceiling);
+        
+        const baseboardFront = new THREE.Mesh(new THREE.BoxGeometry(30, 1, 0.2), metalMat); baseboardFront.position.set(0, 0.5, -9.4); scene.add(baseboardFront);
+
+        const pipeGeo = new THREE.CylinderGeometry(0.4, 0.4, 30);
+        const pipe1 = new THREE.Mesh(pipeGeo, metalMat); pipe1.position.set(-5, 19, -9); pipe1.rotation.z = Math.PI/2; scene.add(pipe1);
+        const pipe2 = new THREE.Mesh(pipeGeo, metalMat); pipe2.position.set(5, 19, -8.5); pipe2.rotation.z = Math.PI/2; scene.add(pipe2);
+
+        [-15, 15].forEach(x => {
+            const wFront = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 7), wallMat); wFront.position.set(x, 10, -6.5); scene.add(wFront);
+            const wBack = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 7), wallMat); wBack.position.set(x, 10, 6.5); scene.add(wBack);
+            const wTop = new THREE.Mesh(new THREE.BoxGeometry(1, 5, 6), wallMat); wTop.position.set(x, 17.5, 0); scene.add(wTop);
+            
+            const hazardGeo = new THREE.PlaneGeometry(1, 15);
+            const hazardFrameL = new THREE.Mesh(hazardGeo, hazardMat); hazardFrameL.position.set(x > 0 ? x-0.51 : x+0.51, 7.5, 3); hazardFrameL.rotation.y = x > 0 ? -Math.PI/2 : Math.PI/2; scene.add(hazardFrameL);
+            const hazardFrameR = new THREE.Mesh(hazardGeo, hazardMat); hazardFrameR.position.set(x > 0 ? x-0.51 : x+0.51, 7.5, -3); hazardFrameR.rotation.y = x > 0 ? -Math.PI/2 : Math.PI/2; scene.add(hazardFrameR);
+        });
+
+        const doorGeo = new THREE.BoxGeometry(0.8, 15, 6);
+        leftDoorMesh = new THREE.Mesh(doorGeo, metalMat); leftDoorMesh.position.set(-15, 22.5, 0); scene.add(leftDoorMesh);
+        rightDoorMesh = new THREE.Mesh(doorGeo, metalMat); rightDoorMesh.position.set(15, 22.5, 0); scene.add(rightDoorMesh);
+
+        const desk = new THREE.Mesh(new THREE.BoxGeometry(18, 4, 6), deskMat); desk.position.set(0, 2, -5); desk.castShadow = true; desk.receiveShadow = true; scene.add(desk);
+        
+        const crtCase = new THREE.Mesh(new THREE.BoxGeometry(3, 2.5, 2), new THREE.MeshStandardMaterial({color: 0xd6d3c9, roughness: 0.9}));
+        crtCase.position.set(-4, 5.2, -5.5); crtCase.rotation.y = Math.PI / 5; crtCase.castShadow = true; scene.add(crtCase);
+        
+        crtScreenMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.1), new THREE.MeshBasicMaterial({color: 0x112211}));
+        crtScreenMesh.position.set(-3.2, 5.2, -4.5); crtScreenMesh.rotation.y = Math.PI / 5; scene.add(crtScreenMesh);
+        
+        const keyboard = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 1.5), new THREE.MeshStandardMaterial({color: 0x999999, roughness: 0.8}));
+        keyboard.position.set(-3.5, 4.1, -3); keyboard.rotation.y = Math.PI / 8; scene.add(keyboard);
+
+        const phoneGroup = new THREE.Group(); phoneGroup.position.set(4, 4.2, -4); phoneGroup.rotation.y = -Math.PI/6;
+        const phoneBase = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 2), new THREE.MeshStandardMaterial({color: 0x7a1818, roughness: 0.6})); phoneGroup.add(phoneBase);
+        const phoneHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.8), new THREE.MeshStandardMaterial({color: 0x5a1010})); phoneHandle.position.set(0, 0.3, 0); phoneHandle.rotation.x = Math.PI/2; phoneGroup.add(phoneHandle);
+        scene.add(phoneGroup);
+
+        const paperMat = new THREE.MeshStandardMaterial({map: createPaperTexture(), roughness: 1.0});
+        for(let i=0; i<4; i++) {
+            const paper = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2), paperMat);
+            paper.position.set(Math.random()*4 - 2, 4.05 + i*0.01, -3.5 + Math.random()*1); paper.rotation.x = -Math.PI/2; paper.rotation.z = Math.random()*Math.PI; scene.add(paper);
+        }
+
+        const fanGroup = new THREE.Group(); fanGroup.position.set(0, 4.5, -4.5);
+        const fanBase = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1, 0.5, 16), metalMat); fanGroup.add(fanBase);
+        const fanStem = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.5, 8), metalMat); fanStem.position.y = 1; fanGroup.add(fanStem);
+        const fanCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.4, 16), metalMat); fanCenter.position.set(0, 1.5, 0.2); fanCenter.rotation.x = Math.PI/2; fanGroup.add(fanCenter);
+        fanBlades = new THREE.Group(); fanBlades.position.set(0, 1.5, 0.4);
+        for(let i = 0; i < 3; i++) { const blade = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.8, 0.05), new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.5})); blade.position.y = 0.9; const pivot = new THREE.Group(); pivot.rotation.z = (Math.PI * 2 / 3) * i; pivot.add(blade); fanBlades.add(pivot); }
+        fanGroup.add(fanBlades); 
+        const fanCage = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 8, 24), metalMat); fanCage.position.set(0, 1.5, 0.4); fanGroup.add(fanCage);
+        scene.add(fanGroup);
+
+        const posterTex = createCreepyPoster(); const poster = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ map: posterTex, roughness: 0.8 }));
+        poster.position.set(0, 9, -9.4); scene.add(poster);
+
+        const fungusTex = createFungusTexture(); const fungusMat = new THREE.MeshBasicMaterial({ map: fungusTex, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.8, depthWrite: false });
+        for(let i=0; i<10; i++) {
+            const patch = new THREE.Mesh(new THREE.PlaneGeometry(4,4), fungusMat);
+            patch.position.set(14.5, 2+Math.random()*10, -9 + Math.random()*5); patch.rotation.y = -Math.PI/2; patch.rotation.z = Math.random()*Math.PI; scene.add(patch);
+        }
+    }
+
+    function init3D() {
+        const container = document.getElementById('canvas-container');
+        scene = new THREE.Scene(); scene.background = new THREE.Color(0x010101); scene.fog = new THREE.Fog(0x000000, 8, 70);
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200); camera.position.copy(officeCamPos);
+        
+        renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping; 
+        renderer.toneMappingExposure = 0.9;
+        renderer.outputEncoding = THREE.sRGBEncoding; 
+        container.appendChild(renderer.domElement);
+
+        buildExteriorMenu();
+
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 200), new THREE.MeshStandardMaterial({map: createDirtyCheckeredFloor(), roughness:0.7})); 
+        floor.rotation.x = -Math.PI/2; floor.position.z = -60; floor.receiveShadow = true; scene.add(floor);
+        
+        buildOffice();
+
+        [-25, -15, 15, 25].forEach(x => { 
+            const hallWall = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 80), new THREE.MeshStandardMaterial({map: createDetailedWallTexture(), roughness: 0.9}));
+            hallWall.position.set(x, 10, -50); scene.add(hallWall);
+        });
+
+        coveCurtainL = new THREE.Mesh(new THREE.BoxGeometry(8, 20, 1), new THREE.MeshStandardMaterial({color: 0x3a0c6e, roughness: 0.9})); coveCurtainL.position.set(-51, 11.5, -43); scene.add(coveCurtainL);
+        coveCurtainR = new THREE.Mesh(new THREE.BoxGeometry(8, 20, 1), new THREE.MeshStandardMaterial({color: 0x3a0c6e, roughness: 0.9})); coveCurtainR.position.set(-39, 11.5, -43); scene.add(coveCurtainR);
+
+        animatronics.bonnie.mesh = buildAnimatronic('bonnie'); scene.add(animatronics.bonnie.mesh);
+        animatronics.chica.mesh = buildAnimatronic('chica'); scene.add(animatronics.chica.mesh);
+        animatronics.freddy.mesh = buildAnimatronic('freddy'); scene.add(animatronics.freddy.mesh);
+        animatronics.foxy.mesh = buildAnimatronic('foxy'); scene.add(animatronics.foxy.mesh);
+
+        ambientLight = new THREE.AmbientLight(0x1a1c22, 0.4); scene.add(ambientLight); 
+        mainOfficeLight = new THREE.PointLight(0xffeedd, 1.5, 40, 2); mainOfficeLight.position.set(0, 12, -2); mainOfficeLight.castShadow = true; mainOfficeLight.shadow.bias = -0.001; scene.add(mainOfficeLight);
+        leftLight = new THREE.PointLight(0xddddff, 0, 25, 2); leftLight.position.set(-13.5, 8, 0); scene.add(leftLight);
+        rightLight = new THREE.PointLight(0xddddff, 0, 25, 2); rightLight.position.set(13.5, 8, 0); scene.add(rightLight);
+        cctvLight = new THREE.SpotLight(0xffffff, 0, 80, Math.PI/3, 0.5, 2); scene.add(cctvLight); scene.add(cctvLight.target);
+
+        animate();
+    }
+
+    function toggleMonitor() {
+        if (power <= 0 || isPCUp) return; 
+        
+        if (!isMonitorUp) {
+            if (animatronics.bonnie.loc === 'LeftDoor' && !isLeftDoorClosed) { triggerJumpscare('bonnie'); return; }
+            if (animatronics.chica.loc === 'RightDoor' && !isRightDoorClosed) { triggerJumpscare('chica'); return; }
+        }
+
+        isMonitorUp = !isMonitorUp;
+        document.getElementById('camera-ui').classList.toggle('hidden'); document.getElementById('office-panels').classList.toggle('hidden');
+        if (isMonitorUp) { 
+            switchCam(currentCam); mainOfficeLight.intensity = 0; cctvLight.intensity = 1.5; triggerStaticPulse(); 
+            if (isTaskActive) {
+                document.getElementById('static-overlay').style.opacity = '0.9';
+                document.getElementById('camera-name').innerText = "SINAL PERDIDO - ERRO NO SISTEMA";
+                document.getElementById('camera-name').classList.add('pc-alert');
+            }
+        } 
+        else { camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; }
+    }
+
+    function switchCam(camId) {
+        if (!isMonitorUp || power <= 0) return;
+        currentCam = camId; document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+camId).classList.add('active');
+        let cD = camData[camId]; camera.position.set(...cD.p); camera.rotation.set(cD.rx, cD.ry, 0); cctvLight.position.set(cD.p[0], cD.p[1]+2, cD.p[2]);
+        
+        if (camId === 'CAM1A') document.getElementById('audio-btn').classList.remove('hidden');
+        else document.getElementById('audio-btn').classList.add('hidden');
+
+        if(!isTaskActive) triggerStaticPulse();
+    }
+    function triggerStaticPulse() { const s = document.getElementById('static-overlay'); if(s) { s.style.opacity = '0.8'; setTimeout(() => s.style.opacity = '0.15', 150); } }
+
+    function toggleDoor(side) {
+        if (power <= 0) return;
+        if (side === 'left') { isLeftDoorClosed = !isLeftDoorClosed; document.getElementById('l-door').classList.toggle('active'); leftDoorTargetY = isLeftDoorClosed ? 7.5 : 22.5; } 
+        else { isRightDoorClosed = !isRightDoorClosed; document.getElementById('r-door').classList.toggle('active'); rightDoorTargetY = isRightDoorClosed ? 7.5 : 22.5; }
+    }
+    
+    function toggleLight(side) {
+        if (power <= 0) return;
+        if (side === 'left') { 
+            isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); leftLight.intensity = isLeftLightOn ? 3.0 : 0; 
+            if(isLeftLightOn){isRightLightOn=false; document.getElementById('r-light').classList.remove('active'); rightLight.intensity=0;} 
+        } 
+        else { 
+            isRightLightOn = !isRightLightOn; document.getElementById('r-light').classList.toggle('active'); rightLight.intensity = isRightLightOn ? 3.0 : 0; 
+            if(isRightLightOn){isLeftLightOn=false; document.getElementById('l-light').classList.remove('active'); leftLight.intensity=0;} 
+        }
+        updateAnimatronicVisuals();
+    }
+
+    window.addEventListener('mousemove', (e) => { if(gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.clientX/window.innerWidth)) * Math.PI; });
+    window.addEventListener('touchmove', (e) => { if(e.touches.length>0 && gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.touches[0].clientX/window.innerWidth)) * Math.PI; }, {passive: false});
+
+    window.addEventListener('resize', () => {
+        if (renderer) {
+            if (camera) { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); }
+            if (menuCamera) { menuCamera.aspect = window.innerWidth / window.innerHeight; menuCamera.updateProjectionMatrix(); }
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        if (gameState === 'MENU') {
+            if (menuCamera && menuScene) {
+                menuCamera.position.x = Math.sin(Date.now() * 0.0003) * 6;
+                menuCamera.lookAt(0, 6, 0);
+                renderer.render(menuScene, menuCamera);
+            }
+        }
+        else if (gameState === 'OFFICE' || gameState === 'GAMEOVER') {
+            if (!isMonitorUp && gameState !== 'GAMEOVER') camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.1;
+            else if (isMonitorUp) { camera.rotation.y = camData[currentCam].ry + Math.sin(Date.now() * 0.0005) * 0.02; cctvLight.target.position.copy(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion).add(camera.position)); }
+            
+            if (leftDoorMesh) leftDoorMesh.position.y += (leftDoorTargetY - leftDoorMesh.position.y) * 0.15;
+            if (rightDoorMesh) rightDoorMesh.position.y += (rightDoorTargetY - rightDoorMesh.position.y) * 0.15;
+            if (power > 0 && fanBlades) fanBlades.rotation.z -= 0.15;
+            if (power > 0 && mainOfficeLight && !isMonitorUp) mainOfficeLight.intensity = Math.random() > 0.95 ? 1.3 + Math.random() * 0.4 : 1.5;
+            
+            renderer.render(scene, camera);
+        }
+    }
+
+    window.onload = () => {
+        init3D(); 
+        loadGame(); 
+        document.getElementById('menu-screen').classList.remove('hidden');
+    };
+</script>
+</body>
+</html>
