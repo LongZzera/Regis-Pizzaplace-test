@@ -132,16 +132,20 @@
         #pc-status { font-weight: bold; font-size: clamp(1rem, 3vw, 1.2rem); text-align: center; margin-bottom: 10px; }
         .pc-alert { color: #f00 !important; text-shadow: 0 0 10px #f00 !important; animation: blink 1s infinite; }
         
-        #pc-file-list { list-style: none; flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 10px; }
-        .pc-file-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #800; padding-bottom: 8px; font-size: clamp(0.85rem, 2.5vw, 1.1rem); }
-        
         .clean-btn { background: #f00; color: #ffcc00; border: 1px solid #ffcc00; padding: 8px 15px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: clamp(0.8rem, 2.5vw, 1rem); transition: background 0.2s; }
-        .clean-btn:hover { background: #ffcc00; color: #f00; }
+        .clean-btn:hover:not(:disabled) { background: #ffcc00; color: #f00; }
         
         #pc-exit-btn { background: #220000; color: #ffcc00; border: 2px solid #f00; padding: 12px; cursor: pointer; margin-top: auto; font-family: inherit; font-size: clamp(1rem, 3vw, 1.2rem); font-weight: bold; }
         #pc-exit-btn:hover { background: #f00; color: #ffcc00; }
         
         .pc-system-container { margin-bottom: 10px; padding: 10px; border: 1px solid #800; display: flex; justify-content: space-between; align-items: center; background: rgba(255,0,0,0.1); font-size: clamp(0.85rem, 2.5vw, 1rem); }
+
+        /* NOVA ÁREA DE TAREFAS (PEDIDOS) */
+        #pc-task-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; margin-bottom: 10px; }
+        #order-box { width: 100%; border: 2px dashed #f00; padding: 15px; background: rgba(255,0,0,0.15); box-shadow: inset 0 0 10px #f00; }
+        #order-box h3 { color: #f00; margin-bottom: 10px; text-align: center; font-size: clamp(1rem, 3vw, 1.3rem); }
+        #order-box p { margin-bottom: 8px; font-size: clamp(0.85rem, 2.5vw, 1.1rem); }
+        .order-btn-container { display: flex; gap: 10px; width: 100%; margin-top: 15px; }
 
         /* --- O RESTO --- */
         #phone-ui { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; z-index: 25; pointer-events: none; display: flex; flex-direction: column; align-items: center; }
@@ -186,9 +190,8 @@
             .pc-system-container { flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
             .pc-system-container .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
             #pc-status { font-size: 1rem; margin-bottom: 8px; }
-            .pc-file-item { flex-direction: column; align-items: stretch; gap: 5px; padding-bottom: 10px; }
-            .pc-file-item span { font-size: 0.8rem; text-align: left; }
-            .pc-file-item .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
+            .order-btn-container { flex-direction: column; gap: 8px; }
+            .order-btn-container .clean-btn { width: 100%; padding: 12px; font-size: 1.1rem; }
             #pc-exit-btn { padding: 10px; font-size: 1.1rem; }
             
             .dialogue-box { bottom: 10px; padding: 12px; }
@@ -216,7 +219,7 @@
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
-        <div class="menu-footer">v1.3 - Minigames Update<br>Feito por Haldo/Long</div>
+        <div class="menu-footer">v1.4 - Ghost Orders<br>Feito por Haldo/Long</div>
     </div>
 
     <!-- TELA DE CONFIGURAÇÕES -->
@@ -319,9 +322,21 @@
             </div>
 
             <div id="pc-status">SISTEMA OK</div>
-            <ul id="pc-file-list">
-                <!-- Ficheiros gerados por JS -->
-            </ul>
+            
+            <!-- NOVA ÁREA DE PEDIDOS -->
+            <div id="pc-task-area">
+                <div id="order-box" class="hidden">
+                    <h3>NOVO PEDIDO (URGENTE)</h3>
+                    <p><strong>CLIENTE:</strong> <span id="order-client">...</span></p>
+                    <p style="margin-bottom: 10px;"><strong>PEDIDO:</strong> <span id="order-desc">...</span></p>
+                    <div class="order-btn-container">
+                        <button id="btn-assar" class="clean-btn" style="flex: 1;" onclick="bakeOrder()">ASSAR (-2%)</button>
+                        <button id="btn-entregar" class="clean-btn" style="flex: 1;" onclick="deliverOrder()" disabled>ENTREGAR (-2%)</button>
+                    </div>
+                </div>
+                <div id="pc-idle-msg" style="color: #0a0; text-align: center; margin-top: 20px;">NENHUMA TAREFA PENDENTE.</div>
+            </div>
+
             <button id="pc-exit-btn" onclick="closePC()">FECHAR TERMINAL</button>
         </div>
     </div>
@@ -403,7 +418,7 @@
         2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas câmeras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Se você não olhar para ele, ele corre.", "E sobre aquele cheiro... Lembra que eu falei do Regis?", "Ele tinha um primo, o Martins. A gente chamava ele de Alejado depois que as engrenagens esmagaram as pernas dele.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
         3: ["Alô, Rafa aqui de novo.", "Cara, as coisas saíram do controle. A pizza tóxica que o Regis inventou... ela fez coisas horríveis.", "O Martins não morreu de verdade. A toxina transformou ele... numa espécie de morto-vivo com fungos.", "Ele se arrasta pelo chão porque não tem pernas. Por isso as câmeras quase não pegam ele direito.", "Se você ouvir algo rastejando no corredor de metal... não hesite. Fecha a porta na cara dele!", "O ódio do Martins pelo Regis é tão grande que ele ataca qualquer guarda que ele vê."],
         4: ["Alô?! (Som de respiração ofegante)", "Eles tão me seguindo... Os outros funcionários... O Regis colocou os corpos infectados dentro das armaduras!", "Freddy, Bonnie, Chica... são sarcófagos, cara! É por isso que sangram e têm esses cogumelos bizarros...", "O prédio todo tá sendo consumido por raízes. A toxina vazou pelo porão.", "Não deixa eles entrarem! O Martins tá furioso. Ele quer vingança. Tranca tudo!"],
-        5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
+        5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro é ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
     };
 
     const loreText = [
@@ -479,15 +494,26 @@
 
     let playerName = "Guarda";
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
-    let isPCUp = false; let isTaskActive = false; let filesToClean = 0; let taskTimer = 30; let taskFailTimer = 15; 
+    let isPCUp = false; 
+    let isTaskActive = false; 
+    let taskTimer = 30; 
+    let taskFailTimer = 20; // Mais tempo para a tarefa de 2 cliques
+    
+    // Variáveis das Tarefas
     let isAudioBroken = false;
-
     let toxicity = 0;
-    let initialToxicity = 0; // Usado pelos minigames
+    let initialToxicity = 0; 
     let isExhaustOn = false;
     let isVentBroken = false;
     let exhaustAudioCtx = null;
     let exhaustOsc = null;
+    
+    // Variáveis dos Pedidos Fantasmas
+    const ghostVictims = ["João P.", "Maria S.", "Rafa (Ex-Guarda)", "Criança Chorona", "Primo Martins", "Func. Desconhecido"];
+    const ghostPizzas = ["1x Pizza de Carne... Crua", "2x Fatias com Olhos", "1x Pizza de Cordyceps", "1x Especial do Alejado", "1x Massa com Sangue Seco"];
+    let currentOrderClient = "";
+    let currentOrderDesc = "";
+    let isBaking = false;
 
     const animatronics = {
         bonnie: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM2A', 'LeftDoor'], doorWaitTime: 0, attackTimer: 0 },
@@ -510,7 +536,7 @@
     // --- CONTROLE DE TELAS E JOGO ---
     function startGame(night) {
         saveGame(night);
-        initialToxicity = 0; // Reset na toxicidade do minigame
+        initialToxicity = 0; 
 
         if (night === 1) {
             currentNight = 1;
@@ -609,7 +635,6 @@
         if(gameState !== 'NEWSPAPER') return;
         document.getElementById('newspaper-screen').classList.add('hidden');
         
-        // Decidir se há minigame. Noite 7 não tem minigame, vai direto.
         if (currentNight < 7) {
             initMinigame();
         } else {
@@ -636,24 +661,11 @@
         mgCanvas = document.getElementById('mg-canvas');
         mgCtx = mgCanvas.getContext('2d');
         
-        const resizeMg = () => {
-            mgCanvas.width = window.innerWidth;
-            mgCanvas.height = window.innerHeight;
-        };
+        const resizeMg = () => { mgCanvas.width = window.innerWidth; mgCanvas.height = window.innerHeight; };
         resizeMg(); window.addEventListener('resize', resizeMg);
 
-        // Previne o scrolling no telemóvel enquanto se joga
-        const onTouchMove = (e) => { 
-            e.preventDefault(); 
-            mgMouseX = e.touches[0].clientX; 
-            mgMouseY = e.touches[0].clientY; 
-        };
-        const onTouchStart = (e) => { 
-            e.preventDefault(); 
-            mgIsDown = true; 
-            mgMouseX = e.touches[0].clientX; 
-            mgMouseY = e.touches[0].clientY; 
-        };
+        const onTouchMove = (e) => { e.preventDefault(); mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; };
+        const onTouchStart = (e) => { e.preventDefault(); mgIsDown = true; mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; };
 
         mgCanvas.addEventListener('mousemove', (e) => { mgMouseX = e.clientX; mgMouseY = e.clientY; });
         mgCanvas.addEventListener('mousedown', (e) => { mgIsDown = true; mgMouseX = e.clientX; mgMouseY = e.clientY; });
@@ -662,17 +674,12 @@
         mgCanvas.addEventListener('touchstart', onTouchStart, {passive: false});
         mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
 
-        if (currentNight % 2 !== 0) {
-            setupPizzaMinigame();
-        } else {
-            setupCleanupMinigame();
-        }
+        if (currentNight % 2 !== 0) { setupPizzaMinigame(); } else { setupCleanupMinigame(); }
 
         mgState.active = true;
         mgTimerInt = setInterval(() => {
             if(!mgState.active) return;
-            mgState.time--;
-            document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+            mgState.time--; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
             if (mgState.time <= 0) endMinigame(false);
         }, 1000);
 
@@ -680,20 +687,10 @@
     }
 
     function setupPizzaMinigame() {
-        mgState.type = 'pizza';
-        mgState.time = 15;
-        document.getElementById('mg-title').innerText = "PREPARE A PIZZA";
-        document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
-        
+        mgState.type = 'pizza'; mgState.time = 15;
+        document.getElementById('mg-title').innerText = "PREPARE A PIZZA"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
         let isMobile = window.innerWidth < 768;
-        
-        // No mobile a pizza fica mais para baixo para deixar espaço para os ingredientes em cima
-        mgState.pizza = { 
-            x: window.innerWidth / 2, 
-            y: window.innerHeight * (isMobile ? 0.65 : 0.5), 
-            r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) 
-        };
-        
+        mgState.pizza = { x: window.innerWidth / 2, y: window.innerHeight * (isMobile ? 0.65 : 0.5), r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) };
         mgState.elements = [];
 
         let numIng = currentNight === 1 ? 6 : (currentNight === 3 ? 8 : 10);
@@ -704,30 +701,21 @@
         for(let i=0; i<numIng; i++) {
             let t = types[Math.floor(Math.random() * types.length)];
             let x, y;
-            
             if (isMobile) {
-                // Ingredientes na parte de cima do ecrã
-                x = 40 + Math.random() * (window.innerWidth - 80);
-                y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25);
+                x = 40 + Math.random() * (window.innerWidth - 80); y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25);
             } else {
-                // Ingredientes nos lados
                 x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80);
                 y = 100 + Math.random() * (window.innerHeight - 200);
             }
-            
             x = Math.max(30, Math.min(window.innerWidth - 30, x));
             let r = isMobile ? 20 : 25;
-
             mgState.elements.push({ id: i, type: t, x: x, y: y, r: r, isDragging: false, placed: false });
         }
     }
 
     function setupCleanupMinigame() {
-        mgState.type = 'cleanup';
-        mgState.time = 15 - Math.floor(currentNight/2);
-        document.getElementById('mg-title').innerText = "LIMPE O PORÃO";
-        document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
-        
+        mgState.type = 'cleanup'; mgState.time = 15 - Math.floor(currentNight/2);
+        document.getElementById('mg-title').innerText = "LIMPE O PORÃO"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
         let isMobile = window.innerWidth < 768;
         mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: isMobile ? 25 : 30 };
         mgState.elements = []; 
@@ -735,10 +723,8 @@
         let numStains = 5 + currentNight;
         for(let i=0; i<numStains; i++) {
             mgState.elements.push({
-                x: 40 + Math.random() * (window.innerWidth - 80),
-                y: 100 + Math.random() * (window.innerHeight - 150),
-                r: (isMobile ? 20 : 30) + Math.random() * 30,
-                color: Math.random() > 0.5 ? '#800' : '#080' 
+                x: 40 + Math.random() * (window.innerWidth - 80), y: 100 + Math.random() * (window.innerHeight - 150),
+                r: (isMobile ? 20 : 30) + Math.random() * 30, color: Math.random() > 0.5 ? '#800' : '#080' 
             });
         }
     }
@@ -747,15 +733,11 @@
         if (!mgState.active) return;
         mgAnimFrame = requestAnimationFrame(mgLoop);
         
-        mgCtx.fillStyle = '#111';
-        mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
+        mgCtx.fillStyle = '#111'; mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
 
         if (mgState.type === 'pizza') {
-            mgCtx.fillStyle = '#d1a15e';
-            mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r, 0, Math.PI*2); mgCtx.fill();
-            mgCtx.fillStyle = '#a12b2b'; 
-            mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r*0.9, 0, Math.PI*2); mgCtx.fill();
-
+            mgCtx.fillStyle = '#d1a15e'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r, 0, Math.PI*2); mgCtx.fill();
+            mgCtx.fillStyle = '#a12b2b'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r*0.9, 0, Math.PI*2); mgCtx.fill();
             let allPlaced = true;
 
             for(let i=mgState.elements.length-1; i>=0; i--) {
@@ -764,7 +746,7 @@
 
                 if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) {
                     let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y);
-                    if (dist < el.r * 2.5) el.isDragging = true; // Hitbox um pouco maior para toque
+                    if (dist < el.r * 2.5) el.isDragging = true; 
                 }
 
                 if (el.isDragging) {
@@ -772,18 +754,13 @@
                     if (!mgIsDown) {
                         el.isDragging = false;
                         let distToPizza = Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y);
-                        if (distToPizza < mgState.pizza.r * 0.8) {
-                            el.placed = true;
-                            playMgSound(400); 
-                        }
+                        if (distToPizza < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); }
                     }
                 }
 
-                if (el.type === 'pep') {
-                    mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
-                } else if (el.type === 'cheese') {
-                    mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2);
-                } else if (el.type === 'eye') {
+                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } 
+                else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } 
+                else if (el.type === 'eye') {
                     mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill();
                     mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill();
                     mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); 
@@ -800,23 +777,14 @@
             for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); }
             for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
 
-            if (mgIsDown || mgMouseX !== 0) { 
-                mgState.player.x += (mgMouseX - mgState.player.x) * 0.15;
-                mgState.player.y += (mgMouseY - mgState.player.y) * 0.15;
-            }
+            if (mgIsDown || mgMouseX !== 0) { mgState.player.x += (mgMouseX - mgState.player.x) * 0.15; mgState.player.y += (mgMouseY - mgState.player.y) * 0.15; }
 
             let anyLeft = false;
             for (let stain of mgState.elements) {
                 if (stain.r > 0) {
-                    anyLeft = true;
-                    mgCtx.fillStyle = stain.color;
-                    mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill();
-                    
+                    anyLeft = true; mgCtx.fillStyle = stain.color; mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill();
                     let dist = Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y);
-                    if (dist < mgState.player.r + stain.r) {
-                        stain.r -= 2; 
-                        if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800);
-                    }
+                    if (dist < mgState.player.r + stain.r) { stain.r -= 2; if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800); }
                 }
             }
 
@@ -840,17 +808,9 @@
 
     function endMinigame(success) {
         if(!mgState.active) return;
-        mgState.active = false;
-        cancelAnimationFrame(mgAnimFrame);
-        clearInterval(mgTimerInt);
+        mgState.active = false; cancelAnimationFrame(mgAnimFrame); clearInterval(mgTimerInt);
         document.getElementById('minigame-screen').classList.add('hidden');
-
-        if (mgState.type === 'cleanup' && !success) {
-            initialToxicity = 40; 
-        } else {
-            initialToxicity = 0;
-        }
-
+        if (mgState.type === 'cleanup' && !success) initialToxicity = 40; else initialToxicity = 0;
         showStory();
     }
 
@@ -894,10 +854,7 @@
                     document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, 0)`;
                 }
 
-                if (toxicity >= 100) {
-                    triggerIntoxicationGameOver();
-                    return;
-                }
+                if (toxicity >= 100) { triggerIntoxicationGameOver(); return; }
             }
 
             if (!isTaskActive && !isBlackout) {
@@ -907,7 +864,7 @@
                 taskFailTimer--;
                 if (isPCUp) {
                     const statusEl = document.getElementById('pc-status');
-                    if (statusEl) statusEl.innerText = `ALERTA: FUNGOS DIGITAIS! TEMPO: ${taskFailTimer}s`;
+                    if (statusEl) statusEl.innerText = `ALERTA: PEDIDO PENDENTE! TEMPO: ${taskFailTimer}s`;
                 }
                 if (taskFailTimer <= 0) { power = 0; if (isPCUp) closePC(); }
             }
@@ -918,7 +875,7 @@
                 if (isLeftDoorClosed) drain += 0.15; if (isRightDoorClosed) drain += 0.15;
                 if (isLeftLightOn) drain += 0.1; if (isRightLightOn) drain += 0.1;
                 if (isMonitorUp) drain += 0.15;
-                if (isTaskActive) drain += 0.4; 
+                if (isTaskActive) drain += 0.2; // Diminui o drain passivo das tarefas para balançar o custo do clique
                 if (isExhaustOn) drain += 0.1;
 
                 power -= drain;
@@ -930,15 +887,21 @@
         gameIntervals.push(setInterval(checkDoorsTiming, 1000));
     }
 
-    // --- TAREFAS E PC ---
+    // --- TAREFAS (PEDIDOS) E PC ---
     function triggerTaskAlert() {
         if (gameState !== 'OFFICE' || isBlackout) return;
-        isTaskActive = true; taskFailTimer = 15; filesToClean = 3 + Math.floor(Math.random() * 3); 
+        isTaskActive = true; 
+        taskFailTimer = 20; 
+        isBaking = false;
+        
+        currentOrderClient = ghostVictims[Math.floor(Math.random() * ghostVictims.length)];
+        currentOrderDesc = ghostPizzas[Math.floor(Math.random() * ghostPizzas.length)];
+        
         if (crtScreenMesh) crtScreenMesh.material.color.setHex(0xff0000); 
         playBuzzer();
         if (isMonitorUp) {
             document.getElementById('static-overlay').style.opacity = '0.9';
-            document.getElementById('camera-name').innerText = "SINAL PERDIDO - ERRO NO SISTEMA";
+            document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO";
             document.getElementById('camera-name').classList.add('pc-alert');
         }
     }
@@ -955,36 +918,85 @@
         if (isVentBroken) { ventText.innerText = "VENTILAÇÃO: OFFLINE (ERRO)"; ventText.classList.add('pc-alert'); ventFixBtn.classList.remove('hidden'); }
         else { ventText.innerText = "VENTILAÇÃO: ONLINE"; ventText.classList.remove('pc-alert'); ventFixBtn.classList.add('hidden'); }
 
-        const statusEl = document.getElementById('pc-status'); const listEl = document.getElementById('pc-file-list'); listEl.innerHTML = '';
+        const statusEl = document.getElementById('pc-status'); 
+        const orderBox = document.getElementById('order-box');
+        const idleMsg = document.getElementById('pc-idle-msg');
+
         if (isTaskActive) {
-            statusEl.innerText = `ALERTA: FUNGOS DIGITAIS! TEMPO: ${taskFailTimer}s`; statusEl.className = "pc-alert";
-            const fileNames = ["esporo_rad.sys", "nervo_morto.exe", "veia_cortada.dll", "cordyceps.bat", "carne_podre.log"];
-            for(let i = 0; i < filesToClean; i++) {
-                let li = document.createElement('li'); li.className = 'pc-file-item';
-                let fName = fileNames[Math.floor(Math.random() * fileNames.length)];
-                li.innerHTML = `<span>C:\\REGIS_OS\\${fName}</span> <button class="clean-btn" onclick="cleanFile(this)">LIMPAR</button>`;
-                listEl.appendChild(li);
+            statusEl.innerText = `ALERTA: PEDIDO PENDENTE! TEMPO: ${taskFailTimer}s`; statusEl.className = "pc-alert";
+            idleMsg.classList.add('hidden');
+            orderBox.classList.remove('hidden');
+            
+            document.getElementById('order-client').innerText = currentOrderClient;
+            document.getElementById('order-desc').innerText = currentOrderDesc;
+            
+            const btnAssar = document.getElementById('btn-assar');
+            const btnEntregar = document.getElementById('btn-entregar');
+            
+            if (isBaking) {
+                btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
+                btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
+            } else {
+                btnAssar.disabled = false; btnAssar.style.opacity = '1'; btnAssar.innerText = "ASSAR (-2%)";
+                btnEntregar.disabled = true; btnEntregar.style.opacity = '0.5';
             }
         } else {
-            statusEl.innerText = "SISTEMA OK - NENHUMA AMEAÇA DETECTADA"; statusEl.className = "";
-            listEl.innerHTML = "<li style='text-align:center; margin-top: 50px; color:#050;'>Tudo limpo... por enquanto.</li>";
+            statusEl.innerText = "SISTEMA OK - AGUARDANDO PEDIDOS"; statusEl.className = "";
+            orderBox.classList.add('hidden');
+            idleMsg.classList.remove('hidden');
         }
     }
 
-    function cleanFile(btn) { btn.parentElement.remove(); filesToClean--; if (filesToClean <= 0) completeTask(); }
+    function bakeOrder() {
+        if (power < 2) return;
+        power -= 2;
+        document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+        isBaking = true;
+        
+        const btnAssar = document.getElementById('btn-assar');
+        const btnEntregar = document.getElementById('btn-entregar');
+        btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
+        btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
+        
+        playTerminalBeep(300);
+    }
+
+    function deliverOrder() {
+        if (power < 2) return;
+        power -= 2;
+        document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+        playTerminalBeep(600);
+        completeTask();
+    }
 
     function completeTask() {
         isTaskActive = false;
         let taskDelay = 35; if (currentNight === 2) taskDelay = 30; else if (currentNight === 3) taskDelay = 25; else if (currentNight >= 4) taskDelay = 20;
         taskTimer = taskDelay + Math.random() * 10; 
-        const statusEl = document.getElementById('pc-status'); statusEl.innerText = "SISTEMA OK - AMEAÇAS REMOVIDAS"; statusEl.className = "";
+        
+        const statusEl = document.getElementById('pc-status'); statusEl.innerText = "SISTEMA OK - PEDIDO ENTREGUE"; statusEl.className = "";
+        document.getElementById('order-box').classList.add('hidden');
+        document.getElementById('pc-idle-msg').classList.remove('hidden');
+        
         if (crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211); 
         document.getElementById('camera-name').classList.remove('pc-alert');
         if(isMonitorUp) { document.getElementById('static-overlay').style.opacity = '0.15'; document.getElementById('camera-name').innerText = camData[currentCam].name; }
+        
         setTimeout(() => { if(isPCUp) closePC(); }, 1000);
     }
 
     function closePC() { isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); }
+
+    function playTerminalBeep(freq) {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
+        } catch(e) {}
+    }
 
     // --- MECÂNICAS DE ÁUDIO E VENTILAÇÃO ---
     function playAudioSystem() {
@@ -1094,7 +1106,6 @@
 
     window.addEventListener('click', (e) => handleRaycast(e.clientX, e.clientY));
     
-    // Ajustado o event listener de toque para o ecrã 3D sem quebrar o canvas
     const officeTouch = (e) => { 
         if(gameState === 'OFFICE' && e.touches.length > 0) {
             handleRaycast(e.touches[0].clientX, e.touches[0].clientY); 
@@ -1332,7 +1343,7 @@
         
         isTaskActive = false; isPCUp = false; 
         let taskDelay = 40; if(currentNight === 2) taskDelay = 35; else if (currentNight === 3) taskDelay = 30; else if (currentNight >= 4) taskDelay = 20;
-        taskTimer = taskDelay; taskFailTimer = 15;
+        taskTimer = taskDelay; taskFailTimer = 20; // Tempo aumentado para dar tempo de fazer os dois cliques
         
         isAudioBroken = false;
         const aBtn = document.getElementById('audio-btn'); if(aBtn) { aBtn.classList.remove('broken'); aBtn.innerText = "[ TOCAR ÁUDIO ]"; }
@@ -1683,7 +1694,7 @@
             switchCam(currentCam); mainOfficeLight.intensity = 0; cctvLight.intensity = 1.5; triggerStaticPulse(); 
             if (isTaskActive) {
                 document.getElementById('static-overlay').style.opacity = '0.9';
-                document.getElementById('camera-name').innerText = "SINAL PERDIDO - ERRO NO SISTEMA";
+                document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO";
                 document.getElementById('camera-name').classList.add('pc-alert');
             }
         } 
