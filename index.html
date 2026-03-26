@@ -16,6 +16,7 @@
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 100; background-size: 100% 3px, 3px 100%; pointer-events: none; opacity: 0.6; transition: opacity 0.3s;
         }
+        .crt.medium::before { opacity: 0.25; background-size: 100% 4px, 4px 100%; }
         .crt.off::before { display: none; }
 
         #toxic-filter {
@@ -95,6 +96,19 @@
         
         #gameover-screen { background-color: #000; z-index: 90; }
         #gameover-screen h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: #800; animation: flicker 2s infinite; text-align: center; padding: 0 10px; }
+
+        /* --- CUSTOM NIGHT SCREEN --- */
+        #custom-night-screen { background-color: #050505; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .cn-title { color: #f00; font-family: 'Arial Black', Impact, sans-serif; font-size: clamp(2.5rem, 6vw, 5rem); text-shadow: 4px 4px 0 #330000; margin-bottom: 40px; }
+        .cn-grid { display: flex; gap: 20px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center;}
+        .cn-char { display: flex; flex-direction: column; align-items: center; background: #111; border: 2px solid #333; padding: 20px; border-radius: 10px; width: 160px; box-shadow: 0 0 10px #000 inset;}
+        .cn-char-name { font-weight: bold; font-family: 'Courier New', monospace; font-size: 1.5rem; color: #fff; margin-bottom: 15px; }
+        .cn-controls { display: flex; align-items: center; gap: 15px; }
+        .cn-btn { background: #333; color: #fff; border: 2px solid #666; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; border-radius: 5px;}
+        .cn-btn:hover { background: #666; border-color: #fff;}
+        .cn-lvl { font-size: 2rem; width: 40px; text-align: center; font-family: monospace; color: #ffcc00;}
+        .cn-start-btn { background: #800; color: #fff; border: 2px solid #f00; padding: 15px 40px; font-size: 1.5rem; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: 'Courier New', monospace; margin: 0 10px;}
+        .cn-start-btn:hover { background: #f00; color: #fff; box-shadow: 0 0 15px #f00;}
 
         /* --- ANIMAÇÃO DE VITÓRIA (7 AM) --- */
         #win-screen-7am { background-color: #000; z-index: 80; }
@@ -226,6 +240,30 @@
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-10px, -20px) rotate(-3deg); } 20% { transform: translate(-30px, 0px) rotate(3deg); } 30% { transform: translate(30px, 20px) rotate(0deg); } 40% { transform: translate(10px, -10px) rotate(3deg); } 50% { transform: translate(-10px, 20px) rotate(-3deg); } 60% { transform: translate(-30px, 10px) rotate(0deg); } 70% { transform: translate(30px, 1px) rotate(-3deg); } 80% { transform: translate(-10px, -10px) rotate(3deg); } 90% { transform: translate(10px, 20px) rotate(0deg); } 100% { transform: translate(1px, -20px) rotate(-3deg); } }
         .jumpscare-shake { animation: shake 0.1s infinite; filter: sepia(1) hue-rotate(300deg) saturate(5); }
         
+        /* --- SISTEMA DE CONQUISTAS --- */
+        #achievement-container { position: fixed; top: 20px; right: 20px; z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 10px; }
+        .achievement-popup {
+            background: linear-gradient(135deg, rgba(20,20,30,0.95), rgba(10,10,15,0.95)); border-radius: 12px; padding: 12px 20px;
+            display: flex; align-items: center; gap: 15px; width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.1);
+            transform: translateX(120%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+            font-family: 'Arial', sans-serif;
+        }
+        .achievement-popup.show { transform: translateX(0); }
+        .achieve-icon-wrap { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 0 15px currentColor; }
+        .achieve-icon { font-size: 24px; color: #111; font-weight: bold; }
+        .achieve-text { display: flex; flex-direction: column; }
+        .achieve-title { color: #fff; font-size: 1.1rem; font-weight: bold; text-shadow: 1px 1px 2px #000; margin-bottom: 2px; }
+        .achieve-desc { color: #aaa; font-size: 0.85rem; font-family: 'Courier New', Courier, monospace; }
+        
+        #achievements-screen .pc-screen { width: 95%; max-width: 900px; height: 85%; }
+        .achieve-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; overflow-y: auto; padding-right: 10px; margin-top: 15px; }
+        .achieve-card { background: rgba(20,20,20,0.8); border: 1px solid #444; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 15px; transition: 0.3s; }
+        .achieve-card.locked { opacity: 0.4; filter: grayscale(1); }
+        .achieve-card.locked .achieve-title { color: #888; }
+        .achieve-card.locked .achieve-desc { color: #555; }
+        .achieve-stats { width: 100%; display: flex; justify-content: space-between; font-size: 0.9rem; color: #00aaff; border-top: 1px solid #333; margin-top: 15px; padding-top: 10px;}
+
         @media (max-width: 768px) {
             #menu-screen { padding-bottom: 20%; padding-left: 5%; background: linear-gradient(180deg, rgba(5,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); align-items: center; justify-content: center; }
             .menu-content { align-items: center; text-align: center; }
@@ -247,6 +285,14 @@
             .dialogue-text { font-size: 0.95rem; min-height: 45px; }
             .dialogue-name { font-size: 1rem; margin-bottom: 5px; }
             #wind-up-container { width: 60%; left: 50%; transform: translateX(-50%); bottom: 20%; }
+            
+            .cn-title { font-size: 2.5rem; margin-bottom: 20px; }
+            .cn-grid { gap: 10px; margin-bottom: 20px; }
+            .cn-char { width: 40%; padding: 10px; }
+            .cn-char-name { font-size: 1.2rem; margin-bottom: 5px; }
+            .cn-btn { width: 30px; height: 30px; font-size: 1.2rem; }
+            .cn-lvl { font-size: 1.5rem; width: 30px; }
+            .cn-start-btn { padding: 10px 20px; font-size: 1.2rem; margin: 0 5px;}
         }
 
         @media (max-height: 500px) {
@@ -271,7 +317,9 @@
             <div class="menu-options">
                 <button class="menu-btn" onclick="window.startGame(1)">> Novo Jogo</button>
                 <button class="menu-btn" onclick="window.continueGame()" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
+                <button class="menu-btn hidden" id="custom-night-btn" onclick="window.openCustomNight()" style="color: #f00;">> Custom Night</button>
                 <button class="menu-btn" onclick="window.startTutorial()" style="color: #00aaff;">> Tutorial</button>
+                <button class="menu-btn" onclick="window.openAchievements()">> Conquistas</button>
                 <button class="menu-btn" onclick="window.openSettings()">> Configurações</button>
             </div>
         </div>
@@ -279,10 +327,40 @@
         <div class="menu-footer">v2.1 - The Paycheck Update<br>Feito por Haldo/Long</div>
     </div>
 
+    <!-- UI DE CUSTOM NIGHT -->
+    <div id="custom-night-screen" class="screen hidden">
+        <h1 class="cn-title">CUSTOM NIGHT</h1>
+        <div class="cn-grid">
+            <div class="cn-char"><div class="cn-char-name">BONNIE</div><div class="cn-controls"><button class="cn-btn" onclick="window.adjAI('bonnie',-1)">-</button><div class="cn-lvl" id="lvl-bonnie">0</div><button class="cn-btn" onclick="window.adjAI('bonnie',1)">+</button></div></div>
+            <div class="cn-char"><div class="cn-char-name">CHICA</div><div class="cn-controls"><button class="cn-btn" onclick="window.adjAI('chica',-1)">-</button><div class="cn-lvl" id="lvl-chica">0</div><button class="cn-btn" onclick="window.adjAI('chica',1)">+</button></div></div>
+            <div class="cn-char"><div class="cn-char-name">FREDDY</div><div class="cn-controls"><button class="cn-btn" onclick="window.adjAI('freddy',-1)">-</button><div class="cn-lvl" id="lvl-freddy">0</div><button class="cn-btn" onclick="window.adjAI('freddy',1)">+</button></div></div>
+            <div class="cn-char"><div class="cn-char-name">FOXY</div><div class="cn-controls"><button class="cn-btn" onclick="window.adjAI('foxy',-1)">-</button><div class="cn-lvl" id="lvl-foxy">0</div><button class="cn-btn" onclick="window.adjAI('foxy',1)">+</button></div></div>
+        </div>
+        <div style="display:flex; gap: 20px;">
+            <button class="cn-start-btn" style="background:#444; border-color:#888;" onclick="window.closeCustomNight()">VOLTAR</button>
+            <button class="cn-start-btn" onclick="window.startCustomNight()">PRONTO</button>
+        </div>
+    </div>
+
     <!-- UI DO TUTORIAL -->
     <div id="tutorial-ui" class="hidden">
         <p id="tut-text">...</p>
         <button id="tut-btn" class="tut-btn" onclick="window.nextTutStep()">Continuar</button>
+    </div>
+
+    <!-- UI DE CONQUISTAS -->
+    <div id="achievements-screen" class="screen hidden">
+        <div class="pc-screen settings-style">
+            <h2>CONQUISTAS DO JOGADOR</h2>
+            <div class="achieve-stats">
+                <span id="achieve-count">Desbloqueadas: 0/54</span>
+                <span id="achieve-plat">Platina: NÃO</span>
+            </div>
+            <div class="achieve-grid" id="achievements-grid">
+                <!-- Gerado por JS -->
+            </div>
+            <button id="pc-exit-btn" style="border-color:#fff; color:#fff; margin-top: 20px;" onclick="window.closeAchievements()">VOLTAR</button>
+        </div>
     </div>
 
     <div id="settings-screen" class="screen hidden">
@@ -456,6 +534,7 @@
     </div>
 
     <div id="canvas-container"></div>
+    <div id="achievement-container"></div>
 </div>
 
 <script>
@@ -475,6 +554,7 @@
     // --- NOVAS VARIÁVEIS DA MECÂNICA DE LANTERNA E TUTORIAL ---
     let leftArmGroup, rightArmGroup;
     let leftArmTargetY = -0.8, rightArmTargetY = -0.8; 
+    let highDetailGroup, highDetailMeshes = [];
 
     let isTutorial = false;
     let tutStep = 0;
@@ -487,6 +567,198 @@
     
     let playerName = localStorage.getItem('regis_pizzaplace_playername') || "Guarda";
     
+    // --- SISTEMA DE CONQUISTAS E STATUS ---
+    window.gameStats = JSON.parse(localStorage.getItem('regis_pizzaplace_stats')) || {
+        pizzas: 0, deaths: 0, monitor: 0, box: 0, exhaust: 0, powerOuts: 0, doors: 0, lights: 0
+    };
+    window.unlockedAchievs = JSON.parse(localStorage.getItem('regis_pizzaplace_achievements')) || [];
+    
+    window.doorsClosedThisNight = false;
+    window.audioUsedThisNight = false;
+    window.exhaustUsedThisNight = false;
+    window.monitorUsedThisNight = false;
+    window.foxyLeftCoveThisNight = false;
+
+    // --- VARIÁVEIS DE GRÁFICOS ---
+    window.graphicsLevel = parseInt(localStorage.getItem('regis_gfx'));
+    if(isNaN(window.graphicsLevel)) window.graphicsLevel = 2; // 0: Baixo, 1: Médio, 2: Alto
+    let defaultEnvMap = null;
+
+    // --- VARIÁVEIS DA CUSTOM NIGHT ---
+    window.customAI = { bonnie: 0, chica: 0, freddy: 0, foxy: 0 };
+
+    const ACHIEVEMENTS_DATA = [
+        { id: "tut_complete", title: "Bem-vindo à Família", desc: "Complete o treinamento do tutorial.", type: "Bronze" },
+        { id: "night_1", title: "Sobrevivente Iniciante", desc: "Sobreviva à Noite 1.", type: "Bronze" },
+        { id: "night_2", title: "Ganhando o Ritmo", desc: "Sobreviva à Noite 2.", type: "Bronze" },
+        { id: "night_3", title: "Metade do Caminho", desc: "Sobreviva à Noite 3.", type: "Prata" },
+        { id: "night_4", title: "Quase Lá", desc: "Sobreviva à Noite 4.", type: "Prata" },
+        { id: "night_5", title: "Fim de Semana", desc: "Sobreviva à Noite 5.", type: "Ouro" },
+        { id: "night_6", title: "Hora Extra", desc: "Sobreviva à Noite 6.", type: "Ouro" },
+        { id: "night_7", title: "O Purgatório", desc: "Complete a Noite 7 (Máxima Dificuldade).", type: "Platina" },
+        { id: "cn_20202020", title: "O Pesadelo Supremo", desc: "Vença a Custom Night no modo 20/20/20/20.", type: "Platina" },
+        { id: "death_first", title: "Primeira Morte", desc: "Morra pela primeira vez.", type: "Bronze" },
+        { id: "death_tox", title: "Comida Estragada", desc: "Morra por intoxicação fúngica.", type: "Bronze" },
+        { id: "death_pow", title: "Apagão", desc: "Fique sem energia e sucumba à escuridão.", type: "Bronze" },
+        { id: "death_bonnie", title: "Orelhas Longas", desc: "Seja morto pelo Bonnie.", type: "Bronze" },
+        { id: "death_chica", title: "Bico Faminto", desc: "Seja morto pela Chica.", type: "Bronze" },
+        { id: "death_freddy", title: "O Chefe", desc: "Seja morto pelo Freddy.", type: "Bronze" },
+        { id: "death_foxy", title: "Gancho Mortal", desc: "Seja morto pelo Foxy.", type: "Bronze" },
+        { id: "act_exh", title: "Higiene Básica", desc: "Ligue o exaustor uma vez.", type: "Bronze" },
+        { id: "act_light", title: "Luzes Cegas", desc: "Use a luz do corredor.", type: "Bronze" },
+        { id: "act_door", title: "Barreira de Aço", desc: "Feche uma porta blindada.", type: "Bronze" },
+        { id: "act_mon", title: "Vigilante", desc: "Abra o monitor de câmeras.", type: "Bronze" },
+        { id: "act_wind", title: "Melodia Calmante", desc: "Recarregue a caixa de música do Foxy.", type: "Bronze" },
+        { id: "act_bake", title: "Pizzaiolo", desc: "Coloque uma pizza para assar.", type: "Bronze" },
+        { id: "act_del", title: "Entregador", desc: "Entregue uma pizza com sucesso.", type: "Bronze" },
+        { id: "mute", title: "Estou Ocupado!", desc: "Mute a gravação de voz.", type: "Bronze" },
+        { id: "surv_tox_95", title: "Quem Precisa de Ar?", desc: "Termine uma noite com 95% ou mais de toxicidade.", type: "Prata" },
+        { id: "surv_tox_0", title: "Pulmões Limpos", desc: "Termine uma noite com 0% de toxicidade.", type: "Prata" },
+        { id: "surv_pow_5", title: "No Fio da Navalha", desc: "Termine uma noite com menos de 5% de energia.", type: "Prata" },
+        { id: "surv_pow_50", title: "Eco-Friendly", desc: "Termine uma noite com mais de 50% de energia.", type: "Ouro" },
+        { id: "grind_piz_20", title: "Pizzaiolo Chefe", desc: "Entregue 20 pizzas no total.", type: "Prata" },
+        { id: "grind_piz_50", title: "Pizzaiolo Mestre", desc: "Entregue 50 pizzas no total.", type: "Ouro" },
+        { id: "grind_mon_100", title: "Paranoia", desc: "Abra o monitor 100 vezes no total.", type: "Prata" },
+        { id: "grind_pow_10", title: "Bateria Viciada", desc: "Fique sem energia 10 vezes no total.", type: "Prata" },
+        { id: "grind_exh_50", title: "Fungofobia", desc: "Use o exaustor 50 vezes no total.", type: "Prata" },
+        { id: "grind_wind_100", title: "Músico", desc: "Gire a caixa de música 100 vezes no total.", type: "Prata" },
+        { id: "grind_door_100", title: "Batedor de Portas", desc: "Feche as portas 100 vezes.", type: "Prata" },
+        { id: "grind_light_100", title: "Farol Quebrado", desc: "Use as luzes 100 vezes.", type: "Prata" },
+        { id: "grind_death_25", title: "Colecionador de Mortes", desc: "Morra 25 vezes.", type: "Ouro" },
+        { id: "fail_del", title: "Não Toque Nisso!", desc: "Tente entregar uma pizza sem assá-la primeiro.", type: "Bronze" },
+        { id: "click_poster", title: "O Funcionário do Mês", desc: "Interaja com o poster do Martins.", type: "Bronze" },
+        { id: "click_fan", title: "Ventilador Valente", desc: "Toque no ventilador da mesa.", type: "Bronze" },
+        { id: "click_phone", title: "Nostalgia", desc: "Toque no telefone vermelho da mesa.", type: "Bronze" },
+        { id: "sign_contract", title: "Honrando o Contrato", desc: "Assine o contrato de risco.", type: "Bronze" },
+        { id: "sign_cobaia", title: "Cobaia Padrão", desc: "Inicie o jogo com o nome padrão 'Cobaia'.", type: "Bronze" },
+        { id: "mg_piz_win", title: "Chef Perfeito", desc: "Vença o minigame da Pizza.", type: "Bronze" },
+        { id: "mg_piz_lose", title: "Desastre na Cozinha", desc: "Falhe no minigame da Pizza.", type: "Bronze" },
+        { id: "mg_cln_win", title: "Faxineiro Impecável", desc: "Vença o minigame do Porão.", type: "Bronze" },
+        { id: "mg_cln_lose", title: "Porão Sujo", desc: "Falhe no minigame do Porão.", type: "Bronze" },
+        { id: "fix_aud", title: "Consertador", desc: "Reinicie o sistema de Áudio.", type: "Bronze" },
+        { id: "fix_vent", title: "Ar Fresco", desc: "Reinicie a Ventilação.", type: "Bronze" },
+        { id: "foxy_out", title: "Caixa Quebrada", desc: "Deixe a caixa de música zerar e Foxy sair.", type: "Prata" },
+        { id: "foxy_stay", title: "Sempre Alerta", desc: "Mantenha o Foxy na fase 0 a noite inteira.", type: "Ouro" },
+        { id: "no_aud", title: "Silêncio Absoluto", desc: "Passe uma noite sem usar a distração de Áudio.", type: "Prata" },
+        { id: "spend_fast", title: "Gastador", desc: "Use 10% da energia antes da 1 AM.", type: "Bronze" },
+        { id: "no_doors", title: "Coração de Ferro", desc: "Sobreviva uma noite (2+) sem fechar as portas.", type: "Ouro" },
+        { id: "surv_no_exh", title: "Pulmões de Aço", desc: "Sobreviva à noite 3 ou superior sem usar o exaustor.", type: "Ouro" },
+        { id: "surv_no_cam", title: "Visão Cega", desc: "Sobreviva à noite 1 sem abrir as câmeras.", type: "Ouro" },
+        { id: "spam_door", title: "Ansiedade", desc: "Abra e feche a porta rapidamente.", type: "Prata" },
+        { id: "all_achiev", title: "100% REGIS", desc: "Desbloqueie todas as outras conquistas do jogo.", type: "Platina" }
+    ];
+
+    function saveStats() { try { localStorage.setItem('regis_pizzaplace_stats', JSON.stringify(window.gameStats)); localStorage.setItem('regis_pizzaplace_achievements', JSON.stringify(window.unlockedAchievs)); } catch(e) {} }
+    
+    window.unlockAchievement = function(id) {
+        if (window.unlockedAchievs.includes(id)) return;
+        window.unlockedAchievs.push(id);
+        saveStats();
+        
+        const a = ACHIEVEMENTS_DATA.find(x => x.id === id);
+        if(a) showAchievementPopup(a);
+
+        if (id === 'night_7') {
+            const cnBtn = document.getElementById('custom-night-btn');
+            if (cnBtn) cnBtn.classList.remove('hidden');
+        }
+
+        // Verifica a Platina
+        if (id !== 'all_achiev' && window.unlockedAchievs.length >= ACHIEVEMENTS_DATA.length - 1) {
+            let hasAll = true;
+            for(let i=0; i<ACHIEVEMENTS_DATA.length; i++) {
+                if(ACHIEVEMENTS_DATA[i].id !== 'all_achiev' && !window.unlockedAchievs.includes(ACHIEVEMENTS_DATA[i].id)) hasAll = false;
+            }
+            if (hasAll) setTimeout(() => window.unlockAchievement('all_achiev'), 3000);
+        }
+    };
+
+    function showAchievementPopup(a) {
+        const colors = { "Bronze": "#cd7f32", "Prata": "#c0c0c0", "Ouro": "#ffd700", "Platina": "#00eeff" };
+        const iconColor = colors[a.type] || "#fff";
+        const bgGlow = a.type === 'Platina' ? 'box-shadow: 0 0 20px #00eeff;' : '';
+
+        const div = document.createElement('div');
+        div.className = 'achievement-popup';
+        div.style.cssText = bgGlow;
+        div.innerHTML = `
+            <div class="achieve-icon-wrap" style="color: ${iconColor}; border: 2px solid ${iconColor};">
+                <span class="achieve-icon">🏆</span>
+            </div>
+            <div class="achieve-text">
+                <span class="achieve-title">${a.title}</span>
+                <span class="achieve-desc">${a.desc}</span>
+            </div>
+        `;
+        document.getElementById('achievement-container').appendChild(div);
+        
+        playAchievementSound(a.type);
+
+        setTimeout(() => div.classList.add('show'), 100);
+        setTimeout(() => {
+            div.classList.remove('show');
+            setTimeout(() => div.remove(), 600);
+        }, 5000);
+    }
+
+    function playAchievementSound(type) {
+        if (masterVolume <= 0) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator(); const gain = ctx.createGain();
+            osc1.type = 'sine'; osc2.type = 'triangle';
+            
+            if(type === 'Platina' || type === 'Ouro') { osc1.frequency.setValueAtTime(880, ctx.currentTime); osc2.frequency.setValueAtTime(1108.73, ctx.currentTime); }
+            else { osc1.frequency.setValueAtTime(523.25, ctx.currentTime); osc2.frequency.setValueAtTime(659.25, ctx.currentTime); }
+
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.1 * masterVolume, ctx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+            
+            osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination);
+            osc1.start(); osc2.start(); osc1.stop(ctx.currentTime + 1.5); osc2.stop(ctx.currentTime + 1.5);
+        } catch(e) {}
+    }
+
+    window.openAchievements = function() {
+        document.getElementById('menu-screen').classList.add('hidden');
+        document.getElementById('achievements-screen').classList.remove('hidden');
+        
+        const grid = document.getElementById('achievements-grid');
+        grid.innerHTML = '';
+        
+        let unlocked = 0;
+        ACHIEVEMENTS_DATA.forEach(a => {
+            const isUnlocked = window.unlockedAchievs.includes(a.id);
+            if(isUnlocked) unlocked++;
+            
+            const colors = { "Bronze": "#cd7f32", "Prata": "#c0c0c0", "Ouro": "#ffd700", "Platina": "#00eeff" };
+            const iColor = isUnlocked ? colors[a.type] : "#333";
+            const glow = (isUnlocked && a.type === 'Platina') ? 'box-shadow: 0 0 10px #00eeff;' : '';
+
+            grid.innerHTML += `
+                <div class="achieve-card ${isUnlocked ? '' : 'locked'}" style="${glow}">
+                    <div class="achieve-icon-wrap" style="color: ${iColor}; border: 2px solid ${iColor}; width: 40px; height: 40px; box-shadow: none;">
+                        <span class="achieve-icon" style="font-size: 18px;">${isUnlocked ? '🏆' : '🔒'}</span>
+                    </div>
+                    <div class="achieve-text">
+                        <span class="achieve-title">${a.title}</span>
+                        <span class="achieve-desc">${isUnlocked ? a.desc : 'Conquista Oculta'}</span>
+                        <span style="font-size: 0.7rem; color: ${iColor}; margin-top: 3px;">[${a.type}]</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('achieve-count').innerText = `Desbloqueadas: ${unlocked}/${ACHIEVEMENTS_DATA.length}`;
+        document.getElementById('achieve-plat').innerText = `Platina: ${window.unlockedAchievs.includes('all_achiev') ? 'SIM' : 'NÃO'}`;
+    };
+
+    window.closeAchievements = function() {
+        document.getElementById('achievements-screen').classList.add('hidden');
+        document.getElementById('menu-screen').classList.remove('hidden');
+    };
+
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
     let isPCUp = false, isTaskActive = false, taskTimer = 30, taskFailTimer = 20; 
     let isAudioBroken = false, toxicity = 0, initialToxicity = 0; 
@@ -496,7 +768,7 @@
     
     // --- CAIXA DE MUSICA UNIFICADA ---
     window.foxyBox = 100; window.isWinding = false; window.foxyTriggered = false;
-    let masterVolume = 1.0, isHighQuality = true, confirmReset = false;
+    let masterVolume = 1.0, confirmReset = false;
 
     // --- GLOBAIS DOS MINIGAMES ---
     let mgCanvas, mgCtx, mgAnimFrame, mgTimerInt;
@@ -509,7 +781,7 @@
     const animatronics = {
         bonnie: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM2A', 'LeftDoor'], doorWaitTime: 0, attackTimer: 0 },
         chica:  { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 },
-        foxy:   { mesh: null, loc: 'CAM1C', state: 0, doorWaitTime: 0, attackTimer: 0 }, 
+        foxy:   { mesh: null, loc: 'CAM1C', state: 0, level: 0, doorWaitTime: 0, attackTimer: 0 }, 
         freddy: { mesh: null, loc: 'CAM1A', level: 0, path: ['CAM1A', 'CAM1B', 'CAM4A', 'RightDoor'], doorWaitTime: 0, attackTimer: 0 }
     };
 
@@ -556,7 +828,6 @@
     ];
     let currentDialogueIdx = 0, typeWriterInterval = null;
 
-    // ... [resto das declarações constantes loreText, phoneScripts omitidas por espaço, mas as mesmas do código anterior] ...
     const phoneScripts = {
         1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
         2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas cameras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Ele é pior que os outros.", "Para mantê-lo afastado, você precisa recarregar a Caixa de Música nas câmeras 1B e 1C.", "É uma 'dose dupla' de contenção. Se qualquer uma das caixas parar, ele vai te pegar.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
@@ -576,16 +847,141 @@
         "<h2>ARQUIVO 07: O PURGATÓRIO DE REGIS</h2><p>As peças não encaixam, pois não? O salário que não existe, as portas soldadas, as memórias que começam a inundar a sua mente. Você não é um segurança contratado. Você É o próprio Regis. Amaldiçoado a reviver noites infinitas no seu próprio inferno, punido pelo que fez ao seu primo Martins e aos seus funcionários. O Alejado chora na porta, ele não quer apenas matar-te, ele quer que sintas a dor excruciante das engrenagens. Para sempre. Enfrente as suas criações na dificuldade máxima.</p>"
     ];
 
-    // --- FUNÇÕES GLOBAIS DE UI ---
     window.openSettings = function() { document.getElementById('settings-screen').classList.remove('hidden'); };
     window.closeSettings = function() { document.getElementById('settings-screen').classList.add('hidden'); };
     window.updateVolume = function(val) { masterVolume = parseFloat(val); document.getElementById('vol-label').innerText = `${Math.round(masterVolume * 100)}%`; };
+    
+    // --- FUNÇÕES DE GRÁFICOS ---
     window.toggleGraphics = function() {
-        isHighQuality = !isHighQuality;
-        document.getElementById('gfx-btn').innerText = isHighQuality ? "ALTO" : "BAIXO";
-        document.getElementById('game-container').classList.toggle('off', !isHighQuality);
-        if (renderer) { renderer.setPixelRatio(isHighQuality ? Math.min(window.devicePixelRatio, 2) : 1); }
+        window.graphicsLevel = (window.graphicsLevel + 1) % 3;
+        localStorage.setItem('regis_gfx', window.graphicsLevel);
+        applyGraphics();
     };
+
+    function getEnvMap() {
+        if(defaultEnvMap) return defaultEnvMap;
+        const canvas = document.createElement('canvas');
+        canvas.width = 256; canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#111'; ctx.fillRect(0,0,256,256);
+        ctx.fillStyle = '#eee'; ctx.fillRect(100, 100, 56, 56);
+        ctx.fillStyle = '#555'; ctx.fillRect(20, 20, 40, 40);
+        defaultEnvMap = new THREE.CanvasTexture(canvas);
+        defaultEnvMap.mapping = THREE.SphericalReflectionMapping;
+        return defaultEnvMap;
+    }
+
+    function applyGraphics() {
+        const labels = ["BAIXO", "MÉDIO", "ALTO"];
+        const btn = document.getElementById('gfx-btn');
+        if (btn) btn.innerText = labels[window.graphicsLevel];
+
+        const crtClass = document.getElementById('game-container').classList;
+        
+        if (window.graphicsLevel === 0) { // BAIXO
+            if(renderer) {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 0.75));
+                renderer.shadowMap.enabled = false;
+                renderer.toneMapping = THREE.NoToneMapping;
+            }
+            crtClass.add('off');
+            crtClass.remove('medium');
+            if (highDetailGroup) highDetailGroup.visible = false;
+            highDetailMeshes.forEach(m => m.visible = false);
+        } else if (window.graphicsLevel === 1) { // MÉDIO
+            if(renderer) {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0));
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFShadowMap;
+                renderer.toneMapping = THREE.LinearToneMapping;
+            }
+            crtClass.remove('off');
+            crtClass.add('medium');
+            if (highDetailGroup) highDetailGroup.visible = false;
+            highDetailMeshes.forEach(m => m.visible = false);
+        } else { // ALTO
+            if(renderer) {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.0;
+            }
+            crtClass.remove('off');
+            crtClass.remove('medium');
+            if (highDetailGroup) highDetailGroup.visible = true;
+            highDetailMeshes.forEach(m => m.visible = true);
+        }
+
+        const updateMeshes = (s) => {
+            if(!s) return;
+            s.traverse(child => {
+                if (child.isLight && (child.type === 'PointLight' || child.type === 'SpotLight')) {
+                    if (window.graphicsLevel === 0) {
+                        child.castShadow = false;
+                    } else {
+                        // Ativar sombras apenas para luzes principais
+                        if (child === mainOfficeLight || child === cctvLight) {
+                            child.castShadow = true;
+                            if (child.shadow) {
+                                let newSize = window.graphicsLevel === 2 ? 2048 : 512;
+                                if (child.shadow.mapSize.width !== newSize) {
+                                    child.shadow.mapSize.width = newSize;
+                                    child.shadow.mapSize.height = newSize;
+                                    if(child.shadow.map) { child.shadow.map.dispose(); child.shadow.map = null; }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (child.isMesh) {
+                    if (window.graphicsLevel === 0) {
+                        child.castShadow = false;
+                        child.receiveShadow = false;
+                    } else {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+
+                    if (child.material) {
+                        let mats = Array.isArray(child.material) ? child.material : [child.material];
+                        mats.forEach(mat => {
+                            if (mat.userData.origRoughness === undefined) {
+                                mat.userData.origRoughness = mat.roughness !== undefined ? mat.roughness : 1;
+                                mat.userData.origMetalness = mat.metalness !== undefined ? mat.metalness : 0;
+                                mat.userData.origMap = mat.map;
+                            }
+
+                            if (window.graphicsLevel === 0) { // BAIXO
+                                mat.map = null;
+                                mat.envMap = null;
+                                if (mat.roughness !== undefined) mat.roughness = 1.0;
+                                if (mat.metalness !== undefined) mat.metalness = 0.0;
+                            } else if (window.graphicsLevel === 1) { // MÉDIO
+                                mat.map = mat.userData.origMap;
+                                mat.envMap = null;
+                                if (mat.roughness !== undefined) mat.roughness = mat.userData.origRoughness;
+                                if (mat.metalness !== undefined) mat.metalness = mat.userData.origMetalness * 0.5;
+                            } else { // ALTO
+                                mat.map = mat.userData.origMap;
+                                if (mat.metalness !== undefined && mat.userData.origMetalness > 0.1) {
+                                    mat.envMap = getEnvMap();
+                                    mat.envMapIntensity = 0.8;
+                                }
+                                if (mat.roughness !== undefined) mat.roughness = Math.max(0.1, mat.userData.origRoughness * 0.7);
+                                if (mat.metalness !== undefined) mat.metalness = Math.min(1.0, mat.userData.origMetalness * 1.5);
+                            }
+                            mat.needsUpdate = true;
+                        });
+                    }
+                }
+            });
+        };
+
+        updateMeshes(scene);
+        updateMeshes(menuScene);
+    }
+
     window.toggleFullscreen = function() {
         let elem = document.documentElement; let isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
         if (!isFullscreen) {
@@ -615,9 +1011,10 @@
         }
     };
 
-    window.continueGame = function() { if (window.currentNight > 1) window.startGame(window.currentNight); };
+    window.continueGame = function() { if (window.currentNight > 1 && window.currentNight !== 'CUSTOM') window.startGame(window.currentNight); };
 
-    function saveGame(night) { try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {} }
+    function saveGame(night) { if(night !== 'CUSTOM') { try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {} } }
+    
     function loadGame() {
         try {
             let saved = localStorage.getItem('regis_pizzaplace_night');
@@ -629,8 +1026,37 @@
                     if (continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
                 }
             }
+            if (window.unlockedAchievs && window.unlockedAchievs.includes('night_7')) {
+                const cnBtn = document.getElementById('custom-night-btn');
+                if (cnBtn) cnBtn.classList.remove('hidden');
+            }
         } catch(e) {}
     }
+
+    // --- FUNÇÕES DA CUSTOM NIGHT ---
+    window.openCustomNight = function() {
+        document.getElementById('menu-screen').classList.add('hidden');
+        document.getElementById('custom-night-screen').classList.remove('hidden');
+    };
+    
+    window.closeCustomNight = function() {
+        document.getElementById('custom-night-screen').classList.add('hidden');
+        document.getElementById('menu-screen').classList.remove('hidden');
+    };
+    
+    window.adjAI = function(anim, dir) {
+        window.customAI[anim] = Math.max(0, Math.min(20, window.customAI[anim] + dir));
+        document.getElementById('lvl-' + anim).innerText = window.customAI[anim];
+    };
+    
+    window.startCustomNight = function() {
+        document.getElementById('custom-night-screen').classList.add('hidden');
+        animatronics.bonnie.level = window.customAI.bonnie;
+        animatronics.chica.level = window.customAI.chica;
+        animatronics.freddy.level = window.customAI.freddy;
+        animatronics.foxy.level = window.customAI.foxy;
+        window.startGame('CUSTOM');
+    };
 
     // --- LÓGICA DE JOGO E TUTORIAL ---
     window.startTutorial = function() {
@@ -669,6 +1095,7 @@
             gameState = 'MENU';
             document.getElementById('hud-layer').classList.add('hidden');
             document.getElementById('menu-screen').classList.remove('hidden');
+            window.unlockAchievement('tut_complete'); // CONQUISTA: Completou tutorial
             return;
         }
 
@@ -692,14 +1119,24 @@
 
 
     window.startGame = function(night) {
-        saveGame(night); initialToxicity = 0; isTutorial = false; document.getElementById('tutorial-ui').classList.add('hidden');
+        initialToxicity = 0; isTutorial = false; document.getElementById('tutorial-ui').classList.add('hidden');
         if (night === 1) {
+            saveGame(night);
             window.currentNight = 1;
             const continueBtn = document.getElementById('continue-btn');
             if(continueBtn) { continueBtn.innerText = `> Continuar`; continueBtn.style.color = "#444"; continueBtn.style.pointerEvents = "none"; }
             document.getElementById('menu-screen').classList.add('hidden');
             startContractIntro(); 
+        } else if (night === 'CUSTOM') {
+            window.currentNight = 'CUSTOM'; hour = 0; power = 100;
+            document.getElementById('menu-screen').classList.add('hidden');
+            gameState = 'STORY';
+            document.getElementById('story-night').innerText = `Custom Night`;
+            document.getElementById('night-display').innerText = `Custom Night`;
+            document.getElementById('story-screen').classList.remove('hidden');
+            setTimeout(() => startOfficeGameplay(), 3000);
         } else {
+            saveGame(night);
             window.currentNight = night; hour = 0; power = 100;
             document.getElementById('menu-screen').classList.add('hidden');
             showNewspaperForNight(window.currentNight);
@@ -707,7 +1144,6 @@
         if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
     };
 
-    // ... [Código de contrato omitido por repetição, mesma lógica exata] ...
     function startContractIntro() {
         gameState = 'CONTRACT';
         document.getElementById('contract-screen').classList.remove('hidden'); document.getElementById('contract-paper').classList.remove('visible');
@@ -732,6 +1168,10 @@
     window.signContract = function() {
         const input = document.getElementById('player-name-input'); if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
         playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none'; try { localStorage.setItem('regis_pizzaplace_playername', playerName); } catch(e) {}
+        
+        window.unlockAchievement('sign_contract');
+        if(playerName.toLowerCase().includes("cobaia")) window.unlockAchievement('sign_cobaia');
+
         document.getElementById('dialogue-box').style.pointerEvents = 'auto'; typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
         setTimeout(() => { document.getElementById('contract-screen').classList.add('hidden'); window.currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1); }, 4000);
     };
@@ -739,7 +1179,6 @@
     window.showMinigameOrStory = function() { if(gameState !== 'NEWSPAPER') return; document.getElementById('newspaper-screen').classList.add('hidden'); if (window.currentNight < 7) { initMinigame(); } else { showStory(); } };
     function showStory() { gameState = 'STORY'; document.getElementById('story-night').innerText = `Noite ${window.currentNight}`; document.getElementById('night-display').innerText = `Noite ${window.currentNight}`; document.getElementById('story-screen').classList.remove('hidden'); setTimeout(() => startOfficeGameplay(), 3000); }
     
-    // ... [Minigames omitidos por repetição] ...
     function initMinigame() {
         gameState = 'MINIGAME'; document.getElementById('minigame-screen').classList.remove('hidden');
         mgCanvas = document.getElementById('mg-canvas'); mgCtx = mgCanvas.getContext('2d');
@@ -770,7 +1209,7 @@
                 let el = mgState.elements[i]; if (!el.placed) allPlaced = false;
                 if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) { let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y); if (dist < el.r * 2.5) el.isDragging = true; }
                 if (el.isDragging) { el.x = mgMouseX; el.y = mgMouseY; if (!mgIsDown) { el.isDragging = false; if (Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y) < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); } } }
-                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
+                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
             } if (allPlaced) endMinigame(true);
         } else if (mgState.type === 'cleanup') {
             mgCtx.strokeStyle = '#222'; mgCtx.lineWidth = 2; for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); } for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
@@ -779,10 +1218,23 @@
             mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); if (!anyLeft) endMinigame(true);
         }
     }
-    function playMgSound(freq) { if(masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
-    function endMinigame(success) { if(!mgState.active) return; mgState.active = false; cancelAnimationFrame(mgAnimFrame); clearInterval(mgTimerInt); document.getElementById('minigame-screen').classList.add('hidden'); if (mgState.type === 'cleanup' && !success) initialToxicity = 40; else initialToxicity = 0; showStory(); }
 
-    // --- GAMEPLAY PRINCIPAL MODIFICADA COM HOOKS DO TUTORIAL ---
+    function playMgSound(freq) { if(masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
+
+    function endMinigame(success) { 
+        if(!mgState.active) return; mgState.active = false; cancelAnimationFrame(mgAnimFrame); clearInterval(mgTimerInt); document.getElementById('minigame-screen').classList.add('hidden'); 
+        
+        if (mgState.type === 'cleanup') {
+            if(!success) { initialToxicity = 40; window.unlockAchievement('mg_cln_lose'); }
+            else { initialToxicity = 0; window.unlockAchievement('mg_cln_win'); }
+        } else if (mgState.type === 'pizza') {
+            if(!success) { window.unlockAchievement('mg_piz_lose'); }
+            else { window.unlockAchievement('mg_piz_win'); }
+        }
+        showStory(); 
+    }
+
+    // --- GAMEPLAY PRINCIPAL MODIFICADA COM HOOKS DO TUTORIAL E CONQUISTAS ---
     function startOfficeGameplay() {
         gameState = 'OFFICE';
         document.getElementById('story-screen').classList.add('hidden'); 
@@ -791,7 +1243,7 @@
         resetAnimatronics(); updateAnimatronicVisuals(); clearPhoneCall(); isCallMuted = false;
         gameIntervals.forEach(clearInterval); gameIntervals = [];
 
-        if (!isTutorial && phoneScripts[window.currentNight]) setTimeout(() => window.startPhoneCall(window.currentNight), 2000);
+        if (!isTutorial && window.currentNight !== 'CUSTOM' && phoneScripts[window.currentNight]) setTimeout(() => window.startPhoneCall(window.currentNight), 2000);
 
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE') return;
@@ -807,6 +1259,7 @@
             document.getElementById('time-display').innerText = `${displayHour} AM`;
             
             if (Math.floor(hour) >= 7) { triggerWinAnimation(); return; }
+            if (hour >= 1 && power <= 90) window.unlockAchievement('spend_fast');
 
             if (!isBlackout) {
                 if (isExhaustOn) { toxicity = Math.max(0, toxicity - 2.5); } 
@@ -820,6 +1273,8 @@
                 } else {
                     toxDisplay.style.color = '#0f0'; document.getElementById('toxic-filter').style.background = `rgba(50, 150, 50, 0)`;
                 }
+                
+                if (toxicity >= 95) window.unlockAchievement('surv_tox_95');
                 if (toxicity >= 100) { triggerIntoxicationGameOver(); return; }
             }
 
@@ -836,7 +1291,8 @@
 
             if (power > 0) {
                 let drain = 0.05; 
-                if (window.currentNight >= 4) drain += 0.02; if (window.currentNight >= 6) drain += 0.03; 
+                if (window.currentNight >= 4 || window.currentNight === 'CUSTOM') drain += 0.02; 
+                if (window.currentNight >= 6 || window.currentNight === 'CUSTOM') drain += 0.03; 
                 if (isLeftDoorClosed) drain += 0.15; if (isRightDoorClosed) drain += 0.15;
                 if (isLeftLightOn) drain += 0.1; if (isRightLightOn) drain += 0.1;
                 if (isMonitorUp) drain += 0.15; if (isTaskActive) drain += 0.2; if (isExhaustOn) drain += 0.1;
@@ -864,17 +1320,27 @@
                 return; // Bloqueia o drain da foxy box normal no tutorial
             }
 
-            let foxyDrain = 0.07 + (window.currentNight * 0.04); 
-            window.foxyBox -= foxyDrain;
+            let foxyDrain = 0;
+            if (window.currentNight === 'CUSTOM') {
+                if (animatronics.foxy.level > 0) foxyDrain = 0.05 + (animatronics.foxy.level * 0.015);
+            } else {
+                foxyDrain = 0.07 + (window.currentNight * 0.04); 
+            }
+            
+            if (foxyDrain > 0) {
+                window.foxyBox -= foxyDrain;
+            }
 
             if (isMonitorUp && window.isWinding && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
                 window.foxyBox = Math.min(100, window.foxyBox + 2.5); 
             }
 
-            if (window.foxyBox <= 0) {
+            if (window.foxyBox <= 0 && (!('CUSTOM' === window.currentNight && animatronics.foxy.level === 0))) {
                 window.foxyTriggered = true; animatronics.foxy.loc = 'LeftDoor'; 
                 animatronics.foxy.doorWaitTime = 0; animatronics.foxy.attackTimer = 0; 
                 updateAnimatronicVisuals(); triggerStaticPulse(); 
+                window.unlockAchievement('foxy_out'); // Foxy saiu
+                window.foxyLeftCoveThisNight = true;
             }
 
             if (isMonitorUp && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
@@ -891,7 +1357,13 @@
     }
 
     // --- MÉTODOS GLOBAIS DE UI MODIFICADOS COM HOOKS ---
-    window.startWinding = function(e) { if(e) e.preventDefault(); window.isWinding = true; };
+    window.startWinding = function(e) { 
+        if(e) e.preventDefault(); window.isWinding = true; 
+        window.unlockAchievement('act_wind');
+        window.gameStats.box++;
+        if(window.gameStats.box >= 100) window.unlockAchievement('grind_wind_100');
+        saveStats();
+    };
     window.stopWinding = function(e) { if(e) e.preventDefault(); window.isWinding = false; };
 
     function triggerTaskAlert() {
@@ -946,6 +1418,7 @@
         btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
         btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
         playTerminalBeep(300);
+        window.unlockAchievement('act_bake');
 
         if (isTutorial && tutSteps[tutStep]?.action === 'pc-bake') nextTutStep(); // Trigger hook
     };
@@ -954,15 +1427,29 @@
         if (power < 2 && !isTutorial) return; 
         if (isTutorial) { if (tutSteps[tutStep]?.action !== 'pc-deliver') return; }
 
+        if (!isBaking) {
+            window.unlockAchievement('fail_del');
+            return; // Precisa assar
+        }
+
         power = Math.max(0, power - 2); document.getElementById('power-display').innerText = `Energia: ${Math.floor(power)}%`;
         playTerminalBeep(600); completeTask();
+        
+        window.unlockAchievement('act_del');
+        window.gameStats.pizzas++;
+        if(window.gameStats.pizzas >= 20) window.unlockAchievement('grind_piz_20');
+        if(window.gameStats.pizzas >= 50) window.unlockAchievement('grind_piz_50');
+        saveStats();
 
         if (isTutorial && tutSteps[tutStep]?.action === 'pc-deliver') nextTutStep(); // Trigger hook
     };
 
     function completeTask() {
         isTaskActive = false;
-        let taskDelay = 35; if (window.currentNight === 2) taskDelay = 30; else if (window.currentNight === 3) taskDelay = 25; else if (window.currentNight >= 4) taskDelay = 20;
+        let taskDelay = 35; 
+        if (window.currentNight === 2) taskDelay = 30; 
+        else if (window.currentNight === 3) taskDelay = 25; 
+        else if (window.currentNight >= 4 || window.currentNight === 'CUSTOM') taskDelay = 20;
         taskTimer = taskDelay + Math.random() * 10; 
         const statusEl = document.getElementById('pc-status'); statusEl.innerText = "SISTEMA OK - PEDIDO ENTREGUE"; statusEl.className = "";
         document.getElementById('order-box').classList.add('hidden'); document.getElementById('pc-idle-msg').classList.remove('hidden');
@@ -984,17 +1471,17 @@
         try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
     }
 
-    // ... [audio systems remain identical] ...
     window.playAudioSystem = function() {
         if (isAudioBroken || power <= 0) return;
         playChildLaugh();
+        window.audioUsedThisNight = true;
         if (animatronics.freddy.loc !== 'CAM1A') { animatronics.freddy.loc = 'CAM1A'; animatronics.freddy.doorWaitTime = 0; animatronics.freddy.attackTimer = 0; updateAnimatronicVisuals(); triggerStaticPulse(); }
         if (Math.random() < 0.25) breakAudioSystem();
     };
     function breakAudioSystem() { isAudioBroken = true; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.add('broken'); btn.innerText = "[ ÁUDIO OFFLINE ]"; } playBuzzer(); }
-    window.fixAudio = function() { isAudioBroken = false; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; } if (isPCUp) window.openPC(); };
+    window.fixAudio = function() { isAudioBroken = false; window.unlockAchievement('fix_aud'); const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; } if (isPCUp) window.openPC(); };
     function breakVentSystem() { isVentBroken = true; playBuzzer(); }
-    window.fixVent = function() { isVentBroken = false; if (isPCUp) window.openPC(); };
+    window.fixVent = function() { isVentBroken = false; window.unlockAchievement('fix_vent'); if (isPCUp) window.openPC(); };
 
     window.toggleExhaust = function() {
         if (power <= 0) return;
@@ -1007,7 +1494,14 @@
         }
 
         isExhaustOn = !isExhaustOn; const btn = document.getElementById('exhaust-btn');
-        if (isExhaustOn) { btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR"; playExhaustSound(); } 
+        if (isExhaustOn) { 
+            btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR"; playExhaustSound(); 
+            window.unlockAchievement('act_exh');
+            window.exhaustUsedThisNight = true;
+            window.gameStats.exhaust++;
+            if(window.gameStats.exhaust >= 50) window.unlockAchievement('grind_exh_50');
+            saveStats();
+        } 
         else { btn.classList.remove('active'); btn.innerText = "LIGAR EXAUSTOR"; stopExhaustSound(); }
 
         if (isTutorial) {
@@ -1022,21 +1516,31 @@
     function playChildLaugh() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.4); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.5); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5); } catch(e) {} }
     function playBuzzer() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, ctx.currentTime); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.8); } catch(e){} }
     function playHallucination() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = Math.random() > 0.5 ? 'sine' : 'triangle'; osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime); gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1); } catch(e) {} }
+    function playScreech() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator(); const gain = ctx.createGain(); osc1.type = 'sawtooth'; osc2.type = 'square'; osc1.frequency.setValueAtTime(800, ctx.currentTime); osc1.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 1.5); osc2.frequency.setValueAtTime(850, ctx.currentTime); osc2.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 1.5); gain.gain.setValueAtTime(0.5 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5); osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination); osc1.start(); osc2.start(); osc1.stop(ctx.currentTime + 1.5); osc2.stop(ctx.currentTime + 1.5); } catch(e) {} }
 
     function handleRaycast(clientX, clientY) {
         if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout) return;
         mouseVec.x = (clientX / window.innerWidth) * 2 - 1; mouseVec.y = -(clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouseVec, camera);
-        if (crtScreenMesh) { const intersects = raycaster.intersectObject(crtScreenMesh); if (intersects.length > 0) window.openPC(); }
+        const intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+            let obj = intersects[0].object;
+            while(obj && obj !== scene) {
+                if (obj.name === 'poster') window.unlockAchievement('click_poster');
+                if (obj.name === 'fan') window.unlockAchievement('click_fan');
+                if (obj.name === 'phone') window.unlockAchievement('click_phone');
+                if (obj === crtScreenMesh) window.openPC();
+                obj = obj.parent;
+            }
+        }
     }
 
     window.addEventListener('click', (e) => handleRaycast(e.clientX, e.clientY));
     const officeTouch = (e) => { if(gameState === 'OFFICE' && e.touches.length > 0) { handleRaycast(e.touches[0].clientX, e.touches[0].clientY); } };
     window.addEventListener('touchstart', officeTouch, {passive: true});
 
-    // ... [Telefones e afins] ...
     window.startPhoneCall = function(night) { if (gameState !== 'OFFICE' || isCallMuted) return; const lines = phoneScripts[night]; if (!lines) return; const subBox = document.getElementById('phone-subtitles'); const muteBtn = document.getElementById('mute-btn'); subBox.style.display = 'block'; muteBtn.style.display = 'block'; subBox.textContent = "*Ringing*"; playPhoneRing(); phoneTimeouts.push(setTimeout(() => { if (isCallMuted) return; subBox.textContent = "Call connected."; startMumbleVoice(); let currentLine = 0; const playNextLine = () => { if (isCallMuted || currentLine >= lines.length || gameState !== 'OFFICE') { clearPhoneCall(); return; } let text = lines[currentLine]; subBox.textContent = text; if(phoneGain && phoneAudioCtx && masterVolume > 0) { phoneGain.gain.setTargetAtTime((0.05 + Math.random()*0.05) * masterVolume, phoneAudioCtx.currentTime + 0.1, 0.05); phoneOscillator.frequency.setTargetAtTime(100 + Math.random()*50, phoneAudioCtx.currentTime + 0.1, 0.05); } let readTime = Math.max(text.length * 60, 2000); currentLine++; phoneTimeouts.push(setTimeout(playNextLine, readTime)); }; phoneTimeouts.push(setTimeout(playNextLine, 1000)); }, 4000)); };
-    window.muteCall = function() { isCallMuted = true; clearPhoneCall(); };
+    window.muteCall = function() { isCallMuted = true; clearPhoneCall(); window.unlockAchievement('mute'); };
     function clearPhoneCall() { phoneTimeouts.forEach(clearTimeout); phoneTimeouts = []; document.getElementById('phone-subtitles').style.display = 'none'; document.getElementById('mute-btn').style.display = 'none'; if (phoneOscillator) { try { phoneOscillator.stop(); } catch(e){} phoneOscillator = null; } if (phoneAudioCtx) { phoneAudioCtx.close(); phoneAudioCtx = null; } }
     function playPhoneRing() { if (masterVolume <= 0) return; try { phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 0.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.3); gain.gain.setValueAtTime(0, phoneAudioCtx.currentTime); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 0.4, 0.05); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.0); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.1); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.3); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime + 2.0, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 2.4, 0.05); osc.connect(gain); gain.connect(phoneAudioCtx.destination); osc.start(); osc.stop(phoneAudioCtx.currentTime + 3); } catch(e) {} }
     function startMumbleVoice() { if (masterVolume <= 0) return; try { if (!phoneAudioCtx || phoneAudioCtx.state === 'closed') phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); phoneOscillator = phoneAudioCtx.createOscillator(); phoneGain = phoneAudioCtx.createGain(); phoneOscillator.type = 'triangle'; phoneOscillator.frequency.setValueAtTime(120, phoneAudioCtx.currentTime); const filter = phoneAudioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1000; phoneGain.gain.setValueAtTime(0.05 * masterVolume, phoneAudioCtx.currentTime); phoneOscillator.connect(filter); filter.connect(phoneGain); phoneGain.connect(phoneAudioCtx.destination); phoneOscillator.start(); } catch (e) {} }
@@ -1044,6 +1548,25 @@
     function triggerWinAnimation() {
         gameState = 'WIN'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
+
+        // Checagens de Conquistas de Fim de Noite
+        let nightNum = window.currentNight === 'CUSTOM' ? 7 : window.currentNight;
+        if (window.currentNight !== 'CUSTOM') {
+            window.unlockAchievement('night_' + window.currentNight);
+        } else {
+            if (animatronics.bonnie.level === 20 && animatronics.chica.level === 20 && animatronics.freddy.level === 20 && animatronics.foxy.level === 20) {
+                window.unlockAchievement('cn_20202020');
+            }
+        }
+
+        if (toxicity === 0) window.unlockAchievement('surv_tox_0');
+        if (power < 5) window.unlockAchievement('surv_pow_5');
+        if (power > 50) window.unlockAchievement('surv_pow_50');
+        if (!window.foxyLeftCoveThisNight) window.unlockAchievement('foxy_stay');
+        if (!window.audioUsedThisNight) window.unlockAchievement('no_aud');
+        if (nightNum >= 2 && !window.doorsClosedThisNight) window.unlockAchievement('no_doors');
+        if (nightNum >= 3 && !window.exhaustUsedThisNight) window.unlockAchievement('surv_no_exh');
+        if (nightNum === 1 && !window.monitorUsedThisNight) window.unlockAchievement('surv_no_cam');
 
         const winScreen = document.getElementById('win-screen-7am');
         const d6 = document.getElementById('digit-6'); const d7 = document.getElementById('digit-7'); const am = document.getElementById('digit-am');
@@ -1064,7 +1587,10 @@
         
         setTimeout(() => {
             winScreen.classList.add('hidden');
-            if (window.currentNight >= 7) {
+            if (window.currentNight === 'CUSTOM') {
+                document.getElementById('menu-screen').classList.remove('hidden');
+                gameState = 'MENU';
+            } else if (window.currentNight >= 7) {
                 document.getElementById('paycheck-name').innerText = playerName || "Guarda";
                 document.getElementById('paycheck-screen').classList.remove('hidden');
                 saveGame(1); 
@@ -1079,6 +1605,17 @@
 
     function runAILoop() {
         if (gameState !== 'OFFICE' || power <= 0) return;
+
+        if (window.currentNight === 'CUSTOM') {
+            ['bonnie', 'chica', 'freddy'].forEach(anim => {
+                let ai = animatronics[anim].level;
+                if (ai > 0 && (Math.random() * 20) <= ai) moveAnimatronic(anim);
+            });
+            if (Math.random() < 0.08 && !isAudioBroken) { breakAudioSystem(); }
+            if (Math.random() < 0.08 && !isVentBroken) { breakVentSystem(); }
+            return;
+        }
+
         let h = Math.floor(hour); 
         let baseDiff = (window.currentNight - 1) * 3; if (window.currentNight >= 7) baseDiff = 20;
         let exhaustPenalty = isExhaustOn ? 5 : 0; 
@@ -1140,6 +1677,10 @@
         gameState = 'GAMEOVER'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound(); window.isWinding = false;
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
         document.getElementById('game-container').style.filter = 'sepia(1) hue-rotate(90deg) saturate(5)';
+        
+        window.unlockAchievement('death_first'); window.unlockAchievement('death_tox');
+        window.gameStats.deaths++; if(window.gameStats.deaths >= 25) window.unlockAchievement('grind_death_25'); saveStats();
+
         playScreech();
         setTimeout(() => {
             document.getElementById('game-container').style.filter = '';
@@ -1156,6 +1697,14 @@
         camera.rotation.set(0, 0, 0); let mesh = animatronics[anim].mesh; mesh.visible = true; 
         if (anim === 'freddy' || anim === 'foxy') { mesh.position.set(0, 0.5, -2.0); mesh.rotation.set(0.3, 0, 0); } 
         else { mesh.position.set(0, -5.0, -2.5); mesh.rotation.set(0, 0, 0); }
+        
+        window.unlockAchievement('death_first');
+        if(anim==='bonnie') window.unlockAchievement('death_bonnie');
+        if(anim==='chica') window.unlockAchievement('death_chica');
+        if(anim==='freddy') window.unlockAchievement('death_freddy');
+        if(anim==='foxy') window.unlockAchievement('death_foxy');
+        window.gameStats.deaths++; if(window.gameStats.deaths >= 25) window.unlockAchievement('grind_death_25'); saveStats();
+
         playScreech();
 
         setTimeout(() => { document.getElementById('game-container').classList.remove('jumpscare-shake'); document.getElementById('gameover-title').innerText = "FIM DE JOGO"; document.getElementById('gameover-screen').classList.remove('hidden'); }, 1500);
@@ -1163,6 +1712,9 @@
 
     function triggerBlackout() {
         isBlackout = true; clearPhoneCall(); stopExhaustSound(); window.isWinding = false;
+        
+        window.unlockAchievement('death_pow'); window.gameStats.powerOuts++; if(window.gameStats.powerOuts >= 10) window.unlockAchievement('grind_pow_10'); saveStats();
+
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('monitor-btn').style.display = 'none';
         if (isLeftDoorClosed) window.toggleDoor('left'); if (isRightDoorClosed) window.toggleDoor('right');
         isLeftLightOn = false; isRightLightOn = false; document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
@@ -1177,21 +1729,17 @@
         setTimeout(() => triggerJumpscare('freddy'), 5000 + Math.random() * 10000);
     }
 
-    function playScreech() {
-        if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + 0.3); osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 1.2);
-            gain.gain.setValueAtTime(1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 1.5);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1.5);
-        } catch(e) {}
-    }
-
     function resetAnimatronics() {
         hour = 0; power = 100;
         document.getElementById('time-display').innerText = '12 AM'; document.getElementById('power-display').innerText = 'Energia: 100%';
         
+        // Reset achievement tracking vars
+        window.doorsClosedThisNight = false;
+        window.audioUsedThisNight = false;
+        window.exhaustUsedThisNight = false;
+        window.monitorUsedThisNight = false;
+        window.foxyLeftCoveThisNight = false;
+
         toxicity = initialToxicity; isExhaustOn = false; isVentBroken = false; stopExhaustSound();
         const exBtn = document.getElementById('exhaust-btn'); exBtn.classList.remove('active'); exBtn.innerText = "LIGAR EXAUSTOR";
         document.getElementById('toxicity-display').innerText = `Toxicidade: ${Math.floor(toxicity)}%`; document.getElementById('toxicity-display').style.color = '#0f0';
@@ -1214,7 +1762,7 @@
         window.foxyBox = 100; window.isWinding = false; window.foxyTriggered = false;
         
         isTaskActive = false; isPCUp = false; 
-        let taskDelay = 40; if(window.currentNight === 2) taskDelay = 35; else if (window.currentNight === 3) taskDelay = 30; else if (window.currentNight >= 4) taskDelay = 20;
+        let taskDelay = 40; if(window.currentNight === 2) taskDelay = 35; else if (window.currentNight === 3) taskDelay = 30; else if (window.currentNight >= 4 || window.currentNight === 'CUSTOM') taskDelay = 20;
         taskTimer = taskDelay; taskFailTimer = 20;
         
         isAudioBroken = false;
@@ -1264,7 +1812,7 @@
         let hex = '#5c3a21'; if(type === 'bonnie') hex = '#504080'; if(type === 'chica') hex = '#e8c138'; if(type === 'foxy') hex = '#8a2929';
         
         const tex = createInfectedSkin(hex); 
-        const matBody = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.3 });
+        const matBody = new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), map: tex, roughness: 0.9, metalness: 0.3 });
         const matBone = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.6, metalness: 0.8 });
         const matFungus = new THREE.MeshStandardMaterial({ color: 0x889977, roughness: 1.0 });
 
@@ -1382,22 +1930,22 @@
         
         // Canvas calls for textures
         const s1C = document.createElement('canvas'); s1C.width = 512; s1C.height = 128; const s1Cx = s1C.getContext('2d'); s1Cx.fillStyle = "#111111"; s1Cx.fillRect(0, 0, 512, 128); s1Cx.fillStyle = "#ffffff"; s1Cx.textAlign = 'center'; s1Cx.textBaseline = 'middle'; s1Cx.font = 'bold 50px "Arial Black", sans-serif'; s1Cx.fillText("Curitibana", 256, 50); s1Cx.font = 'bold 24px Arial'; s1Cx.fillText("Panificadora", 256, 100);
-        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s1C)})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
+        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s1C)})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
         
         const centerMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.9}); const centerStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); centerStore.position.set(0, 5, -5); menuScene.add(centerStore);
         const entrance = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshBasicMaterial({color: 0x000000})); entrance.position.set(0, 3.5, 0.05); menuScene.add(entrance);
         
         const s2C = document.createElement('canvas'); s2C.width = 512; s2C.height = 128; const s2Cx = s2C.getContext('2d'); s2Cx.fillStyle = "#ffffff"; s2Cx.fillRect(0, 0, 512, 128); s2Cx.fillStyle = "#000000"; s2Cx.textAlign = 'center'; s2Cx.textBaseline = 'middle'; s2Cx.font = 'bold 50px "Arial Black", sans-serif'; s2Cx.fillText("COSTELÃO", 256, 50); s2Cx.font = 'bold 24px Arial'; s2Cx.fillText("ASSADOS", 256, 100);
-        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s2C)})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
+        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s2C)})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
         
         for(let i of [-4, 4]) { const table = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), new THREE.MeshStandardMaterial({color: 0x111111})); table.position.set(i, 1, 4); menuScene.add(table); }
         const rightStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); rightStore.position.set(15, 5, -5); menuScene.add(rightStore);
         
         const rollC = document.createElement('canvas'); rollC.width = 256; rollC.height = 256; const rollCx = rollC.getContext('2d'); rollCx.fillStyle = '#333'; rollCx.fillRect(0, 0, 256, 256); rollCx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { rollCx.fillRect(0, y, 256, 3); } const rollT = new THREE.CanvasTexture(rollC); rollT.wrapS = THREE.RepeatWrapping; rollT.wrapT = THREE.RepeatWrapping; rollT.repeat.set(2, 2);
-        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({map: rollT, metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
+        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({color: 0x555555, map: rollT, metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
         
         const s3C = document.createElement('canvas'); s3C.width = 512; s3C.height = 128; const s3Cx = s3C.getContext('2d'); s3Cx.fillStyle = "#110000"; s3Cx.fillRect(0, 0, 512, 128); s3Cx.fillStyle = "#ff2222"; s3Cx.textAlign = 'center'; s3Cx.textBaseline = 'middle'; s3Cx.font = 'bold 50px "Arial Black", sans-serif'; s3Cx.fillText("REGIS", 256, 50); s3Cx.font = 'bold 24px Arial'; s3Cx.fillText("PIZZAPLACE", 256, 100);
-        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s3C)})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
+        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s3C)})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
         
         const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(50, 0.5, 10), new THREE.MeshStandardMaterial({color: 0x333333})); sidewalk.position.set(0, 0.25, 5); menuScene.add(sidewalk);
         const street = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), new THREE.MeshStandardMaterial({color: 0x111111})); street.rotation.x = -Math.PI/2; street.position.set(0, 0, 25); menuScene.add(street);
@@ -1503,20 +2051,29 @@
     }
 
     function buildOffice() {
-        const wallMat = new THREE.MeshStandardMaterial({ map: createDetailedWallTexture(), roughness: 0.95 });
+        highDetailGroup = new THREE.Group();
+        scene.add(highDetailGroup);
+
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x444c52, map: createDetailedWallTexture(), roughness: 0.95 });
         const deskMat = new THREE.MeshStandardMaterial({ color: 0x22150d, roughness: 0.8 }); 
         const metalMat = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.8 });
-        const hazardMat = new THREE.MeshStandardMaterial({ map: createHazardTexture(), roughness: 0.7 });
+        const hazardMat = new THREE.MeshStandardMaterial({ color: 0xcca000, map: createHazardTexture(), roughness: 0.7 });
 
+        // Base Room
         const frontWall = new THREE.Mesh(new THREE.BoxGeometry(30, 20, 1), wallMat); frontWall.position.set(0, 10, -10); scene.add(frontWall);
         const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, 20, 1), wallMat); backWall.position.set(0, 10, 10); scene.add(backWall);
         const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat); ceiling.rotation.x = Math.PI / 2; ceiling.position.y = 20; scene.add(ceiling);
         
         const baseboardFront = new THREE.Mesh(new THREE.BoxGeometry(30, 1, 0.2), metalMat); baseboardFront.position.set(0, 0.5, -9.4); scene.add(baseboardFront);
 
+        // Pipes
         const pipeGeo = new THREE.CylinderGeometry(0.4, 0.4, 30);
         const pipe1 = new THREE.Mesh(pipeGeo, metalMat); pipe1.position.set(-5, 19, -9); pipe1.rotation.z = Math.PI/2; scene.add(pipe1);
         const pipe2 = new THREE.Mesh(pipeGeo, metalMat); pipe2.position.set(5, 19, -8.5); pipe2.rotation.z = Math.PI/2; scene.add(pipe2);
+
+        // High detail extra pipes
+        const pipe3 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 30), metalMat); pipe3.position.set(0, 18.5, -9.5); pipe3.rotation.z = Math.PI/2; highDetailGroup.add(pipe3);
+        const pipe4 = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 30), metalMat); pipe4.position.set(0, 19.5, -6); pipe4.rotation.z = Math.PI/2; highDetailGroup.add(pipe4);
 
         [-15, 15].forEach(x => {
             const wFront = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 7), wallMat); wFront.position.set(x, 10, -6.5); scene.add(wFront);
@@ -1532,23 +2089,68 @@
         leftDoorMesh = new THREE.Mesh(doorGeo, metalMat); leftDoorMesh.position.set(-15, 22.5, 0); scene.add(leftDoorMesh);
         rightDoorMesh = new THREE.Mesh(doorGeo, metalMat); rightDoorMesh.position.set(15, 22.5, 0); scene.add(rightDoorMesh);
 
-        const desk = new THREE.Mesh(new THREE.BoxGeometry(18, 4, 6), deskMat); desk.position.set(0, 2, -5); desk.castShadow = true; desk.receiveShadow = true; scene.add(desk);
+        // Improved Desk
+        const deskGroup = new THREE.Group(); deskGroup.position.set(0, 0, -5);
+        const deskTop = new THREE.Mesh(new THREE.BoxGeometry(18, 0.5, 6), deskMat); deskTop.position.y = 3.75; deskGroup.add(deskTop);
+        const deskLegL = new THREE.Mesh(new THREE.BoxGeometry(1, 3.75, 5.5), deskMat); deskLegL.position.set(-8.5, 1.875, 0); deskGroup.add(deskLegL);
+        const deskLegR = new THREE.Mesh(new THREE.BoxGeometry(1, 3.75, 5.5), deskMat); deskLegR.position.set(8.5, 1.875, 0); deskGroup.add(deskLegR);
+        const deskBack = new THREE.Mesh(new THREE.BoxGeometry(16, 3.75, 0.5), deskMat); deskBack.position.set(0, 1.875, -2.5); deskGroup.add(deskBack);
         
-        const crtCase = new THREE.Mesh(new THREE.BoxGeometry(3, 2.5, 2), new THREE.MeshStandardMaterial({color: 0xd6d3c9, roughness: 0.9}));
-        crtCase.position.set(-4, 5.2, -5.5); crtCase.rotation.y = Math.PI / 5; crtCase.castShadow = true; scene.add(crtCase);
+        // High Detail Desk Drawers
+        const drawers = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 5.5), deskMat); drawers.position.set(6, 1.5, 0); 
+        const handle1 = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 0.2), metalMat); handle1.position.set(6, 2.5, 2.8);
+        const handle2 = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 0.2), metalMat); handle2.position.set(6, 1.0, 2.8);
+        highDetailGroup.add(drawers); highDetailGroup.add(handle1); highDetailGroup.add(handle2);
+        
+        scene.add(deskGroup);
+        
+        // Monitor
+        const crtGroup = new THREE.Group(); crtGroup.position.set(-4, 4.0, -5.5); crtGroup.rotation.y = Math.PI / 5;
+        const crtBase = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 1.5), new THREE.MeshStandardMaterial({color: 0xd6d3c9, roughness: 0.9}));
+        crtBase.position.set(0, 0.25, 0); crtGroup.add(crtBase);
+        const crtNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.5), metalMat);
+        crtNeck.position.set(0, 0.75, 0); crtGroup.add(crtNeck);
+        const crtCase = new THREE.Mesh(new THREE.BoxGeometry(3, 2.5, 2.5), new THREE.MeshStandardMaterial({color: 0xd6d3c9, roughness: 0.9}));
+        crtCase.position.set(0, 2.0, 0); crtGroup.add(crtCase);
+        
+        // High detail monitor back bulge
+        const crtBack = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 1.5), new THREE.MeshStandardMaterial({color: 0xc0beb4, roughness: 0.9}));
+        crtBack.position.set(0, 2.0, -1.5); crtGroup.add(crtBack); highDetailMeshes.push(crtBack);
         
         crtScreenMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 2.1), new THREE.MeshBasicMaterial({color: 0x112211}));
-        crtScreenMesh.position.set(-3.2, 5.2, -4.5); crtScreenMesh.rotation.y = Math.PI / 5; scene.add(crtScreenMesh);
+        crtScreenMesh.position.set(0, 2.0, 1.26); crtGroup.add(crtScreenMesh);
+        scene.add(crtGroup);
         
         const keyboard = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 1.5), new THREE.MeshStandardMaterial({color: 0x999999, roughness: 0.8}));
         keyboard.position.set(-3.5, 4.1, -3); keyboard.rotation.y = Math.PI / 8; scene.add(keyboard);
 
+        // High detail Keyboard keys
+        const keysGroup = new THREE.Group();
+        const keyMat = new THREE.MeshStandardMaterial({color: 0xeeeeee, roughness: 0.9});
+        for(let i=0; i<4; i++){
+            for(let j=0; j<10; j++){
+                const key = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.3), keyMat);
+                key.position.set(-1.8 + j*0.35, 0.1, -0.5 + i*0.35);
+                keysGroup.add(key);
+            }
+        }
+        keyboard.add(keysGroup);
+        highDetailMeshes.push(keysGroup);
+
         const phoneGroup = new THREE.Group(); phoneGroup.position.set(4, 4.2, -4); phoneGroup.rotation.y = -Math.PI/6;
         const phoneBase = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 2), new THREE.MeshStandardMaterial({color: 0x7a1818, roughness: 0.6})); phoneGroup.add(phoneBase);
         const phoneHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.8), new THREE.MeshStandardMaterial({color: 0x5a1010})); phoneHandle.position.set(0, 0.3, 0); phoneHandle.rotation.x = Math.PI/2; phoneGroup.add(phoneHandle);
+        
+        // High detail phone dial
+        const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1, 16), new THREE.MeshStandardMaterial({color: 0x222222}));
+        dial.position.set(0, 0.25, 0.3);
+        phoneGroup.add(dial);
+        highDetailMeshes.push(dial);
+
+        phoneGroup.name = 'phone';
         scene.add(phoneGroup);
 
-        const paperMat = new THREE.MeshStandardMaterial({map: createPaperTexture(), roughness: 1.0});
+        const paperMat = new THREE.MeshStandardMaterial({color: 0xeeeeee, map: createPaperTexture(), roughness: 1.0});
         for(let i=0; i<4; i++) {
             const paper = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2), paperMat);
             paper.position.set(Math.random()*4 - 2, 4.05 + i*0.01, -3.5 + Math.random()*1); paper.rotation.x = -Math.PI/2; paper.rotation.z = Math.random()*Math.PI; scene.add(paper);
@@ -1562,15 +2164,47 @@
         for(let i = 0; i < 3; i++) { const blade = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.8, 0.05), new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.5})); blade.position.y = 0.9; const pivot = new THREE.Group(); pivot.rotation.z = (Math.PI * 2 / 3) * i; pivot.add(blade); fanBlades.add(pivot); }
         fanGroup.add(fanBlades); 
         const fanCage = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 8, 24), metalMat); fanCage.position.set(0, 1.5, 0.4); fanGroup.add(fanCage);
+        
+        // High detail fan wire
+        const fanWire = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.05, 8, 16, Math.PI), new THREE.MeshStandardMaterial({color: 0x111111}));
+        fanWire.position.set(0.5, 0.2, -0.5); fanWire.rotation.x = Math.PI/2; fanWire.rotation.y = Math.PI/4;
+        fanGroup.add(fanWire);
+        highDetailMeshes.push(fanWire);
+
+        fanGroup.name = 'fan';
         scene.add(fanGroup);
 
-        // Poster do Funcionario do Mês Substituindo o Fungo
+        // Poster do Funcionario do Mês
         const empPosterTex = createEmployeePoster(); 
-        const empPoster = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ map: empPosterTex, roughness: 0.8 }));
-        // Ajustado para ficar no meio da parede direita antes da porta (z=-6.5)
+        const empPoster = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ color: 0xffffff, map: empPosterTex, roughness: 0.8 }));
         empPoster.position.set(14.49, 10, -6.5); 
         empPoster.rotation.y = -Math.PI / 2;
+        empPoster.name = 'poster';
         scene.add(empPoster);
+
+        // EXTRA HIGH DETAIL OBJECTS (Trash can, mug, scattered papers)
+        const trashCan = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.8, 2.5, 16), metalMat);
+        trashCan.position.set(7, 1.25, -6);
+        highDetailGroup.add(trashCan);
+
+        const mugGroup = new THREE.Group(); mugGroup.position.set(2, 4.4, -4);
+        const mugBody = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.8, 16), new THREE.MeshStandardMaterial({color: 0xdddddd, roughness: 0.2}));
+        const mugHandle = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.08, 8, 16), new THREE.MeshStandardMaterial({color: 0xdddddd, roughness: 0.2}));
+        mugHandle.position.set(0.3, 0, 0); mugGroup.add(mugBody); mugGroup.add(mugHandle);
+        highDetailGroup.add(mugGroup);
+
+        const crumpledMat = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness: 0.9});
+        for(let i=0; i<10; i++) {
+            const trash = new THREE.Mesh(new THREE.DodecahedronGeometry(0.2, 0), crumpledMat);
+            trash.position.set(Math.random()*10 - 5, 0.2, Math.random()*5 - 2);
+            trash.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+            highDetailGroup.add(trash);
+        }
+
+        // Extra ambient lighting for High Detail
+        const extraLight = new THREE.PointLight(0x4466aa, 0.5, 20);
+        extraLight.position.set(0, 15, -5);
+        highDetailGroup.add(extraLight);
     }
 
     function init3D() {
@@ -1579,22 +2213,19 @@
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200); camera.position.copy(officeCamPos);
         
         renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
-        renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping; 
-        renderer.toneMappingExposure = 0.9;
-        renderer.outputEncoding = THREE.sRGBEncoding; 
+        renderer.setSize(window.innerWidth, window.innerHeight); 
+        
         container.appendChild(renderer.domElement);
 
         window.buildExteriorMenu();
 
-        const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 200), new THREE.MeshStandardMaterial({map: createDirtyCheckeredFloor(), roughness:0.7})); 
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 200), new THREE.MeshStandardMaterial({color: 0x555555, map: createDirtyCheckeredFloor(), roughness:0.7})); 
         floor.rotation.x = -Math.PI/2; floor.position.z = -60; floor.receiveShadow = true; scene.add(floor);
         
         buildOffice();
 
         [-25, -15, 15, 25].forEach(x => { 
-            const hallWall = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 80), new THREE.MeshStandardMaterial({map: createDetailedWallTexture(), roughness: 0.9}));
+            const hallWall = new THREE.Mesh(new THREE.BoxGeometry(1, 20, 80), new THREE.MeshStandardMaterial({color: 0x444c52, map: createDetailedWallTexture(), roughness: 0.9}));
             hallWall.position.set(x, 10, -50); scene.add(hallWall);
         });
 
@@ -1631,6 +2262,7 @@
 
         scene.add(camera);
 
+        applyGraphics(); // Aplica os shaders/otimizações logo após construir tudo
         animate();
     }
 
@@ -1652,6 +2284,8 @@
         isMonitorUp = !isMonitorUp;
         document.getElementById('camera-ui').classList.toggle('hidden'); document.getElementById('office-panels').classList.toggle('hidden');
         if (isMonitorUp) { 
+            window.unlockAchievement('act_mon'); window.monitorUsedThisNight = true; window.gameStats.monitor++; if(window.gameStats.monitor >= 100) window.unlockAchievement('grind_mon_100'); saveStats();
+
             window.switchCam(currentCam); mainOfficeLight.intensity = 0; cctvLight.intensity = 1.5; triggerStaticPulse(); 
             if (isTaskActive) {
                 document.getElementById('static-overlay').style.opacity = '0.9';
@@ -1715,6 +2349,14 @@
         if (side === 'left') { isLeftDoorClosed = !isLeftDoorClosed; document.getElementById('l-door').classList.toggle('active'); leftDoorTargetY = isLeftDoorClosed ? 7.5 : 22.5; } 
         else { isRightDoorClosed = !isRightDoorClosed; document.getElementById('r-door').classList.toggle('active'); rightDoorTargetY = isRightDoorClosed ? 7.5 : 22.5; }
 
+        if (isLeftDoorClosed || isRightDoorClosed) {
+            window.unlockAchievement('act_door'); window.doorsClosedThisNight = true; 
+            window.gameStats.doors++; if(window.gameStats.doors >= 100) window.unlockAchievement('grind_door_100'); saveStats();
+        }
+
+        if(!window.spamDoorTimeout) window.spamDoorCount = 0; window.spamDoorCount++; clearTimeout(window.spamDoorTimeout); window.spamDoorTimeout = setTimeout(()=>window.spamDoorCount=0, 2000);
+        if(window.spamDoorCount >= 10) window.unlockAchievement('spam_door');
+
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
             if (side === 'left' && act === 'l-door' && isLeftDoorClosed) nextTutStep();
@@ -1730,7 +2372,13 @@
                 c.material.color.setHex(isOn ? 0xffffff : 0x222222);
             }
         });
-        if (group.userData.spot) group.userData.spot.intensity = isOn ? 4.0 : 0;
+        if (group.userData.spot) {
+            if (window.graphicsLevel > 0) {
+                group.userData.spot.intensity = isOn ? 4.0 : 0;
+            } else {
+                group.userData.spot.intensity = isOn ? 2.5 : 0; // Um pouco mais fraco no LOW
+            }
+        }
     }
 
     window.toggleLight = function(side) {
@@ -1741,6 +2389,8 @@
             if (side === 'left' && act !== 'l-light' && act !== 'l-cleanup') return;
             if (side === 'right') return; // Bloqueia luz direita no tutorial
         }
+
+        window.unlockAchievement('act_light'); window.gameStats.lights++; if(window.gameStats.lights >= 100) window.unlockAchievement('grind_light_100'); saveStats();
 
         if (side === 'left') { 
             isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); 
