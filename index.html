@@ -30,19 +30,20 @@
         .hidden { display: none !important; }
 
         /* --- Menus e Telas --- */
-        #menu-screen { background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.95) 100%); justify-content: center; align-items: flex-start; padding-left: 8%; }
+        #menu-screen { background: linear-gradient(90deg, rgba(5,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%); justify-content: flex-end; align-items: flex-start; padding-left: 8%; padding-bottom: 8%; }
         .menu-content { display: flex; flex-direction: column; align-items: flex-start; z-index: 2; }
-        .glitch-title { font-size: clamp(2.5rem, 8vw, 6rem); margin-bottom: 0.5rem; color: #fff; text-transform: uppercase; font-family: 'Arial Black', Impact, sans-serif; letter-spacing: -2px; text-shadow: 3px 3px 0 #8a2929, -3px -3px 0 #333; position: relative; animation: glitch-anim 3s infinite linear alternate-reverse; }
-        .menu-subtitle { font-size: clamp(0.9rem, 3vw, 1.5rem); color: #ddd; margin-bottom: 3rem; letter-spacing: 5px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 10px; text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; }
-        .menu-options { display: flex; flex-direction: column; gap: 15px; }
-        .menu-btn { background: none; border: none; color: #fff; font-size: clamp(1rem, 4vw, 1.8rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 5px 15px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-        .menu-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(138, 41, 41, 0.2); transition: left 0.3s; z-index: -1; }
+        .glitch-title { font-size: clamp(2.5rem, 8vw, 6rem); margin-bottom: 0.5rem; color: #aa0000; text-transform: uppercase; font-family: 'Arial Black', Impact, sans-serif; letter-spacing: -2px; text-shadow: 4px 4px 0 #330000, -2px -2px 0 #ff5555, 0 0 20px rgba(255,0,0,0.5); position: relative; font-style: italic; animation: title-breathe 4s infinite alternate ease-in-out; }
+        .menu-subtitle { font-size: clamp(1rem, 2.5vw, 1.8rem); color: #888; margin-bottom: 3rem; letter-spacing: 8px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; font-weight: bold; }
+        .menu-options { display: flex; flex-direction: column; gap: 15px; border-left: 2px solid rgba(170, 0, 0, 0.3); padding-left: 20px; }
+        .menu-btn { background: none; border: none; border-left: 3px solid transparent; color: #fff; font-size: clamp(1.2rem, 3.5vw, 2rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 10px 20px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: 2px 2px 4px #000; font-weight: bold; }
+        .menu-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(170, 0, 0, 0.3), transparent); transition: left 0.3s; z-index: -1; }
         .menu-btn:hover::before { left: 0; }
-        .menu-btn:hover, .menu-btn:active { color: #ff4444; transform: translateX(15px); text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-        .menu-footer { position: absolute; bottom: 20px; right: 20px; color: #bbb; font-size: 0.9rem; text-align: right; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-        .rec-indicator { position: absolute; top: 30px; right: 40px; color: #fff; font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Arial', sans-serif; display: flex; align-items: center; gap: 10px; opacity: 0.8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-        .red-dot { width: 15px; height: 15px; background-color: #f00; border-radius: 50%; box-shadow: 0 0 10px #f00; animation: blink 1s infinite; }
+        .menu-btn:hover, .menu-btn:active { color: #ff5555; transform: translateX(15px); border-left: 3px solid #f00; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 4px #000; }
+        .menu-footer { position: absolute; bottom: 20px; right: 20px; color: #666; font-size: 0.9rem; text-align: right; text-shadow: 1px 1px 2px #000; }
+        .rec-indicator { position: absolute; top: 30px; right: 40px; color: #fff; font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Arial', sans-serif; display: flex; align-items: center; gap: 10px; opacity: 0.8; text-shadow: 2px 2px 4px #000; }
+        .red-dot { width: 15px; height: 15px; background-color: #f00; border-radius: 50%; box-shadow: 0 0 15px #f00; animation: blink 1s infinite; }
 
+        @keyframes title-breathe { 0% { transform: scale(1); text-shadow: 4px 4px 0 #330000, -2px -2px 0 #ff5555, 0 0 20px rgba(255,0,0,0.5); } 100% { transform: scale(1.02); text-shadow: 5px 5px 0 #440000, -3px -3px 0 #ff2222, 0 0 35px rgba(255,0,0,0.8); } }
         @keyframes glitch-anim { 0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 10% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 30% { clip-path: inset(40% 0 20% 0); transform: translate(2px, -2px); } 40% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 50% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 60% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 2px); } 70% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); } 80% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 90% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); } 100% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 2px); } }
 
         #newspaper-screen { background-color: #222; }
@@ -91,6 +92,7 @@
 
         #story-screen h2 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: normal; }
         #story-screen h3 { font-size: clamp(1.5rem, 5vw, 2rem); color: #888; margin-top: 10px; font-weight: normal; }
+        
         #gameover-screen { background-color: #000; z-index: 90; }
         #gameover-screen h1 { font-size: clamp(2.5rem, 8vw, 5rem); color: #800; animation: flicker 2s infinite; text-align: center; padding: 0 10px; }
 
@@ -105,6 +107,22 @@
         .time-am.show { opacity: 1; }
         #digit-6.fade-out { opacity: 0; transform: translateY(-50px); }
         #digit-7.center-up { right: calc(50% - clamp(20px, 5vw, 40px)); }
+
+        /* --- CHEQUE E VITÓRIA (7 AM) --- */
+        #paycheck-screen { background-color: #111; z-index: 95; }
+        .paycheck-paper {
+            background: #f4f1ea; color: #111; width: 90%; max-width: 600px;
+            padding: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            font-family: 'Courier New', Courier, monospace;
+            border: 2px solid #555; position: relative;
+            transform: rotate(-1deg);
+            background-image: repeating-linear-gradient(rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 20px);
+        }
+        .paycheck-header { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+        .paycheck-body p { font-size: clamp(0.9rem, 3vw, 1.2rem); margin-bottom: 15px; }
+        .paycheck-footer { display: flex; justify-content: flex-end; margin-top: 40px; }
+        .paycheck-signature { border-top: 1px solid #111; padding-top: 5px; width: 200px; text-align: center; font-family: 'Brush Script MT', cursive; font-size: 1.5rem; }
+
 
         /* --- HUD --- */
         .hud-text { position: absolute; font-size: clamp(1.1rem, 4vw, 1.5rem); font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 20; pointer-events: auto; }
@@ -200,6 +218,14 @@
         .jumpscare-shake { animation: shake 0.1s infinite; filter: sepia(1) hue-rotate(300deg) saturate(5); }
         
         @media (max-width: 768px) {
+            #menu-screen { padding-bottom: 20%; padding-left: 5%; background: linear-gradient(180deg, rgba(5,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); align-items: center; justify-content: center; }
+            .menu-content { align-items: center; text-align: center; }
+            .menu-options { border-left: none; padding-left: 0; align-items: center; }
+            .menu-btn { text-align: center; border-left: none; border-bottom: 3px solid transparent; }
+            .menu-btn:hover, .menu-btn:active { transform: translateY(-5px); border-left: none; border-bottom: 3px solid #f00; }
+            .menu-btn::before { top: 100%; left: 0; background: linear-gradient(0deg, rgba(170, 0, 0, 0.3), transparent); transition: top 0.3s; }
+            .menu-btn:hover::before { top: 0; }
+
             .pc-screen { height: 95%; width: 95%; padding: 10px; border-width: 8px; justify-content: flex-start; }
             .pc-screen h2 { font-size: 1.2rem; margin-bottom: 8px; padding-bottom: 5px; }
             .pc-system-container { flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
@@ -240,7 +266,7 @@
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
-        <div class="menu-footer">v1.8 - Final Bugfix Edition<br>Feito por Haldo/Long</div>
+        <div class="menu-footer">v2.1 - The Paycheck Update<br>Feito por Haldo/Long</div>
     </div>
 
     <div id="settings-screen" class="screen hidden">
@@ -314,6 +340,22 @@
             <span class="time-digit" id="digit-7">7</span>
             <span class="time-am" id="digit-am">AM</span>
         </div>
+    </div>
+
+    <!-- TELA DO CHEQUE DE PAGAMENTO -->
+    <div id="paycheck-screen" class="screen hidden">
+        <div class="paycheck-paper">
+            <div class="paycheck-header">REGIS PIZZAPLACE - CHEQUE DE PAGAMENTO</div>
+            <div class="paycheck-body">
+                <p>PAGUE À ORDEM DE: <strong id="paycheck-name"></strong></p>
+                <p>A QUANTIA DE: <strong>R$ 120,50</strong> (Cento e vinte reais e cinquenta centavos)</p>
+                <p>REFERENTE A: Sobrevivência Total (Turno Noturno)</p>
+            </div>
+            <div class="paycheck-footer">
+                <div class="paycheck-signature">Regis</div>
+            </div>
+        </div>
+        <div style="position: absolute; bottom: 20px; color:#aaa; animation: flicker 2s infinite; cursor:pointer;" onclick="location.reload()">Toque para sair</div>
     </div>
 
     <div id="gameover-screen" class="screen hidden">
@@ -391,7 +433,7 @@
         <button id="audio-btn" class="hidden" onclick="window.playAudioSystem()">[ TOCAR ÁUDIO ]</button>
         
         <div id="wind-up-container" class="hidden">
-            <div id="wind-up-title">CAIXA DE MÚSICA (CAM1C)</div>
+            <div id="wind-up-title">CAIXA DE MÚSICA DO FOXY</div>
             <div id="wind-up-bar-bg"><div id="wind-up-bar-fill"></div></div>
             <button id="wind-up-btn" onmousedown="window.startWinding(event)" onmouseup="window.stopWinding(event)" onmouseleave="window.stopWinding(event)" ontouchstart="window.startWinding(event)" ontouchend="window.stopWinding(event)">[ SEGURE PARA RECARREGAR ]</button>
         </div>
@@ -414,12 +456,18 @@
     let isLeftLightOn = false, isRightLightOn = false;
     let leftDoorTargetY = 22.5, rightDoorTargetY = 22.5;
     
+    // --- NOVAS VARIÁVEIS DA MECÂNICA DE LANTERNA ---
+    let leftArmGroup, rightArmGroup;
+    let leftArmTargetY = -0.8, rightArmTargetY = -0.8; // Escondidas por padrão
+
     let isMonitorUp = false, currentCam = 'CAM1A';
     const officeCamPos = new THREE.Vector3(0, 5.5, 2);
     let gameIntervals = [];
     let phoneAudioCtx = null, phoneOscillator = null, phoneGain = null;
     let isCallMuted = false, phoneTimeouts = [];
-    let playerName = "Guarda";
+    
+    // Obter nome do localStorage se existir, senão predefinido
+    let playerName = localStorage.getItem('regis_pizzaplace_playername') || "Guarda";
     
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
     let isPCUp = false, isTaskActive = false, taskTimer = 30, taskFailTimer = 20; 
@@ -427,7 +475,9 @@
     let isExhaustOn = false, isVentBroken = false, exhaustAudioCtx = null, exhaustOsc = null;
     
     let currentOrderClient = "", currentOrderDesc = "", isBaking = false;
-    window.box1B = 100; window.box1C = 100; window.isWinding = false; window.foxyTriggered = false;
+    
+    // --- CAIXA DE MUSICA UNIFICADA ---
+    window.foxyBox = 100; window.isWinding = false; window.foxyTriggered = false;
     let masterVolume = 1.0, isHighQuality = true, confirmReset = false;
 
     // --- GLOBAIS DOS MINIGAMES ---
@@ -469,7 +519,7 @@
 
     const phoneScripts = {
         1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
-        2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas câmeras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Ele é pior que os outros.", "Para mantê-lo afastado, você precisa recarregar a Caixa de Música nas câmeras 1B e 1C.", "É uma 'dose dupla' de contenção. Se qualquer uma das caixas parar, ele vai te pegar.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
+        2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas cameras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Ele é pior que os outros.", "Para mantê-lo afastado, você precisa recarregar a Caixa de Música nas câmeras 1B e 1C.", "É uma 'dose dupla' de contenção. Se qualquer uma das caixas parar, ele vai te pegar.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
         3: ["Alô, Rafa aqui de novo.", "Cara, as coisas saíram do controle. A pizza tóxica que o Regis inventou... ela fez coisas horríveis.", "O Martins não morreu de verdade. A toxina transformou ele... numa espécie de morto-vivo com fungos.", "Ele se arrasta pelo chão porque não tem pernas. Por isso as câmeras quase não pegam ele direito.", "Lembre-se: o Martins odeia barulho de exaustor. E o Foxy odeia o silêncio das caixas de música.", "O ódio do Martins pelo Regis é tão grande que ele ataca qualquer guarda que ele vê."],
         4: ["Alô?! (Som de respiração ofegante)", "Eles tão me seguindo... Os outros funcionários... O Regis colocou os corpos infectados dentro das armaduras!", "Freddy, Bonnie, Chica... são sarcófagos, cara! É por isso que sangram e têm esses cogumelos bizarros...", "O prédio todo tá sendo consumido por raízes. A toxina vazou pelo porão.", "Não deixa eles entrarem! Tranca tudo e recarrega essas caixas de música!"],
         5: ["(Estática pesada) ...", "Regis... é você aí? Por favor, me tira daqui!", "O Martins... ele tá na porta. Ele tá arranhando o metal...", "Ele não para. Ele arrancou as próprias pernas, ele tá puro ódio e fungo!", "(Barulho forte de batida) A porta tá cedendo! (Estronde de metal)", "ELE TÁ AQUI! NÃO! AAAAAHHHH! (A ligação é cortada com um chiado aterrorizante)"]
@@ -605,6 +655,9 @@
         const input = document.getElementById('player-name-input');
         if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
         playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none';
+        
+        try { localStorage.setItem('regis_pizzaplace_playername', playerName); } catch(e) {}
+
         document.getElementById('dialogue-box').style.pointerEvents = 'auto';
         typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
         setTimeout(() => { document.getElementById('contract-screen').classList.add('hidden'); window.currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1); }, 4000);
@@ -806,17 +859,20 @@
         gameIntervals.push(setInterval(runAILoop, 5000));
         gameIntervals.push(setInterval(checkDoorsTiming, 1000));
         
+        // Loop rápido para a Caixa de Música Unificada do Foxy
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE' || power <= 0 || isBlackout || window.foxyTriggered) return;
-            let foxyDrain = 0.2 + (window.currentNight * 0.1);
-            window.box1B -= foxyDrain; window.box1C -= foxyDrain;
+            
+            // Variando a drenagem de acordo com a noite. N1 = lento, N7 = rápido
+            let foxyDrain = 0.07 + (window.currentNight * 0.04); 
+            window.foxyBox -= foxyDrain;
 
-            if (isMonitorUp && window.isWinding) {
-                if (currentCam === 'CAM1B') window.box1B = Math.min(100, window.box1B + 3);
-                if (currentCam === 'CAM1C') window.box1C = Math.min(100, window.box1C + 3);
+            // Recarregar se o botão estiver pressionado NAS câmaras 1B OU 1C
+            if (isMonitorUp && window.isWinding && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
+                window.foxyBox = Math.min(100, window.foxyBox + 2.5); // Demora um pouquinho mais a carregar pra dar tensão
             }
 
-            if (window.box1B <= 0 || window.box1C <= 0) {
+            if (window.foxyBox <= 0) {
                 window.foxyTriggered = true; 
                 animatronics.foxy.loc = 'LeftDoor'; 
                 animatronics.foxy.doorWaitTime = 0; 
@@ -826,17 +882,16 @@
             }
 
             if (isMonitorUp && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
-                let currentBox = currentCam === 'CAM1B' ? window.box1B : window.box1C;
                 let fill = document.getElementById('wind-up-bar-fill');
                 if (fill) {
-                    fill.style.width = currentBox + '%';
-                    if (currentBox > 50) fill.style.background = '#0f0'; else if (currentBox > 20) fill.style.background = '#ff0'; else fill.style.background = '#f00';
+                    fill.style.width = window.foxyBox + '%';
+                    if (window.foxyBox > 50) fill.style.background = '#0f0'; else if (window.foxyBox > 20) fill.style.background = '#ff0'; else fill.style.background = '#f00';
                 }
             }
 
             let data = animatronics['foxy'];
             if (!window.foxyTriggered) {
-                if (window.box1C > 66) data.state = 0; else if (window.box1C > 33) data.state = 1; else data.state = 2;
+                if (window.foxyBox > 66) data.state = 0; else if (window.foxyBox > 33) data.state = 1; else data.state = 2;
                 updateAnimatronicVisuals();
             }
         }, 100));
@@ -1054,12 +1109,6 @@
     function triggerWinAnimation() {
         gameState = 'WIN'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
         if(isMonitorUp) window.toggleMonitor(); document.getElementById('hud-layer').classList.add('hidden');
-        
-        if (window.currentNight >= 7) {
-            document.getElementById('gameover-screen').innerHTML = '<h1 style="color:#0f0;">VOCÊ SOBREVIVEU</h1><div style="margin-top:20px; font-size:1.5rem;">O Purgatório Terminou.</div><div style="position: absolute; bottom: 20px; color:#aaa; cursor:pointer;" onclick="location.reload()">Toque para voltar ao menu</div>';
-            document.getElementById('gameover-screen').classList.remove('hidden');
-            saveGame(1); return;
-        }
 
         const winScreen = document.getElementById('win-screen-7am');
         const d6 = document.getElementById('digit-6'); const d7 = document.getElementById('digit-7'); const am = document.getElementById('digit-am');
@@ -1075,12 +1124,21 @@
                 } catch(e) {}
             }
         }, 500);
+        
         setTimeout(() => { d6.classList.add('fade-out'); d7.classList.add('center-up'); }, 3500);
+        
         setTimeout(() => {
-            window.currentNight++;
-            const continueBtn = document.getElementById('continue-btn');
-            if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
-            saveGame(window.currentNight); showNewspaperForNight(window.currentNight);
+            winScreen.classList.add('hidden');
+            if (window.currentNight >= 7) {
+                document.getElementById('paycheck-name').innerText = playerName || "Guarda";
+                document.getElementById('paycheck-screen').classList.remove('hidden');
+                saveGame(1); 
+            } else {
+                window.currentNight++;
+                const continueBtn = document.getElementById('continue-btn');
+                if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
+                saveGame(window.currentNight); showNewspaperForNight(window.currentNight);
+            }
         }, 6500);
     }
 
@@ -1127,9 +1185,9 @@
             if (data.loc === doorLoc) {
                 if (isDoorClosed) {
                     data.doorWaitTime++;
-                    if (data.doorWaitTime >= 5) {
+                    if (data.doorWaitTime >= 10) {
                         if (anim === 'foxy') {
-                            data.loc = 'CAM1C'; data.state = 0; window.box1B = 100; window.box1C = 100; window.foxyTriggered = false;
+                            data.loc = 'CAM1C'; data.state = 0; window.foxyBox = 100; window.foxyTriggered = false;
                         } else {
                             data.loc = 'CAM1B'; 
                         }
@@ -1137,7 +1195,7 @@
                     }
                 } else {
                     data.doorWaitTime = 0; data.attackTimer++;
-                    if (data.attackTimer >= 5) triggerJumpscare(anim);
+                    if (data.attackTimer >= 10) triggerJumpscare(anim);
                 }
             } else { data.doorWaitTime = 0; data.attackTimer = 0; }
         });
@@ -1174,6 +1232,12 @@
         if (isLeftDoorClosed) window.toggleDoor('left'); if (isRightDoorClosed) window.toggleDoor('right');
         isLeftLightOn = false; isRightLightOn = false; document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
         ambientLight.intensity = 0.02; mainOfficeLight.intensity = 0; leftLight.intensity = 0; rightLight.intensity = 0;
+        
+        // Esconde as lanternas
+        leftArmTargetY = -0.8; rightArmTargetY = -0.8;
+        if(leftArmGroup) toggleFlashlightLens(leftArmGroup, false);
+        if(rightArmGroup) toggleFlashlightLens(rightArmGroup, false);
+
         updateAnimatronicVisuals();
         setTimeout(() => triggerJumpscare('freddy'), 5000 + Math.random() * 10000);
     }
@@ -1203,11 +1267,16 @@
         document.querySelectorAll('.btn-light, .btn-door').forEach(el => el.classList.remove('active'));
         if (leftLight) leftLight.intensity = 0; if (rightLight) rightLight.intensity = 0;
         
+        // Reseta as mãos com as lanternas
+        leftArmTargetY = -0.8; rightArmTargetY = -0.8;
+        if(leftArmGroup) { leftArmGroup.position.y = -0.8; toggleFlashlightLens(leftArmGroup, false); }
+        if(rightArmGroup) { rightArmGroup.position.y = -0.8; toggleFlashlightLens(rightArmGroup, false); }
+
         ['bonnie', 'chica', 'freddy', 'foxy'].forEach(a => { animatronics[a].doorWaitTime = 0; animatronics[a].attackTimer = 0; });
         animatronics.bonnie.loc = 'CAM1A'; animatronics.chica.loc = 'CAM1A'; animatronics.freddy.loc = 'CAM1A';
         animatronics.foxy.loc = 'CAM1C'; animatronics.foxy.state = 0; 
         
-        window.box1B = 100; window.box1C = 100; window.isWinding = false; window.foxyTriggered = false;
+        window.foxyBox = 100; window.isWinding = false; window.foxyTriggered = false;
         
         isTaskActive = false; isPCUp = false; 
         let taskDelay = 40; if(window.currentNight === 2) taskDelay = 35; else if (window.currentNight === 3) taskDelay = 30; else if (window.currentNight >= 4) taskDelay = 20;
@@ -1302,21 +1371,13 @@
         };
 
         const lArm = buildArm(false); const rArm = buildArm(type === 'foxy');
-        const addFungus = (parent, count, spread) => { 
-            for(let i=0; i<count; i++) { 
-                const spore = new THREE.Mesh(new THREE.OctahedronGeometry(0.3 + Math.random()*0.5), matFungus); 
-                spore.position.set((Math.random()-0.5)*spread, (Math.random()-0.5)*spread, (Math.random()-0.5)*spread); 
-                spore.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0); parent.add(spore); 
-            } 
-        };
-
+        
         if (type === 'freddy') { 
             torsoGroup.rotation.x = Math.PI / 2 - 0.2; torsoGroup.position.set(0, 1.0, 0); headGroup.position.set(0, 3.5, 2.0); headGroup.rotation.x = -Math.PI / 3; 
             lArm.position.set(-2.4, 1.5, 1.5); lArm.rotation.set(Math.PI/2, 0, Math.PI/4); rArm.position.set(2.4, 1.5, 1.5); rArm.rotation.set(Math.PI/2, 0, -Math.PI/4);
             for(let i=0; i<6; i++) { const vert = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), matBone); vert.position.set(0, -2.0 - i*0.8, -0.5); vert.rotation.z = Math.PI/4; torsoGroup.add(vert); }
             const hatBase = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 2.2), new THREE.MeshStandardMaterial({color:0x111})); hatBase.position.y = 1.8; headGroup.add(hatBase);
             const hatTop = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.4), new THREE.MeshStandardMaterial({color:0x111})); hatTop.position.y = 2.6; headGroup.add(hatTop);
-            addFungus(torsoGroup, 25, 3); addFungus(headGroup, 10, 2.5);
         } else {
             torsoGroup.position.y = 5.5; headGroup.position.set(0, 9, 0); headGroup.rotation.set(Math.random()*0.4-0.2, Math.random()*0.4-0.2, Math.random()*0.4-0.2); 
             lArm.position.set(-2.4, 7.5, 0); lArm.rotation.set(-Math.PI/6, 0, Math.PI/8); rArm.position.set(2.4, 7.5, 0); rArm.rotation.set(-Math.PI/6, 0, -Math.PI/8);
@@ -1327,7 +1388,6 @@
                 const foot = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 2.2), matBody); foot.position.set(0, -7.5, 0.4); legGroup.add(foot); return legGroup;
             };
             const lLeg = buildLeg(); lLeg.position.set(-1.2, 5.5, 0); group.add(lLeg); const rLeg = buildLeg(); rLeg.position.set(1.2, 5.5, 0); group.add(rLeg);
-            addFungus(headGroup, 15, 2.5); addFungus(torsoGroup, 12, 3);
             if (type === 'bonnie') {
                 const earL = new THREE.Mesh(new THREE.BoxGeometry(0.8, 3.5, 0.4), matBody); earL.position.set(-1.2, 3.5, 0); earL.rotation.z = -0.2; headGroup.add(earL);
                 const earR = new THREE.Mesh(new THREE.BoxGeometry(0.6, 2.5, 0.3), matBone); earR.position.set(1.2, 3.0, 0); earR.rotation.z = 0.5; headGroup.add(earR); 
@@ -1374,70 +1434,137 @@
         return new THREE.CanvasTexture(canvas);
     }
 
-    function createCreepyPoster() {
-        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 384; const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#d4c4a8'; ctx.fillRect(0, 0, 256, 384); ctx.strokeStyle = '#222'; ctx.lineWidth = 10; ctx.strokeRect(5, 5, 246, 374);
-        ctx.fillStyle = '#6b0000'; ctx.font = 'bold 36px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText("PROCURE O", 128, 150); ctx.fillText("ALEJADO", 128, 220);
-        for(let i=0; i<150; i++) { ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.15})`; ctx.beginPath(); ctx.arc(Math.random()*256, Math.random()*384, Math.random()*8, 0, Math.PI*2); ctx.fill(); }
-        return new THREE.CanvasTexture(canvas);
-    }
-
-    function createStoreSign(mainText, subText, bgColor, textColor) {
-        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 128; const ctx = canvas.getContext('2d');
-        ctx.fillStyle = bgColor; ctx.fillRect(0, 0, 512, 128); ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.font = 'bold 50px "Arial Black", sans-serif'; ctx.fillText(mainText, 256, 50); ctx.font = 'bold 24px Arial'; ctx.fillText(subText, 256, 100);
-        for(let i=0; i<100; i++) { ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.2})`; ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*128, Math.random()*4, 0, Math.PI*2); ctx.fill(); }
-        return new THREE.CanvasTexture(canvas);
-    }
-
-    function createRollerDoorTexture() {
-        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 256; const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#333'; ctx.fillRect(0, 0, 256, 256); ctx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { ctx.fillRect(0, y, 256, 3); }
-        const tex = new THREE.CanvasTexture(canvas); tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(2, 2); return tex;
-    }
-
-    function createFungusTexture() {
-        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 512, 512); ctx.strokeStyle = '#ffffff'; ctx.fillStyle = '#ffffff'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        function drawBranch(x, y, angle, length, width, depth) {
-            if (depth === 0) return;
-            const endX = x + Math.cos(angle) * length; const endY = y + Math.sin(angle) * length;
-            ctx.lineWidth = width; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(endX, endY); ctx.stroke();
-            if (Math.random() > 0.5) { ctx.beginPath(); ctx.arc(endX, endY, width * 1.5, 0, Math.PI * 2); ctx.fill(); }
-            const numBranches = Math.random() > 0.2 ? 2 : 1;
-            for (let i = 0; i < numBranches; i++) {
-                const newAngle = angle + (Math.random() - 0.5) * 1.8; const newLength = length * (0.6 + Math.random() * 0.3); const newWidth = width * 0.7;
-                drawBranch(endX, endY, newAngle, newLength, newWidth, depth - 1);
-            }
-        }
-        for(let i=0; i<6; i++) { drawBranch(Math.random() * 512, 512, -Math.PI/2 + (Math.random()-0.5), 60 + Math.random()*60, 12 + Math.random()*8, 7); drawBranch(0, Math.random() * 512, 0 + (Math.random()-0.5), 60 + Math.random()*60, 12 + Math.random()*8, 7); }
-        ctx.globalCompositeOperation = 'destination-out'; for(let i=0; i<150; i++) { ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*512, 2 + Math.random()*15, 0, Math.PI*2); ctx.fill(); }
-        ctx.globalCompositeOperation = 'source-over'; return new THREE.CanvasTexture(canvas);
-    }
-
-    function buildExteriorMenu() {
-        menuScene = new THREE.Scene(); menuScene.background = new THREE.Color(0x050505); menuScene.fog = new THREE.Fog(0x050505, 20, 60);
-        menuCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200); menuCamera.position.set(0, 8, 35);
+    window.buildExteriorMenu = function() {
+        menuScene = new THREE.Scene(); menuScene.background = new THREE.Color(0x020202); 
+        // Adicionando névoa pesada de terror
+        menuScene.fog = new THREE.FogExp2(0x020202, 0.035); 
+        
+        menuCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200); 
+        
         const topMat = new THREE.MeshStandardMaterial({color: 0x666666, roughness: 0.9}); const topBuilding = new THREE.Mesh(new THREE.BoxGeometry(45, 12, 10), topMat); topBuilding.position.set(0, 16, -5); menuScene.add(topBuilding);
         const winMat = new THREE.MeshStandardMaterial({color: 0x000000, roughness: 0.1}); [-12, 0, 12].forEach(x => { const win = new THREE.Mesh(new THREE.PlaneGeometry(5, 4), winMat); win.position.set(x, 16, 0.05); menuScene.add(win); });
         const leftMat = new THREE.MeshStandardMaterial({color: 0x444444, roughness: 0.9}); const leftStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), leftMat); leftStore.position.set(-15, 5, -5); menuScene.add(leftStore);
-        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("Curitibana", "Panificadora", "#111111", "#ffffff")})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
+        
+        // Canvas calls for textures
+        const s1C = document.createElement('canvas'); s1C.width = 512; s1C.height = 128; const s1Cx = s1C.getContext('2d'); s1Cx.fillStyle = "#111111"; s1Cx.fillRect(0, 0, 512, 128); s1Cx.fillStyle = "#ffffff"; s1Cx.textAlign = 'center'; s1Cx.textBaseline = 'middle'; s1Cx.font = 'bold 50px "Arial Black", sans-serif'; s1Cx.fillText("Curitibana", 256, 50); s1Cx.font = 'bold 24px Arial'; s1Cx.fillText("Panificadora", 256, 100);
+        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s1C)})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
+        
         const centerMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.9}); const centerStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); centerStore.position.set(0, 5, -5); menuScene.add(centerStore);
         const entrance = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshBasicMaterial({color: 0x000000})); entrance.position.set(0, 3.5, 0.05); menuScene.add(entrance);
-        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("COSTELÃO", "ASSADOS", "#ffffff", "#000000")})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
+        
+        const s2C = document.createElement('canvas'); s2C.width = 512; s2C.height = 128; const s2Cx = s2C.getContext('2d'); s2Cx.fillStyle = "#ffffff"; s2Cx.fillRect(0, 0, 512, 128); s2Cx.fillStyle = "#000000"; s2Cx.textAlign = 'center'; s2Cx.textBaseline = 'middle'; s2Cx.font = 'bold 50px "Arial Black", sans-serif'; s2Cx.fillText("COSTELÃO", 256, 50); s2Cx.font = 'bold 24px Arial'; s2Cx.fillText("ASSADOS", 256, 100);
+        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s2C)})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
+        
         for(let i of [-4, 4]) { const table = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), new THREE.MeshStandardMaterial({color: 0x111111})); table.position.set(i, 1, 4); menuScene.add(table); }
         const rightStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); rightStore.position.set(15, 5, -5); menuScene.add(rightStore);
-        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({map: createRollerDoorTexture(), metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
-        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: createStoreSign("REGGI'S", "PIZZARIA", "#222222", "#ffffff")})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
+        
+        const rollC = document.createElement('canvas'); rollC.width = 256; rollC.height = 256; const rollCx = rollC.getContext('2d'); rollCx.fillStyle = '#333'; rollCx.fillRect(0, 0, 256, 256); rollCx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { rollCx.fillRect(0, y, 256, 3); } const rollT = new THREE.CanvasTexture(rollC); rollT.wrapS = THREE.RepeatWrapping; rollT.wrapT = THREE.RepeatWrapping; rollT.repeat.set(2, 2);
+        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({map: rollT, metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
+        
+        const s3C = document.createElement('canvas'); s3C.width = 512; s3C.height = 128; const s3Cx = s3C.getContext('2d'); s3Cx.fillStyle = "#110000"; s3Cx.fillRect(0, 0, 512, 128); s3Cx.fillStyle = "#ff2222"; s3Cx.textAlign = 'center'; s3Cx.textBaseline = 'middle'; s3Cx.font = 'bold 50px "Arial Black", sans-serif'; s3Cx.fillText("REGIS", 256, 50); s3Cx.font = 'bold 24px Arial'; s3Cx.fillText("PIZZAPLACE", 256, 100);
+        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({map: new THREE.CanvasTexture(s3C)})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
+        
         const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(50, 0.5, 10), new THREE.MeshStandardMaterial({color: 0x333333})); sidewalk.position.set(0, 0.25, 5); menuScene.add(sidewalk);
         const street = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), new THREE.MeshStandardMaterial({color: 0x111111})); street.rotation.x = -Math.PI/2; street.position.set(0, 0, 25); menuScene.add(street);
         
-        const fungusTex = createFungusTexture(); const fungusMat = new THREE.MeshBasicMaterial({ map: fungusTex, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.6, depthWrite: false });
-        for(let i = 0; i < 10; i++) { const size = 5 + Math.random() * 8; const patch = new THREE.Mesh(new THREE.PlaneGeometry(size, size), fungusMat); patch.position.set((Math.random() - 0.5) * 45, 2 + Math.random() * 18, 0.15 + Math.random() * 0.5); patch.rotation.z = Math.random() * Math.PI * 2; menuScene.add(patch); }
-        for(let i = 0; i < 6; i++) { const size = 6 + Math.random() * 10; const floorPatch = new THREE.Mesh(new THREE.PlaneGeometry(size, size), fungusMat); floorPatch.rotation.x = -Math.PI / 2; floorPatch.position.set((Math.random() - 0.5) * 45, 0.55, 3 + Math.random() * 8); floorPatch.rotation.z = Math.random() * Math.PI * 2; menuScene.add(floorPatch); }
+        // --- ILUMINAÇÃO SOMBRIA DO MENU ---
+        menuScene.add(new THREE.AmbientLight(0x0a0a0a, 1.0)); // Muito escuro
         
-        menuScene.add(new THREE.AmbientLight(0x222222, 1.0)); const dl = new THREE.DirectionalLight(0xffffff, 1.5); dl.position.set(-10, 20, 20); menuScene.add(dl);
+        // Luz noturna/luz da lua
+        const dl = new THREE.DirectionalLight(0x445566, 0.5); 
+        dl.position.set(-20, 30, 20); 
+        menuScene.add(dl);
+
+        // Luz vermelha sinistra saindo da pizzaria
+        const entranceLight = new THREE.PointLight(0xff0000, 2.5, 20);
+        entranceLight.position.set(0, 3.5, -2);
+        menuScene.add(entranceLight);
+
+        // Poste de luz piscando
+        const postGeo = new THREE.CylinderGeometry(0.2, 0.2, 12);
+        const post = new THREE.Mesh(postGeo, new THREE.MeshStandardMaterial({color: 0x111}));
+        post.position.set(-10, 6, 15);
+        menuScene.add(post);
+        window.menuFlickerLight = new THREE.PointLight(0xffeedd, 1.5, 30);
+        window.menuFlickerLight.position.set(-10, 11.5, 15);
+        menuScene.add(window.menuFlickerLight);
+    };
+
+    // --- NOVO POSTER DO FUNCIONÁRIO DO MÊS ---
+    function createEmployeePoster() {
+        const canvas = document.createElement('canvas'); canvas.width = 256; canvas.height = 384; const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#d4c4a8'; ctx.fillRect(0, 0, 256, 384);
+        ctx.strokeStyle = '#222'; ctx.lineWidth = 8; ctx.strokeRect(4, 4, 248, 376);
+        
+        ctx.fillStyle = '#111'; ctx.font = 'bold 24px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText("FUNCIONÁRIO", 128, 40);
+        ctx.fillText("DO MÊS", 128, 70);
+        
+        // Foto sombra/placeholder
+        ctx.fillStyle = '#333'; ctx.fillRect(64, 100, 128, 128); 
+        ctx.fillStyle = '#888'; ctx.beginPath(); ctx.arc(128, 140, 30, 0, Math.PI*2); ctx.fill(); // Head
+        ctx.beginPath(); ctx.arc(128, 230, 45, Math.PI, 0); ctx.fill(); // Body
+        
+        ctx.fillStyle = '#111'; ctx.font = 'bold 20px Courier New';
+        ctx.fillText("PEDRO MARTINS", 128, 260);
+        
+        // Sangue/Manchas
+        for(let i=0; i<80; i++) { 
+            ctx.fillStyle = `rgba(139,0,0,${Math.random()*0.4})`; 
+            ctx.beginPath(); ctx.arc(Math.random()*256, Math.random()*384, Math.random()*12, 0, Math.PI*2); ctx.fill(); 
+        }
+        
+        return new THREE.CanvasTexture(canvas);
+    }
+
+    // Função para criar o braço segurando a lanterna perfeitamente montado em primeira pessoa
+    function createPlayerArm(isLeft) {
+        const group = new THREE.Group(); 
+        const armMat = new THREE.MeshStandardMaterial({color: 0x1a2b4c, roughness: 0.9}); // Uniforme
+        const skinMat = new THREE.MeshStandardMaterial({color: 0xd2996c, roughness: 0.6}); // Pele
+        const flashMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.3, metalness: 0.8}); // Lanterna
+
+        // O braço (manga do uniforme). O cilindro estende no eixo -Z
+        const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 3), armMat);
+        sleeve.rotation.x = -Math.PI / 2;
+        sleeve.position.set(0, 0, -1.5); 
+        group.add(sleeve);
+
+        // A mão fechada (na ponta do braço)
+        const hand = new THREE.Mesh(new THREE.SphereGeometry(0.4), skinMat);
+        hand.position.set(0, 0, -3.0);
+        group.add(hand);
+
+        // Lanterna
+        const flashlight = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.5), flashMat);
+        flashlight.rotation.x = -Math.PI / 2;
+        flashlight.position.set(0, 0, -3.5);
+        group.add(flashlight);
+
+        // Cabeça da Lanterna
+        const flashHead = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.2, 0.6), flashMat);
+        flashHead.rotation.x = -Math.PI / 2;
+        flashHead.position.set(0, 0, -4.4);
+        group.add(flashHead);
+
+        // Lente
+        const lens = new THREE.Mesh(new THREE.CircleGeometry(0.33, 16), new THREE.MeshBasicMaterial({color: 0x222222}));
+        lens.position.set(0, 0, -4.71);
+        lens.name = 'lens'; 
+        group.add(lens);
+
+        // Spotlight - Agora saindo do vidro na ponta da lanterna e apontando pra frente
+        const spot = new THREE.SpotLight(0xffffff, 0, 100, Math.PI/6, 0.3, 2);
+        spot.position.set(0, 0, -4.71);
+        const target = new THREE.Object3D();
+        target.position.set(0, 0, -20); // Foco aponta muito para a frente
+        group.add(target);
+        spot.target = target;
+        group.add(spot);
+        
+        group.userData.spot = spot;
+
+        return group;
     }
 
     function buildOffice() {
@@ -1502,14 +1629,13 @@
         const fanCage = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 8, 24), metalMat); fanCage.position.set(0, 1.5, 0.4); fanGroup.add(fanCage);
         scene.add(fanGroup);
 
-        const posterTex = createCreepyPoster(); const poster = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ map: posterTex, roughness: 0.8 }));
-        poster.position.set(0, 9, -9.4); scene.add(poster);
-
-        const fungusTex = createFungusTexture(); const fungusMat = new THREE.MeshBasicMaterial({ map: fungusTex, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.8, depthWrite: false });
-        for(let i=0; i<10; i++) {
-            const patch = new THREE.Mesh(new THREE.PlaneGeometry(4,4), fungusMat);
-            patch.position.set(14.5, 2+Math.random()*10, -9 + Math.random()*5); patch.rotation.y = -Math.PI/2; patch.rotation.z = Math.random()*Math.PI; scene.add(patch);
-        }
+        // Poster do Funcionario do Mês Substituindo o Fungo
+        const empPosterTex = createEmployeePoster(); 
+        const empPoster = new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshStandardMaterial({ map: empPosterTex, roughness: 0.8 }));
+        // Ajustado para ficar no meio da parede direita antes da porta (z=-6.5)
+        empPoster.position.set(14.49, 10, -6.5); 
+        empPoster.rotation.y = -Math.PI / 2;
+        scene.add(empPoster);
     }
 
     function init3D() {
@@ -1525,7 +1651,7 @@
         renderer.outputEncoding = THREE.sRGBEncoding; 
         container.appendChild(renderer.domElement);
 
-        buildExteriorMenu();
+        window.buildExteriorMenu();
 
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 200), new THREE.MeshStandardMaterial({map: createDirtyCheckeredFloor(), roughness:0.7})); 
         floor.rotation.x = -Math.PI/2; floor.position.z = -60; floor.receiveShadow = true; scene.add(floor);
@@ -1550,6 +1676,28 @@
         leftLight = new THREE.PointLight(0xddddff, 0, 25, 2); leftLight.position.set(-13.5, 8, 0); scene.add(leftLight);
         rightLight = new THREE.PointLight(0xddddff, 0, 25, 2); rightLight.position.set(13.5, 8, 0); scene.add(rightLight);
         cctvLight = new THREE.SpotLight(0xffffff, 0, 80, Math.PI/3, 0.5, 2); scene.add(cctvLight); scene.add(cctvLight.target);
+
+        // --- INICIALIZA AS MÃOS DO JOGADOR COM LANTERNA ---
+        // Adicionadas como "filhas" da câmara para seguirem a rotação do jogador
+        
+        leftArmGroup = createPlayerArm(true);
+        leftArmGroup.scale.set(0.15, 0.15, 0.15); // Escala de FPS para não cruzar portas/paredes
+        leftArmGroup.position.set(-0.4, -0.8, -0.2); // Posicionado bem próximo da tela
+        leftArmGroup.rotation.set(0, 0.2, 0.1); // Apontam ligeiramente para o centro
+        leftArmGroup.userData.baseRotX = leftArmGroup.rotation.x;
+        leftArmGroup.userData.baseRotY = leftArmGroup.rotation.y;
+        camera.add(leftArmGroup);
+
+        rightArmGroup = createPlayerArm(false);
+        rightArmGroup.scale.set(0.15, 0.15, 0.15);
+        rightArmGroup.position.set(0.4, -0.8, -0.2); 
+        rightArmGroup.rotation.set(0, -0.2, -0.1); 
+        rightArmGroup.userData.baseRotX = rightArmGroup.rotation.x;
+        rightArmGroup.userData.baseRotY = rightArmGroup.rotation.y;
+        camera.add(rightArmGroup);
+
+        // A câmara precisa estar na cena para os objetos a ela acoplados funcionarem e as luzes terem alvo
+        scene.add(camera);
 
         animate();
     }
@@ -1591,7 +1739,7 @@
         } else if (camId === 'CAM1B' || camId === 'CAM1C') {
             document.getElementById('audio-btn').classList.add('hidden');
             document.getElementById('wind-up-container').classList.remove('hidden');
-            document.getElementById('wind-up-title').innerText = "CAIXA DE MÚSICA (" + camId + ")";
+            document.getElementById('wind-up-title').innerText = "CAIXA DE MÚSICA DO FOXY";
         } else {
             document.getElementById('audio-btn').classList.add('hidden');
             document.getElementById('wind-up-container').classList.add('hidden');
@@ -1608,15 +1756,44 @@
         else { isRightDoorClosed = !isRightDoorClosed; document.getElementById('r-door').classList.toggle('active'); rightDoorTargetY = isRightDoorClosed ? 7.5 : 22.5; }
     };
     
+    // Função auxiliar para acender a lente e o spotlight
+    function toggleFlashlightLens(group, isOn) {
+        if (!group) return;
+        group.traverse(c => {
+            if (c.name === 'lens') {
+                c.material.color.setHex(isOn ? 0xffffff : 0x222222);
+            }
+        });
+        if (group.userData.spot) group.userData.spot.intensity = isOn ? 4.0 : 0;
+    }
+
     window.toggleLight = function(side) {
         if (power <= 0) return;
         if (side === 'left') { 
-            isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); leftLight.intensity = isLeftLightOn ? 3.0 : 0; 
-            if(isLeftLightOn){isRightLightOn=false; document.getElementById('r-light').classList.remove('active'); rightLight.intensity=0;} 
+            isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); 
+            leftLight.intensity = isLeftLightOn ? 0.5 : 0; // A luz pointLight fica mais fraca para dar destaque ao spot da lanterna
+            leftArmTargetY = isLeftLightOn ? -0.15 : -0.8; // Sobe a mão com a lanterna e desce para -0.8
+            toggleFlashlightLens(leftArmGroup, isLeftLightOn);
+
+            if(isLeftLightOn){
+                isRightLightOn=false; document.getElementById('r-light').classList.remove('active'); 
+                rightLight.intensity=0;
+                rightArmTargetY = -0.8; // Esconde o braço direito
+                toggleFlashlightLens(rightArmGroup, false);
+            } 
         } 
         else { 
-            isRightLightOn = !isRightLightOn; document.getElementById('r-light').classList.toggle('active'); rightLight.intensity = isRightLightOn ? 3.0 : 0; 
-            if(isRightLightOn){isLeftLightOn=false; document.getElementById('l-light').classList.remove('active'); leftLight.intensity=0;} 
+            isRightLightOn = !isRightLightOn; document.getElementById('r-light').classList.toggle('active'); 
+            rightLight.intensity = isRightLightOn ? 0.5 : 0; 
+            rightArmTargetY = isRightLightOn ? -0.15 : -0.8; 
+            toggleFlashlightLens(rightArmGroup, isRightLightOn);
+
+            if(isRightLightOn){
+                isLeftLightOn=false; document.getElementById('l-light').classList.remove('active'); 
+                leftLight.intensity=0;
+                leftArmTargetY = -0.8; // Esconde o braço esquerdo
+                toggleFlashlightLens(leftArmGroup, false);
+            } 
         }
         updateAnimatronicVisuals();
     };
@@ -1637,8 +1814,16 @@
 
         if (gameState === 'MENU') {
             if (menuCamera && menuScene) {
-                menuCamera.position.x = Math.sin(Date.now() * 0.0003) * 6;
-                menuCamera.lookAt(0, 6, 0);
+                // Efeito de câmera rastejando no chão, movendo-se e respirando levemente
+                let t = Date.now() * 0.0005;
+                menuCamera.position.set(-22 + Math.sin(t*0.5)*2, 2.5 + Math.cos(t*0.7)*0.3, 25 + Math.cos(t*0.4)*2);
+                menuCamera.lookAt(5, 6, -5); // Olhando de baixo para cima, diagonalmente para a entrada da pizzaria
+                
+                // Piscar a luz do poste na rua
+                if(window.menuFlickerLight) {
+                    window.menuFlickerLight.intensity = Math.random() > 0.05 ? 1.5 + Math.random()*0.5 : 0;
+                }
+
                 renderer.render(menuScene, menuCamera);
             }
         }
@@ -1651,6 +1836,30 @@
             if (power > 0 && fanBlades) fanBlades.rotation.z -= 0.15;
             if (power > 0 && mainOfficeLight && !isMonitorUp) mainOfficeLight.intensity = Math.random() > 0.95 ? 1.3 + Math.random() * 0.4 : 1.5;
             
+            // Animação fluida e realista das mãos com a lanterna
+            if (leftArmGroup) {
+                leftArmGroup.visible = !isMonitorUp; // GARANTE QUE O BRAÇO FIQUE INVISÍVEL AO OLHAR A CÂMERA
+                leftArmGroup.position.y += (leftArmTargetY - leftArmGroup.position.y) * 0.15;
+                if (isLeftLightOn) { // Movimento subtil de respiração ao segurar a lanterna
+                    leftArmGroup.rotation.x = leftArmGroup.userData.baseRotX + Math.sin(Date.now() * 0.003) * 0.02;
+                    leftArmGroup.rotation.y = leftArmGroup.userData.baseRotY + Math.sin(Date.now() * 0.002) * 0.01;
+                } else {
+                    leftArmGroup.rotation.x = leftArmGroup.userData.baseRotX;
+                    leftArmGroup.rotation.y = leftArmGroup.userData.baseRotY;
+                }
+            }
+            if (rightArmGroup) {
+                rightArmGroup.visible = !isMonitorUp; // GARANTE QUE O BRAÇO FIQUE INVISÍVEL AO OLHAR A CÂMERA
+                rightArmGroup.position.y += (rightArmTargetY - rightArmGroup.position.y) * 0.15;
+                if (isRightLightOn) { // Movimento subtil de respiração
+                    rightArmGroup.rotation.x = rightArmGroup.userData.baseRotX + Math.sin(Date.now() * 0.003) * 0.02;
+                    rightArmGroup.rotation.y = rightArmGroup.userData.baseRotY + Math.sin(Date.now() * 0.002) * 0.01;
+                } else {
+                    rightArmGroup.rotation.x = rightArmGroup.userData.baseRotX;
+                    rightArmGroup.rotation.y = rightArmGroup.userData.baseRotY;
+                }
+            }
+
             renderer.render(scene, camera);
         }
     }
