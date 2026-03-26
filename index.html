@@ -35,7 +35,7 @@
         .glitch-title { font-size: clamp(2.5rem, 8vw, 6rem); margin-bottom: 0.5rem; color: #aa0000; text-transform: uppercase; font-family: 'Arial Black', Impact, sans-serif; letter-spacing: -2px; text-shadow: 4px 4px 0 #330000, -2px -2px 0 #ff5555, 0 0 20px rgba(255,0,0,0.5); position: relative; font-style: italic; animation: title-breathe 4s infinite alternate ease-in-out; }
         .menu-subtitle { font-size: clamp(1rem, 2.5vw, 1.8rem); color: #888; margin-bottom: 3rem; letter-spacing: 8px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; font-weight: bold; }
         .menu-options { display: flex; flex-direction: column; gap: 15px; border-left: 2px solid rgba(170, 0, 0, 0.3); padding-left: 20px; }
-        .menu-btn { background: none; border: none; border-left: 3px solid transparent; color: #fff; font-size: clamp(1.2rem, 3.5vw, 2rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 10px 20px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: 2px 2px 4px #000; font-weight: bold; }
+        .menu-btn { background: none; border: none; border-left: 3px solid transparent; color: #fff; font-size: clamp(1.2rem, 3.5vw, 2rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 10px 20px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: 2px 2px 4px #000; font-weight: bold; pointer-events: auto;}
         .menu-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(170, 0, 0, 0.3), transparent); transition: left 0.3s; z-index: -1; }
         .menu-btn:hover::before { left: 0; }
         .menu-btn:hover, .menu-btn:active { color: #ff5555; transform: translateX(15px); border-left: 3px solid #f00; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 4px #000; }
@@ -124,7 +124,7 @@
         .paycheck-signature { border-top: 1px solid #111; padding-top: 5px; width: 200px; text-align: center; font-family: 'Brush Script MT', cursive; font-size: 1.5rem; }
 
 
-        /* --- HUD --- */
+        /* --- HUD E TUTORIAL UI --- */
         .hud-text { position: absolute; font-size: clamp(1.1rem, 4vw, 1.5rem); font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 20; pointer-events: auto; }
         #time-display { top: 5%; right: 5%; } 
         #night-display { top: 12%; right: 5%; font-size: clamp(0.9rem, 3vw, 1.2rem); color: #ccc;} 
@@ -139,6 +139,15 @@
             cursor: pointer; z-index: 25; transition: 0.2s; pointer-events: auto; border-radius: 5px;
         }
         #exhaust-btn.active { background: #0f0; color: #000; box-shadow: 0 0 15px #0f0; border-color: #fff; }
+
+        #tutorial-ui {
+            position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px;
+            background: rgba(0, 20, 50, 0.85); border: 2px solid #00aaff; box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+            padding: 20px; z-index: 100; text-align: center; border-radius: 10px; pointer-events: auto;
+        }
+        #tut-text { font-size: clamp(1rem, 3vw, 1.3rem); color: #fff; font-family: 'Courier New', monospace; line-height: 1.4; margin-bottom: 15px; }
+        .tut-btn { background: #005588; color: #fff; border: 2px solid #00aaff; padding: 10px 20px; cursor: pointer; font-family: inherit; font-weight: bold; font-size: 1rem; border-radius: 5px; transition: 0.2s; }
+        .tut-btn:hover { background: #00aaff; color: #000; }
 
         /* --- CAIXA DE MÚSICA DO FOXY --- */
         #wind-up-container {
@@ -262,11 +271,18 @@
             <div class="menu-options">
                 <button class="menu-btn" onclick="window.startGame(1)">> Novo Jogo</button>
                 <button class="menu-btn" onclick="window.continueGame()" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
+                <button class="menu-btn" onclick="window.startTutorial()" style="color: #00aaff;">> Tutorial</button>
                 <button class="menu-btn" onclick="window.openSettings()">> Configurações</button>
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
         <div class="menu-footer">v2.1 - The Paycheck Update<br>Feito por Haldo/Long</div>
+    </div>
+
+    <!-- UI DO TUTORIAL -->
+    <div id="tutorial-ui" class="hidden">
+        <p id="tut-text">...</p>
+        <button id="tut-btn" class="tut-btn" onclick="window.nextTutStep()">Continuar</button>
     </div>
 
     <div id="settings-screen" class="screen hidden">
@@ -456,9 +472,12 @@
     let isLeftLightOn = false, isRightLightOn = false;
     let leftDoorTargetY = 22.5, rightDoorTargetY = 22.5;
     
-    // --- NOVAS VARIÁVEIS DA MECÂNICA DE LANTERNA ---
+    // --- NOVAS VARIÁVEIS DA MECÂNICA DE LANTERNA E TUTORIAL ---
     let leftArmGroup, rightArmGroup;
-    let leftArmTargetY = -0.8, rightArmTargetY = -0.8; // Escondidas por padrão
+    let leftArmTargetY = -0.8, rightArmTargetY = -0.8; 
+
+    let isTutorial = false;
+    let tutStep = 0;
 
     let isMonitorUp = false, currentCam = 'CAM1A';
     const officeCamPos = new THREE.Vector3(0, 5.5, 2);
@@ -466,7 +485,6 @@
     let phoneAudioCtx = null, phoneOscillator = null, phoneGain = null;
     let isCallMuted = false, phoneTimeouts = [];
     
-    // Obter nome do localStorage se existir, senão predefinido
     let playerName = localStorage.getItem('regis_pizzaplace_playername') || "Guarda";
     
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
@@ -485,7 +503,6 @@
     let mgState = { type: '', time: 15, active: false, elements: [], player: null };
     let mgMouseX = 0, mgMouseY = 0, mgIsDown = false;
 
-    // Constantes e Dados
     const ghostVictims = ["João P.", "Maria S.", "Rafa (Ex-Guarda)", "Criança Chorona", "Primo Martins", "Func. Desconhecido"];
     const ghostPizzas = ["1x Pizza de Carne... Crua", "2x Fatias com Olhos", "1x Pizza de Cordyceps", "1x Especial do Alejado", "1x Massa com Sangue Seco"];
     
@@ -507,6 +524,28 @@
         'CAM1C': { p: [-45, 12, -35], rx: -0.05, ry: -Math.PI/5 }, 'CAM2A': { p: [-20, 15, -30], rx: -0.1, ry: Math.PI }, 'CAM4A': { p: [20, 15, -30], rx: -0.1, ry: Math.PI }
     };
 
+    // --- DADOS DO TUTORIAL ---
+    const tutSteps = [
+        { text: "Bem-vindo ao modo de treinamento. Aqui você aprenderá a sobreviver na Regis Pizzaplace.", type: "msg" },
+        { text: "Você pode olhar para os lados movendo o mouse ou arrastando o dedo na tela.", type: "msg" },
+        { text: "Nos cantos da tela, você tem os painéis das portas. Clique no BOTÃO VERDE do painel ESQUERDO para ligar a lanterna e ver os corredores.", type: "action", action: "l-light" },
+        { text: "Ótimo. Se houver um animatronic ali, clique no BOTÃO VERMELHO do painel ESQUERDO para fechar a porta.", type: "action", action: "l-door" },
+        { text: "Atenção: portas e luzes gastam sua ENERGIA rapidamente. Clique neles de novo para DESLIGAR a luz e ABRIR a porta.", type: "action", action: "l-cleanup" },
+        { text: "Para vigiar o prédio, clique na aba branca no fundo da tela para ABRIR O MONITOR.", type: "action", action: "monitor-up" },
+        { text: "Você está nas câmeras. Clique na CAM 1C no mapa para ver a Enseada do Pirata.", type: "action", action: "cam1c" },
+        { text: "O Foxy fica aqui. A música o mantém calmo. Pressione e segure o botão [SEGURE PARA RECARREGAR] até a barra verde encher.", type: "action", action: "windup" },
+        { text: "Se essa barra zerar, é fim de jogo. Cuidado! O botão [TOCAR ÁUDIO] na CAM 1A afasta os outros mascotes.", type: "msg" },
+        { text: "Agora, FECHE O MONITOR clicando novamente na aba inferior para voltar ao escritório.", type: "action", action: "monitor-down" },
+        { text: "Olhe para aquele computador de tubo antigo na mesa. Clique na tela dele para ligar o Regis OS.", type: "action", action: "pc-open" },
+        { text: "Atenção! Você recebeu um pedido urgente da pizzaria. Clique em ASSAR para preparar a pizza.", type: "action", action: "pc-bake" },
+        { text: "Aguarde o processo... e agora clique em ENTREGAR para finalizar a tarefa.", type: "action", action: "pc-deliver" },
+        { text: "Trabalho concluído. Tarefas gastam energia, mas ignorá-las resulta em demissão. FECHE O TERMINAL.", type: "action", action: "pc-close" },
+        { text: "Por fim, observe a barra verde de TOXICIDADE no canto superior direito.", type: "msg" },
+        { text: "A poluição dos fungos aumenta. Clique em LIGAR EXAUSTOR lá embaixo para purificar o ar.", type: "action", action: "exhaust-on" },
+        { text: "O exaustor drena muita energia e o barulho atrai o Alejado pelo chão. Use só quando necessário. DESLIGUE-O agora.", type: "action", action: "exhaust-off" },
+        { text: "Treinamento concluído! Gerencie sua energia, recarregue a caixa do Foxy, faça as tarefas e respire ar limpo. Boa sorte.", type: "msg", isEnd: true }
+    ];
+
     const introDialogues = [
         "Ah, finalmente. Você é o novo candidato à vaga de segurança noturno, não é?",
         "Ótimo. Ignore as manchas escuras no chão... tivemos um 'probleminha' de vazamento no porão ultimamente.",
@@ -517,6 +556,7 @@
     ];
     let currentDialogueIdx = 0, typeWriterInterval = null;
 
+    // ... [resto das declarações constantes loreText, phoneScripts omitidas por espaço, mas as mesmas do código anterior] ...
     const phoneScripts = {
         1: ["Alô? Alô, alô!", "Ei, aqui é o Rafa. Eu trabalhava nesse turno de segurança antes de você...", "Estou gravando essas mensagens para te ajudar a se instalar na sua primeira noite.", "Olha, o dono daqui, o Regis... ele cortou muitos gastos. A segurança não é o forte dele.", "As portas e luzes gastam bateria, então só use quando for absolutamente necessário.", "Se você vir algo nos corredores usando a luz, feche a porta rápido e espere ir embora.", "Boa noite, e tente ignorar o cheiro estranho."],
         2: ["Alô? Ei, você sobreviveu à primeira noite! Parabéns!", "Olha, hoje as coisas podem ficar mais ativas. Fique de olho nas cameras, principalmente na Enseada do Pirata.", "Aquele animatronic, o Foxy, não gosta de ser ignorado. Ele é pior que os outros.", "Para mantê-lo afastado, você precisa recarregar a Caixa de Música nas câmeras 1B e 1C.", "É uma 'dose dupla' de contenção. Se qualquer uma das caixas parar, ele vai te pegar.", "Fica esperto. Tem muita coisa bizarra acontecendo aqui. Até amanhã."],
@@ -592,9 +632,67 @@
         } catch(e) {}
     }
 
-    // --- LÓGICA DE JOGO ---
+    // --- LÓGICA DE JOGO E TUTORIAL ---
+    window.startTutorial = function() {
+        isTutorial = true;
+        tutStep = 0;
+        document.getElementById('menu-screen').classList.add('hidden');
+        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+        startOfficeGameplay();
+        document.getElementById('tutorial-ui').classList.remove('hidden');
+        updateTutUI();
+    };
+
+    window.updateTutUI = function() {
+        if(!isTutorial) return;
+        const t = tutSteps[tutStep];
+        document.getElementById('tut-text').innerHTML = t.text;
+        const btn = document.getElementById('tut-btn');
+        
+        if (t.type === 'msg') {
+            btn.style.display = 'inline-block';
+            btn.innerText = t.isEnd ? "FINALIZAR" : "Continuar";
+        } else {
+            btn.style.display = 'none'; // Esconde para forçar a ação real no cenário
+        }
+    };
+
+    window.nextTutStep = function() {
+        if (!isTutorial) return;
+        tutStep++;
+        
+        if (tutStep >= tutSteps.length || tutSteps[tutStep-1].isEnd) {
+            // Termina Tutorial
+            isTutorial = false;
+            document.getElementById('tutorial-ui').classList.add('hidden');
+            resetAnimatronics();
+            gameState = 'MENU';
+            document.getElementById('hud-layer').classList.add('hidden');
+            document.getElementById('menu-screen').classList.remove('hidden');
+            return;
+        }
+
+        updateTutUI();
+
+        // Configurações específicas para alguns passos do tutorial
+        const current = tutSteps[tutStep];
+        if (current.action === 'windup') {
+            window.foxyBox = 10; // Esvazia para forçar o recarregamento
+        } else if (current.action === 'pc-open') {
+            // Cria uma tarefa falsa para o player resolver
+            isTaskActive = true;
+            currentOrderClient = "TUTORIAL"; currentOrderDesc = "Básica. Asse e Entregue para prosseguir.";
+            if(isMonitorUp) {
+                document.getElementById('static-overlay').style.opacity = '0.9';
+                document.getElementById('camera-name').innerText = "SINAL PERDIDO - NOVO PEDIDO";
+                document.getElementById('camera-name').classList.add('pc-alert');
+            }
+        }
+    };
+
+
     window.startGame = function(night) {
-        saveGame(night); initialToxicity = 0; 
+        saveGame(night); initialToxicity = 0; isTutorial = false; document.getElementById('tutorial-ui').classList.add('hidden');
         if (night === 1) {
             window.currentNight = 1;
             const continueBtn = document.getElementById('continue-btn');
@@ -609,198 +707,82 @@
         if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
     };
 
+    // ... [Código de contrato omitido por repetição, mesma lógica exata] ...
     function startContractIntro() {
         gameState = 'CONTRACT';
         document.getElementById('contract-screen').classList.remove('hidden'); document.getElementById('contract-paper').classList.remove('visible');
         document.getElementById('signature-area').classList.add('hidden'); document.getElementById('dialogue-box').style.pointerEvents = 'auto';
         currentDialogueIdx = 0; typeWriterEffect(introDialogues[currentDialogueIdx]);
     }
-
     window.advanceDialogue = function() {
-        if (typeWriterInterval) {
-            clearInterval(typeWriterInterval); typeWriterInterval = null;
-            document.getElementById('dialogue-text').textContent = introDialogues[currentDialogueIdx]; return;
-        }
+        if (typeWriterInterval) { clearInterval(typeWriterInterval); typeWriterInterval = null; document.getElementById('dialogue-text').textContent = introDialogues[currentDialogueIdx]; return; }
         currentDialogueIdx++;
-        if (currentDialogueIdx < introDialogues.length) {
-            typeWriterEffect(introDialogues[currentDialogueIdx]);
-        } else {
+        if (currentDialogueIdx < introDialogues.length) { typeWriterEffect(introDialogues[currentDialogueIdx]); } else {
             document.getElementById('dialogue-text').textContent = "Estou à espera. Assine logo."; document.getElementById('dialogue-box').style.pointerEvents = 'none';
             document.querySelector('.dialogue-prompt').classList.add('hidden'); document.getElementById('contract-paper').classList.add('visible');
             setTimeout(() => { document.getElementById('signature-area').classList.remove('hidden'); document.getElementById('player-name-input').focus(); }, 1000);
         }
     };
-
     function typeWriterEffect(text) {
         const textElement = document.getElementById('dialogue-text'); textElement.textContent = "";
-        let i = 1; if(typeWriterInterval) clearInterval(typeWriterInterval);
-        playMumble(); 
-        typeWriterInterval = setInterval(() => {
-            textElement.textContent = text.substring(0, i); i++;
-            if (i > text.length) { clearInterval(typeWriterInterval); typeWriterInterval = null; }
-        }, 30); 
+        let i = 1; if(typeWriterInterval) clearInterval(typeWriterInterval); playMumble(); 
+        typeWriterInterval = setInterval(() => { textElement.textContent = text.substring(0, i); i++; if (i > text.length) { clearInterval(typeWriterInterval); typeWriterInterval = null; } }, 30); 
     }
-
-    function playMumble() {
-        if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(80, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
-        } catch(e) {}
-    }
-
+    function playMumble() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(80, ctx.currentTime); gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
     window.signContract = function() {
-        const input = document.getElementById('player-name-input');
-        if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
-        playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none';
-        
-        try { localStorage.setItem('regis_pizzaplace_playername', playerName); } catch(e) {}
-
-        document.getElementById('dialogue-box').style.pointerEvents = 'auto';
-        typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
+        const input = document.getElementById('player-name-input'); if (input.value.trim() === "") input.value = "Cobaia " + Math.floor(Math.random() * 100);
+        playerName = input.value.trim(); input.disabled = true; document.getElementById('sign-btn').style.display = 'none'; try { localStorage.setItem('regis_pizzaplace_playername', playerName); } catch(e) {}
+        document.getElementById('dialogue-box').style.pointerEvents = 'auto'; typeWriterEffect(`Excelente, ${playerName}. Bem-vindo ao seu novo pesadelo... quer dizer, emprego. Boa sorte.`);
         setTimeout(() => { document.getElementById('contract-screen').classList.add('hidden'); window.currentNight = 1; hour = 0; power = 100; showNewspaperForNight(1); }, 4000);
     };
-
-    function showNewspaperForNight(night) {
-        gameState = 'NEWSPAPER';
-        const content = loreText[night] ? loreText[night] : loreText[7];
-        document.getElementById('newspaper-content').innerHTML = content;
-        document.getElementById('win-screen-7am').classList.add('hidden'); document.getElementById('newspaper-screen').classList.remove('hidden');
-    }
-
-    window.showMinigameOrStory = function() {
-        if(gameState !== 'NEWSPAPER') return;
-        document.getElementById('newspaper-screen').classList.add('hidden');
-        if (window.currentNight < 7) { initMinigame(); } else { showStory(); }
-    };
-
-    function showStory() {
-        gameState = 'STORY';
-        document.getElementById('story-night').innerText = `Noite ${window.currentNight}`; document.getElementById('night-display').innerText = `Noite ${window.currentNight}`;
-        document.getElementById('story-screen').classList.remove('hidden');
-        setTimeout(() => startOfficeGameplay(), 3000);
-    }
-
-    // --- MOTOR DE MINIGAMES RETRO 2D ---
+    function showNewspaperForNight(night) { gameState = 'NEWSPAPER'; const content = loreText[night] ? loreText[night] : loreText[7]; document.getElementById('newspaper-content').innerHTML = content; document.getElementById('win-screen-7am').classList.add('hidden'); document.getElementById('newspaper-screen').classList.remove('hidden'); }
+    window.showMinigameOrStory = function() { if(gameState !== 'NEWSPAPER') return; document.getElementById('newspaper-screen').classList.add('hidden'); if (window.currentNight < 7) { initMinigame(); } else { showStory(); } };
+    function showStory() { gameState = 'STORY'; document.getElementById('story-night').innerText = `Noite ${window.currentNight}`; document.getElementById('night-display').innerText = `Noite ${window.currentNight}`; document.getElementById('story-screen').classList.remove('hidden'); setTimeout(() => startOfficeGameplay(), 3000); }
+    
+    // ... [Minigames omitidos por repetição] ...
     function initMinigame() {
         gameState = 'MINIGAME'; document.getElementById('minigame-screen').classList.remove('hidden');
         mgCanvas = document.getElementById('mg-canvas'); mgCtx = mgCanvas.getContext('2d');
         const resizeMg = () => { mgCanvas.width = window.innerWidth; mgCanvas.height = window.innerHeight; };
         resizeMg(); window.addEventListener('resize', resizeMg);
-
         const onTouchMove = (e) => { e.preventDefault(); mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; };
         const onTouchStart = (e) => { e.preventDefault(); mgIsDown = true; mgMouseX = e.touches[0].clientX; mgMouseY = e.touches[0].clientY; };
-
-        mgCanvas.addEventListener('mousemove', (e) => { mgMouseX = e.clientX; mgMouseY = e.clientY; });
-        mgCanvas.addEventListener('mousedown', (e) => { mgIsDown = true; mgMouseX = e.clientX; mgMouseY = e.clientY; });
-        mgCanvas.addEventListener('mouseup', () => { mgIsDown = false; });
-        mgCanvas.addEventListener('touchmove', onTouchMove, {passive: false});
-        mgCanvas.addEventListener('touchstart', onTouchStart, {passive: false});
-        mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
-
+        mgCanvas.addEventListener('mousemove', (e) => { mgMouseX = e.clientX; mgMouseY = e.clientY; }); mgCanvas.addEventListener('mousedown', (e) => { mgIsDown = true; mgMouseX = e.clientX; mgMouseY = e.clientY; }); mgCanvas.addEventListener('mouseup', () => { mgIsDown = false; }); mgCanvas.addEventListener('touchmove', onTouchMove, {passive: false}); mgCanvas.addEventListener('touchstart', onTouchStart, {passive: false}); mgCanvas.addEventListener('touchend', () => { mgIsDown = false; });
         if (window.currentNight % 2 !== 0) { setupPizzaMinigame(); } else { setupCleanupMinigame(); }
-
-        mgState.active = true;
-        mgTimerInt = setInterval(() => {
-            if(!mgState.active) return;
-            mgState.time--; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
-            if (mgState.time <= 0) endMinigame(false);
-        }, 1000);
-        mgLoop();
+        mgState.active = true; mgTimerInt = setInterval(() => { if(!mgState.active) return; mgState.time--; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`; if (mgState.time <= 0) endMinigame(false); }, 1000); mgLoop();
     }
-
     function setupPizzaMinigame() {
-        mgState.type = 'pizza'; mgState.time = 15;
-        document.getElementById('mg-title').innerText = "PREPARE A PIZZA"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
-        let isMobile = window.innerWidth < 768;
-        mgState.pizza = { x: window.innerWidth / 2, y: window.innerHeight * (isMobile ? 0.65 : 0.5), r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) };
-        mgState.elements = [];
-        let numIng = window.currentNight === 1 ? 6 : (window.currentNight === 3 ? 8 : 10);
-        let types = ['pep', 'cheese']; if (window.currentNight >= 3) types.push('eye', 'mush'); if (window.currentNight >= 5) types = ['eye', 'mush'];
-
-        for(let i=0; i<numIng; i++) {
-            let t = types[Math.floor(Math.random() * types.length)]; let x, y;
-            if (isMobile) { x = 40 + Math.random() * (window.innerWidth - 80); y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25); } 
-            else { x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80); y = 100 + Math.random() * (window.innerHeight - 200); }
-            x = Math.max(30, Math.min(window.innerWidth - 30, x));
-            mgState.elements.push({ id: i, type: t, x: x, y: y, r: isMobile ? 20 : 25, isDragging: false, placed: false });
-        }
+        mgState.type = 'pizza'; mgState.time = 15; document.getElementById('mg-title').innerText = "PREPARE A PIZZA"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+        let isMobile = window.innerWidth < 768; mgState.pizza = { x: window.innerWidth / 2, y: window.innerHeight * (isMobile ? 0.65 : 0.5), r: Math.min(window.innerWidth, window.innerHeight) * (isMobile ? 0.35 : 0.3) }; mgState.elements = [];
+        let numIng = window.currentNight === 1 ? 6 : (window.currentNight === 3 ? 8 : 10); let types = ['pep', 'cheese']; if (window.currentNight >= 3) types.push('eye', 'mush'); if (window.currentNight >= 5) types = ['eye', 'mush'];
+        for(let i=0; i<numIng; i++) { let t = types[Math.floor(Math.random() * types.length)]; let x, y; if (isMobile) { x = 40 + Math.random() * (window.innerWidth - 80); y = window.innerHeight * 0.15 + Math.random() * (window.innerHeight * 0.25); } else { x = Math.random() > 0.5 ? 40 + Math.random() * (mgState.pizza.x - mgState.pizza.r - 80) : mgState.pizza.x + mgState.pizza.r + 40 + Math.random() * (window.innerWidth - mgState.pizza.x - mgState.pizza.r - 80); y = 100 + Math.random() * (window.innerHeight - 200); } x = Math.max(30, Math.min(window.innerWidth - 30, x)); mgState.elements.push({ id: i, type: t, x: x, y: y, r: isMobile ? 20 : 25, isDragging: false, placed: false }); }
     }
-
     function setupCleanupMinigame() {
-        mgState.type = 'cleanup'; mgState.time = 15 - Math.floor(window.currentNight/2);
-        document.getElementById('mg-title').innerText = "LIMPE O PORÃO"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
+        mgState.type = 'cleanup'; mgState.time = 15 - Math.floor(window.currentNight/2); document.getElementById('mg-title').innerText = "LIMPE O PORÃO"; document.getElementById('mg-timer').innerText = `Tempo: ${mgState.time}`;
         let isMobile = window.innerWidth < 768; mgState.player = { x: window.innerWidth/2, y: window.innerHeight/2, r: isMobile ? 25 : 30 }; mgState.elements = []; 
         for(let i=0; i<5 + window.currentNight; i++) { mgState.elements.push({ x: 40 + Math.random() * (window.innerWidth - 80), y: 100 + Math.random() * (window.innerHeight - 150), r: (isMobile ? 20 : 30) + Math.random() * 30, color: Math.random() > 0.5 ? '#800' : '#080' }); }
     }
-
     function mgLoop() {
-        if (!mgState.active) return;
-        mgAnimFrame = requestAnimationFrame(mgLoop);
-        mgCtx.fillStyle = '#111'; mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
-
+        if (!mgState.active) return; mgAnimFrame = requestAnimationFrame(mgLoop); mgCtx.fillStyle = '#111'; mgCtx.fillRect(0, 0, mgCanvas.width, mgCanvas.height);
         if (mgState.type === 'pizza') {
-            mgCtx.fillStyle = '#d1a15e'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r, 0, Math.PI*2); mgCtx.fill();
-            mgCtx.fillStyle = '#a12b2b'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r*0.9, 0, Math.PI*2); mgCtx.fill();
-            let allPlaced = true;
-
+            mgCtx.fillStyle = '#d1a15e'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#a12b2b'; mgCtx.beginPath(); mgCtx.arc(mgState.pizza.x, mgState.pizza.y, mgState.pizza.r*0.9, 0, Math.PI*2); mgCtx.fill(); let allPlaced = true;
             for(let i=mgState.elements.length-1; i>=0; i--) {
-                let el = mgState.elements[i];
-                if (!el.placed) allPlaced = false;
+                let el = mgState.elements[i]; if (!el.placed) allPlaced = false;
                 if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) { let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y); if (dist < el.r * 2.5) el.isDragging = true; }
-                if (el.isDragging) {
-                    el.x = mgMouseX; el.y = mgMouseY;
-                    if (!mgIsDown) {
-                        el.isDragging = false;
-                        if (Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y) < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); }
-                    }
-                }
-                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } 
-                else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } 
-                else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } 
-                else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
-            }
-            if (allPlaced) endMinigame(true);
-
+                if (el.isDragging) { el.x = mgMouseX; el.y = mgMouseY; if (!mgIsDown) { el.isDragging = false; if (Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y) < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); } } }
+                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
+            } if (allPlaced) endMinigame(true);
         } else if (mgState.type === 'cleanup') {
-            mgCtx.strokeStyle = '#222'; mgCtx.lineWidth = 2;
-            for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); }
-            for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
-
+            mgCtx.strokeStyle = '#222'; mgCtx.lineWidth = 2; for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); } for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
             if (mgIsDown || mgMouseX !== 0) { mgState.player.x += (mgMouseX - mgState.player.x) * 0.15; mgState.player.y += (mgMouseY - mgState.player.y) * 0.15; }
-
-            let anyLeft = false;
-            for (let stain of mgState.elements) {
-                if (stain.r > 0) {
-                    anyLeft = true; mgCtx.fillStyle = stain.color; mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill();
-                    if (Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y) < mgState.player.r + stain.r) { stain.r -= 2; if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800); }
-                }
-            }
-            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); 
-            if (!anyLeft) endMinigame(true);
+            let anyLeft = false; for (let stain of mgState.elements) { if (stain.r > 0) { anyLeft = true; mgCtx.fillStyle = stain.color; mgCtx.beginPath(); mgCtx.arc(stain.x, stain.y, stain.r, 0, Math.PI*2); mgCtx.fill(); if (Math.hypot(mgState.player.x - stain.x, mgState.player.y - stain.y) < mgState.player.r + stain.r) { stain.r -= 2; if(stain.r <= 0 && Math.random() > 0.8) playMgSound(800); } } }
+            mgCtx.fillStyle = '#888'; mgCtx.fillRect(mgState.player.x - mgState.player.r, mgState.player.y - 10, mgState.player.r*2, 20); mgCtx.fillStyle = '#654321'; mgCtx.fillRect(mgState.player.x - 5, mgState.player.y - 80, 10, 80); if (!anyLeft) endMinigame(true);
         }
     }
+    function playMgSound(freq) { if(masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
+    function endMinigame(success) { if(!mgState.active) return; mgState.active = false; cancelAnimationFrame(mgAnimFrame); clearInterval(mgTimerInt); document.getElementById('minigame-screen').classList.add('hidden'); if (mgState.type === 'cleanup' && !success) initialToxicity = 40; else initialToxicity = 0; showStory(); }
 
-    function playMgSound(freq) {
-        if(masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
-        } catch(e) {}
-    }
-
-    function endMinigame(success) {
-        if(!mgState.active) return;
-        mgState.active = false; cancelAnimationFrame(mgAnimFrame); clearInterval(mgTimerInt);
-        document.getElementById('minigame-screen').classList.add('hidden');
-        if (mgState.type === 'cleanup' && !success) initialToxicity = 40; else initialToxicity = 0;
-        showStory();
-    }
-
-    // --- GAMEPLAY PRINCIPAL ---
+    // --- GAMEPLAY PRINCIPAL MODIFICADA COM HOOKS DO TUTORIAL ---
     function startOfficeGameplay() {
         gameState = 'OFFICE';
         document.getElementById('story-screen').classList.add('hidden'); 
@@ -809,10 +791,17 @@
         resetAnimatronics(); updateAnimatronicVisuals(); clearPhoneCall(); isCallMuted = false;
         gameIntervals.forEach(clearInterval); gameIntervals = [];
 
-        if (phoneScripts[window.currentNight]) setTimeout(() => window.startPhoneCall(window.currentNight), 2000);
+        if (!isTutorial && phoneScripts[window.currentNight]) setTimeout(() => window.startPhoneCall(window.currentNight), 2000);
 
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE') return;
+            
+            // Pausa o jogo base se estiver em tutorial
+            if (isTutorial) {
+                document.getElementById('power-display').innerText = `Energia: 100%`;
+                return; 
+            }
+
             hour += 7/180; 
             let displayHour = Math.floor(hour) === 0 ? 12 : Math.floor(hour);
             document.getElementById('time-display').innerText = `${displayHour} AM`;
@@ -856,37 +845,41 @@
             } else if (!isBlackout) triggerBlackout();
         }, 1000));
 
-        gameIntervals.push(setInterval(runAILoop, 5000));
-        gameIntervals.push(setInterval(checkDoorsTiming, 1000));
+        gameIntervals.push(setInterval(() => { if(!isTutorial) runAILoop() }, 5000));
+        gameIntervals.push(setInterval(() => { if(!isTutorial) checkDoorsTiming() }, 1000));
         
-        // Loop rápido para a Caixa de Música Unificada do Foxy
         gameIntervals.push(setInterval(() => {
             if (gameState !== 'OFFICE' || power <= 0 || isBlackout || window.foxyTriggered) return;
             
-            // Variando a drenagem de acordo com a noite. N1 = lento, N7 = rápido
+            if (isTutorial) {
+                // Checagem de Windup no Tutorial
+                if (tutSteps[tutStep] && tutSteps[tutStep].action === 'windup') {
+                    if (isMonitorUp && window.isWinding && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
+                        window.foxyBox = Math.min(100, window.foxyBox + 5); 
+                    }
+                    let fill = document.getElementById('wind-up-bar-fill');
+                    if (fill) { fill.style.width = window.foxyBox + '%'; fill.style.background = window.foxyBox > 50 ? '#0f0' : (window.foxyBox > 20 ? '#ff0' : '#f00'); }
+                    if (window.foxyBox >= 100) nextTutStep();
+                }
+                return; // Bloqueia o drain da foxy box normal no tutorial
+            }
+
             let foxyDrain = 0.07 + (window.currentNight * 0.04); 
             window.foxyBox -= foxyDrain;
 
-            // Recarregar se o botão estiver pressionado NAS câmaras 1B OU 1C
             if (isMonitorUp && window.isWinding && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
-                window.foxyBox = Math.min(100, window.foxyBox + 2.5); // Demora um pouquinho mais a carregar pra dar tensão
+                window.foxyBox = Math.min(100, window.foxyBox + 2.5); 
             }
 
             if (window.foxyBox <= 0) {
-                window.foxyTriggered = true; 
-                animatronics.foxy.loc = 'LeftDoor'; 
-                animatronics.foxy.doorWaitTime = 0; 
-                animatronics.foxy.attackTimer = 0; 
-                updateAnimatronicVisuals(); 
-                triggerStaticPulse(); 
+                window.foxyTriggered = true; animatronics.foxy.loc = 'LeftDoor'; 
+                animatronics.foxy.doorWaitTime = 0; animatronics.foxy.attackTimer = 0; 
+                updateAnimatronicVisuals(); triggerStaticPulse(); 
             }
 
             if (isMonitorUp && (currentCam === 'CAM1B' || currentCam === 'CAM1C')) {
                 let fill = document.getElementById('wind-up-bar-fill');
-                if (fill) {
-                    fill.style.width = window.foxyBox + '%';
-                    if (window.foxyBox > 50) fill.style.background = '#0f0'; else if (window.foxyBox > 20) fill.style.background = '#ff0'; else fill.style.background = '#f00';
-                }
+                if (fill) { fill.style.width = window.foxyBox + '%'; fill.style.background = window.foxyBox > 50 ? '#0f0' : (window.foxyBox > 20 ? '#ff0' : '#f00'); }
             }
 
             let data = animatronics['foxy'];
@@ -897,7 +890,7 @@
         }, 100));
     }
 
-    // --- MÉTODOS GLOBAIS DE UI (REGIS OS E OFÍCIO) ---
+    // --- MÉTODOS GLOBAIS DE UI MODIFICADOS COM HOOKS ---
     window.startWinding = function(e) { if(e) e.preventDefault(); window.isWinding = true; };
     window.stopWinding = function(e) { if(e) e.preventDefault(); window.isWinding = false; };
 
@@ -911,6 +904,12 @@
 
     window.openPC = function() {
         if (gameState !== 'OFFICE' || isMonitorUp || isBlackout) return;
+        
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act !== 'pc-open' && act !== 'pc-bake' && act !== 'pc-deliver' && act !== 'pc-close') return;
+        }
+
         isPCUp = true; document.getElementById('pc-ui').classList.remove('hidden'); document.getElementById('office-panels').classList.add('hidden');
         
         const audioText = document.getElementById('pc-audio-text'); const audioFixBtn = document.getElementById('pc-audio-fix-btn');
@@ -933,20 +932,32 @@
         } else {
             statusEl.innerText = "SISTEMA OK - AGUARDANDO PEDIDOS"; statusEl.className = ""; orderBox.classList.add('hidden'); idleMsg.classList.remove('hidden');
         }
+
+        if (isTutorial && tutSteps[tutStep]?.action === 'pc-open') setTimeout(nextTutStep, 200); // Trigger hook
     };
 
     window.bakeOrder = function() {
-        if (power < 2) return; power -= 2; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+        if (power < 2 && !isTutorial) return; 
+        if (isTutorial) { if (tutSteps[tutStep]?.action !== 'pc-bake') return; }
+        
+        power = Math.max(0, power - 2); document.getElementById('power-display').innerText = `Energia: ${Math.floor(power)}%`;
         isBaking = true;
         const btnAssar = document.getElementById('btn-assar'); const btnEntregar = document.getElementById('btn-entregar');
         btnAssar.disabled = true; btnAssar.style.opacity = '0.5'; btnAssar.innerText = "ASSANDO...";
         btnEntregar.disabled = false; btnEntregar.style.opacity = '1';
         playTerminalBeep(300);
+
+        if (isTutorial && tutSteps[tutStep]?.action === 'pc-bake') nextTutStep(); // Trigger hook
     };
 
     window.deliverOrder = function() {
-        if (power < 2) return; power -= 2; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+        if (power < 2 && !isTutorial) return; 
+        if (isTutorial) { if (tutSteps[tutStep]?.action !== 'pc-deliver') return; }
+
+        power = Math.max(0, power - 2); document.getElementById('power-display').innerText = `Energia: ${Math.floor(power)}%`;
         playTerminalBeep(600); completeTask();
+
+        if (isTutorial && tutSteps[tutStep]?.action === 'pc-deliver') nextTutStep(); // Trigger hook
     };
 
     function completeTask() {
@@ -958,31 +969,28 @@
         if (crtScreenMesh) crtScreenMesh.material.color.setHex(0x112211); 
         document.getElementById('camera-name').classList.remove('pc-alert');
         if(isMonitorUp) { document.getElementById('static-overlay').style.opacity = '0.15'; document.getElementById('camera-name').innerText = camData[currentCam].name; }
-        setTimeout(() => { if(isPCUp) window.closePC(); }, 1000);
+        setTimeout(() => { if(isPCUp && !isTutorial) window.closePC(); }, 1000);
     }
 
-    window.closePC = function() { isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); };
+    window.closePC = function() { 
+        if (isTutorial && tutSteps[tutStep]?.action !== 'pc-close') return;
+
+        isPCUp = false; document.getElementById('pc-ui').classList.add('hidden'); document.getElementById('office-panels').classList.remove('hidden'); 
+        if (isTutorial && tutSteps[tutStep]?.action === 'pc-close') nextTutStep(); // Trigger hook
+    };
 
     function playTerminalBeep(freq) {
         if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
-        } catch(e) {}
+        try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(0.1 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
     }
 
+    // ... [audio systems remain identical] ...
     window.playAudioSystem = function() {
         if (isAudioBroken || power <= 0) return;
         playChildLaugh();
-        if (animatronics.freddy.loc !== 'CAM1A') {
-            animatronics.freddy.loc = 'CAM1A'; animatronics.freddy.doorWaitTime = 0; animatronics.freddy.attackTimer = 0;
-            updateAnimatronicVisuals(); triggerStaticPulse();
-        }
+        if (animatronics.freddy.loc !== 'CAM1A') { animatronics.freddy.loc = 'CAM1A'; animatronics.freddy.doorWaitTime = 0; animatronics.freddy.attackTimer = 0; updateAnimatronicVisuals(); triggerStaticPulse(); }
         if (Math.random() < 0.25) breakAudioSystem();
     };
-
     function breakAudioSystem() { isAudioBroken = true; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.add('broken'); btn.innerText = "[ ÁUDIO OFFLINE ]"; } playBuzzer(); }
     window.fixAudio = function() { isAudioBroken = false; const btn = document.getElementById('audio-btn'); if (btn) { btn.classList.remove('broken'); btn.innerText = "[ TOCAR ÁUDIO ]"; } if (isPCUp) window.openPC(); };
     function breakVentSystem() { isVentBroken = true; playBuzzer(); }
@@ -990,52 +998,30 @@
 
     window.toggleExhaust = function() {
         if (power <= 0) return;
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act !== 'exhaust-on' && act !== 'exhaust-off') return;
+            if (act === 'exhaust-on' && isExhaustOn) return;
+            if (act === 'exhaust-off' && !isExhaustOn) return;
+        }
+
         isExhaustOn = !isExhaustOn; const btn = document.getElementById('exhaust-btn');
         if (isExhaustOn) { btn.classList.add('active'); btn.innerText = "DESLIGAR EXAUSTOR"; playExhaustSound(); } 
         else { btn.classList.remove('active'); btn.innerText = "LIGAR EXAUSTOR"; stopExhaustSound(); }
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act === 'exhaust-on' && isExhaustOn) nextTutStep();
+            if (act === 'exhaust-off' && !isExhaustOn) nextTutStep();
+        }
     };
 
-    function playExhaustSound() {
-        if (masterVolume <= 0 || exhaustAudioCtx) return;
-        try {
-            exhaustAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); exhaustOsc = exhaustAudioCtx.createOscillator(); const gain = exhaustAudioCtx.createGain();
-            exhaustOsc.type = 'square'; exhaustOsc.frequency.setValueAtTime(40, exhaustAudioCtx.currentTime);
-            const filter = exhaustAudioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 200;
-            gain.gain.setValueAtTime(0.1 * masterVolume, exhaustAudioCtx.currentTime);
-            exhaustOsc.connect(filter); filter.connect(gain); gain.connect(exhaustAudioCtx.destination); exhaustOsc.start();
-        } catch(e) {}
-    }
+    function playExhaustSound() { if (masterVolume <= 0 || exhaustAudioCtx) return; try { exhaustAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); exhaustOsc = exhaustAudioCtx.createOscillator(); const gain = exhaustAudioCtx.createGain(); exhaustOsc.type = 'square'; exhaustOsc.frequency.setValueAtTime(40, exhaustAudioCtx.currentTime); const filter = exhaustAudioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 200; gain.gain.setValueAtTime(0.1 * masterVolume, exhaustAudioCtx.currentTime); exhaustOsc.connect(filter); filter.connect(gain); gain.connect(exhaustAudioCtx.destination); exhaustOsc.start(); } catch(e) {} }
     function stopExhaustSound() { if (exhaustAudioCtx) { exhaustAudioCtx.close(); exhaustAudioCtx = null; exhaustOsc = null; } }
-
-    function playChildLaugh() {
-        if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle';
-            osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.4);
-            gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.5);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5);
-        } catch(e) {}
-    }
-
-    function playBuzzer() {
-        if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(150, ctx.currentTime); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8);
-            osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.8);
-        } catch(e){}
-    }
-
-    function playHallucination() {
-        if (masterVolume <= 0) return;
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
-            osc.type = Math.random() > 0.5 ? 'sine' : 'triangle'; osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
-            osc.connect(gain); gain.connect(ctx.destination);
-            osc.start(); osc.stop(ctx.currentTime + 1);
-        } catch(e) {}
-    }
+    function playChildLaugh() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.4); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.5); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5); } catch(e) {} }
+    function playBuzzer() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, ctx.currentTime); gain.gain.setValueAtTime(0.2 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(Math.max(0.001, 0.01 * masterVolume), ctx.currentTime + 0.8); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.8); } catch(e){} }
+    function playHallucination() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = Math.random() > 0.5 ? 'sine' : 'triangle'; osc.frequency.setValueAtTime(50 + Math.random() * 500, ctx.currentTime); gain.gain.setValueAtTime(0.05 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 1); } catch(e) {} }
 
     function handleRaycast(clientX, clientY) {
         if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout) return;
@@ -1048,63 +1034,12 @@
     const officeTouch = (e) => { if(gameState === 'OFFICE' && e.touches.length > 0) { handleRaycast(e.touches[0].clientX, e.touches[0].clientY); } };
     window.addEventListener('touchstart', officeTouch, {passive: true});
 
-    window.startPhoneCall = function(night) {
-        if (gameState !== 'OFFICE' || isCallMuted) return;
-        const lines = phoneScripts[night]; if (!lines) return;
-        const subBox = document.getElementById('phone-subtitles'); const muteBtn = document.getElementById('mute-btn');
-        subBox.style.display = 'block'; muteBtn.style.display = 'block'; subBox.textContent = "*Ringing*";
-        playPhoneRing();
-
-        phoneTimeouts.push(setTimeout(() => {
-            if (isCallMuted) return;
-            subBox.textContent = "Call connected."; startMumbleVoice(); let currentLine = 0;
-            const playNextLine = () => {
-                if (isCallMuted || currentLine >= lines.length || gameState !== 'OFFICE') { clearPhoneCall(); return; }
-                let text = lines[currentLine]; subBox.textContent = text;
-                if(phoneGain && phoneAudioCtx && masterVolume > 0) {
-                    phoneGain.gain.setTargetAtTime((0.05 + Math.random()*0.05) * masterVolume, phoneAudioCtx.currentTime + 0.1, 0.05);
-                    phoneOscillator.frequency.setTargetAtTime(100 + Math.random()*50, phoneAudioCtx.currentTime + 0.1, 0.05);
-                }
-                let readTime = Math.max(text.length * 60, 2000); 
-                currentLine++; phoneTimeouts.push(setTimeout(playNextLine, readTime));
-            };
-            phoneTimeouts.push(setTimeout(playNextLine, 1000));
-        }, 4000));
-    };
-
+    // ... [Telefones e afins] ...
+    window.startPhoneCall = function(night) { if (gameState !== 'OFFICE' || isCallMuted) return; const lines = phoneScripts[night]; if (!lines) return; const subBox = document.getElementById('phone-subtitles'); const muteBtn = document.getElementById('mute-btn'); subBox.style.display = 'block'; muteBtn.style.display = 'block'; subBox.textContent = "*Ringing*"; playPhoneRing(); phoneTimeouts.push(setTimeout(() => { if (isCallMuted) return; subBox.textContent = "Call connected."; startMumbleVoice(); let currentLine = 0; const playNextLine = () => { if (isCallMuted || currentLine >= lines.length || gameState !== 'OFFICE') { clearPhoneCall(); return; } let text = lines[currentLine]; subBox.textContent = text; if(phoneGain && phoneAudioCtx && masterVolume > 0) { phoneGain.gain.setTargetAtTime((0.05 + Math.random()*0.05) * masterVolume, phoneAudioCtx.currentTime + 0.1, 0.05); phoneOscillator.frequency.setTargetAtTime(100 + Math.random()*50, phoneAudioCtx.currentTime + 0.1, 0.05); } let readTime = Math.max(text.length * 60, 2000); currentLine++; phoneTimeouts.push(setTimeout(playNextLine, readTime)); }; phoneTimeouts.push(setTimeout(playNextLine, 1000)); }, 4000)); };
     window.muteCall = function() { isCallMuted = true; clearPhoneCall(); };
-    function clearPhoneCall() {
-        phoneTimeouts.forEach(clearTimeout); phoneTimeouts = [];
-        document.getElementById('phone-subtitles').style.display = 'none'; document.getElementById('mute-btn').style.display = 'none';
-        if (phoneOscillator) { try { phoneOscillator.stop(); } catch(e){} phoneOscillator = null; }
-        if (phoneAudioCtx) { phoneAudioCtx.close(); phoneAudioCtx = null; }
-    }
-
-    function playPhoneRing() {
-        if (masterVolume <= 0) return;
-        try {
-            phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square';
-            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 0.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0, phoneAudioCtx.currentTime); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 0.4, 0.05);
-            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.0); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.1);
-            osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.3);
-            gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime + 2.0, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 2.4, 0.05);
-            osc.connect(gain); gain.connect(phoneAudioCtx.destination); osc.start(); osc.stop(phoneAudioCtx.currentTime + 3);
-        } catch(e) {}
-    }
-
-    function startMumbleVoice() {
-        if (masterVolume <= 0) return;
-        try {
-            if (!phoneAudioCtx || phoneAudioCtx.state === 'closed') phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            phoneOscillator = phoneAudioCtx.createOscillator(); phoneGain = phoneAudioCtx.createGain();
-            phoneOscillator.type = 'triangle'; phoneOscillator.frequency.setValueAtTime(120, phoneAudioCtx.currentTime); 
-            const filter = phoneAudioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1000;
-            phoneGain.gain.setValueAtTime(0.05 * masterVolume, phoneAudioCtx.currentTime);
-            phoneOscillator.connect(filter); filter.connect(phoneGain); phoneGain.connect(phoneAudioCtx.destination); phoneOscillator.start();
-        } catch (e) {}
-    }
+    function clearPhoneCall() { phoneTimeouts.forEach(clearTimeout); phoneTimeouts = []; document.getElementById('phone-subtitles').style.display = 'none'; document.getElementById('mute-btn').style.display = 'none'; if (phoneOscillator) { try { phoneOscillator.stop(); } catch(e){} phoneOscillator = null; } if (phoneAudioCtx) { phoneAudioCtx.close(); phoneAudioCtx = null; } }
+    function playPhoneRing() { if (masterVolume <= 0) return; try { phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); const osc = phoneAudioCtx.createOscillator(); const gain = phoneAudioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.1); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 0.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 0.3); gain.gain.setValueAtTime(0, phoneAudioCtx.currentTime); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 0.4, 0.05); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.0); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.1); osc.frequency.setValueAtTime(400, phoneAudioCtx.currentTime + 2.2); osc.frequency.setValueAtTime(450, phoneAudioCtx.currentTime + 2.3); gain.gain.setTargetAtTime(0.1 * masterVolume, phoneAudioCtx.currentTime + 2.0, 0.05); gain.gain.setTargetAtTime(0, phoneAudioCtx.currentTime + 2.4, 0.05); osc.connect(gain); gain.connect(phoneAudioCtx.destination); osc.start(); osc.stop(phoneAudioCtx.currentTime + 3); } catch(e) {} }
+    function startMumbleVoice() { if (masterVolume <= 0) return; try { if (!phoneAudioCtx || phoneAudioCtx.state === 'closed') phoneAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); phoneOscillator = phoneAudioCtx.createOscillator(); phoneGain = phoneAudioCtx.createGain(); phoneOscillator.type = 'triangle'; phoneOscillator.frequency.setValueAtTime(120, phoneAudioCtx.currentTime); const filter = phoneAudioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1000; phoneGain.gain.setValueAtTime(0.05 * masterVolume, phoneAudioCtx.currentTime); phoneOscillator.connect(filter); filter.connect(phoneGain); phoneGain.connect(phoneAudioCtx.destination); phoneOscillator.start(); } catch (e) {} }
 
     function triggerWinAnimation() {
         gameState = 'WIN'; gameIntervals.forEach(clearInterval); clearPhoneCall(); stopExhaustSound();
@@ -1678,12 +1613,10 @@
         cctvLight = new THREE.SpotLight(0xffffff, 0, 80, Math.PI/3, 0.5, 2); scene.add(cctvLight); scene.add(cctvLight.target);
 
         // --- INICIALIZA AS MÃOS DO JOGADOR COM LANTERNA ---
-        // Adicionadas como "filhas" da câmara para seguirem a rotação do jogador
-        
         leftArmGroup = createPlayerArm(true);
-        leftArmGroup.scale.set(0.15, 0.15, 0.15); // Escala de FPS para não cruzar portas/paredes
-        leftArmGroup.position.set(-0.4, -0.8, -0.2); // Posicionado bem próximo da tela
-        leftArmGroup.rotation.set(0, 0.2, 0.1); // Apontam ligeiramente para o centro
+        leftArmGroup.scale.set(0.15, 0.15, 0.15); 
+        leftArmGroup.position.set(-0.4, -0.8, -0.2); 
+        leftArmGroup.rotation.set(0, 0.2, 0.1); 
         leftArmGroup.userData.baseRotX = leftArmGroup.rotation.x;
         leftArmGroup.userData.baseRotY = leftArmGroup.rotation.y;
         camera.add(leftArmGroup);
@@ -1696,7 +1629,6 @@
         rightArmGroup.userData.baseRotY = rightArmGroup.rotation.y;
         camera.add(rightArmGroup);
 
-        // A câmara precisa estar na cena para os objetos a ela acoplados funcionarem e as luzes terem alvo
         scene.add(camera);
 
         animate();
@@ -1704,6 +1636,13 @@
 
     window.toggleMonitor = function() {
         if (power <= 0 || isPCUp) return; 
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act !== 'monitor-up' && act !== 'monitor-down') return;
+            if (act === 'monitor-up' && isMonitorUp) return;
+            if (act === 'monitor-down' && !isMonitorUp) return;
+        }
         
         if (!isMonitorUp) {
             if (animatronics.bonnie.loc === 'LeftDoor' && !isLeftDoorClosed) { triggerJumpscare('bonnie'); return; }
@@ -1724,10 +1663,22 @@
             camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; 
             window.isWinding = false;
         }
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act === 'monitor-up' && isMonitorUp) nextTutStep();
+            if (act === 'monitor-down' && !isMonitorUp) nextTutStep();
+        }
     };
 
     window.switchCam = function(camId) {
         if (!isMonitorUp || power <= 0) return;
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (act !== 'cam1c') return;
+        }
+
         window.isWinding = false;
         
         currentCam = camId; document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-'+camId).classList.add('active');
@@ -1746,14 +1697,29 @@
         }
 
         if(!isTaskActive) triggerStaticPulse();
+
+        if (isTutorial && tutSteps[tutStep]?.action === 'cam1c' && camId === 'CAM1C') nextTutStep();
     };
 
     function triggerStaticPulse() { const s = document.getElementById('static-overlay'); if(s) { s.style.opacity = '0.8'; setTimeout(() => s.style.opacity = '0.15', 150); } }
 
     window.toggleDoor = function(side) {
         if (power <= 0) return;
+        
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (side === 'left' && act !== 'l-door' && act !== 'l-cleanup') return;
+            if (side === 'right') return; // Bloqueia a porta direita no tutorial
+        }
+
         if (side === 'left') { isLeftDoorClosed = !isLeftDoorClosed; document.getElementById('l-door').classList.toggle('active'); leftDoorTargetY = isLeftDoorClosed ? 7.5 : 22.5; } 
         else { isRightDoorClosed = !isRightDoorClosed; document.getElementById('r-door').classList.toggle('active'); rightDoorTargetY = isRightDoorClosed ? 7.5 : 22.5; }
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (side === 'left' && act === 'l-door' && isLeftDoorClosed) nextTutStep();
+            if (side === 'left' && act === 'l-cleanup' && !isLeftDoorClosed && !isLeftLightOn) nextTutStep();
+        }
     };
     
     // Função auxiliar para acender a lente e o spotlight
@@ -1769,6 +1735,13 @@
 
     window.toggleLight = function(side) {
         if (power <= 0) return;
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (side === 'left' && act !== 'l-light' && act !== 'l-cleanup') return;
+            if (side === 'right') return; // Bloqueia luz direita no tutorial
+        }
+
         if (side === 'left') { 
             isLeftLightOn = !isLeftLightOn; document.getElementById('l-light').classList.toggle('active'); 
             leftLight.intensity = isLeftLightOn ? 0.5 : 0; // A luz pointLight fica mais fraca para dar destaque ao spot da lanterna
@@ -1796,6 +1769,12 @@
             } 
         }
         updateAnimatronicVisuals();
+
+        if (isTutorial) {
+            let act = tutSteps[tutStep]?.action;
+            if (side === 'left' && act === 'l-light' && isLeftLightOn) nextTutStep();
+            if (side === 'left' && act === 'l-cleanup' && !isLeftLightOn && !isLeftDoorClosed) nextTutStep();
+        }
     };
 
     window.addEventListener('mousemove', (e) => { if(gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.clientX/window.innerWidth)) * Math.PI; });
@@ -1817,12 +1796,9 @@
                 // Efeito de câmera rastejando no chão, movendo-se e respirando levemente
                 let t = Date.now() * 0.0005;
                 menuCamera.position.set(-22 + Math.sin(t*0.5)*2, 2.5 + Math.cos(t*0.7)*0.3, 25 + Math.cos(t*0.4)*2);
-                menuCamera.lookAt(5, 6, -5); // Olhando de baixo para cima, diagonalmente para a entrada da pizzaria
+                menuCamera.lookAt(5, 6, -5); 
                 
-                // Piscar a luz do poste na rua
-                if(window.menuFlickerLight) {
-                    window.menuFlickerLight.intensity = Math.random() > 0.05 ? 1.5 + Math.random()*0.5 : 0;
-                }
+                if(window.menuFlickerLight) { window.menuFlickerLight.intensity = Math.random() > 0.05 ? 1.5 + Math.random()*0.5 : 0; }
 
                 renderer.render(menuScene, menuCamera);
             }
@@ -1838,9 +1814,9 @@
             
             // Animação fluida e realista das mãos com a lanterna
             if (leftArmGroup) {
-                leftArmGroup.visible = !isMonitorUp; // GARANTE QUE O BRAÇO FIQUE INVISÍVEL AO OLHAR A CÂMERA
+                leftArmGroup.visible = !isMonitorUp; 
                 leftArmGroup.position.y += (leftArmTargetY - leftArmGroup.position.y) * 0.15;
-                if (isLeftLightOn) { // Movimento subtil de respiração ao segurar a lanterna
+                if (isLeftLightOn) { 
                     leftArmGroup.rotation.x = leftArmGroup.userData.baseRotX + Math.sin(Date.now() * 0.003) * 0.02;
                     leftArmGroup.rotation.y = leftArmGroup.userData.baseRotY + Math.sin(Date.now() * 0.002) * 0.01;
                 } else {
@@ -1849,9 +1825,9 @@
                 }
             }
             if (rightArmGroup) {
-                rightArmGroup.visible = !isMonitorUp; // GARANTE QUE O BRAÇO FIQUE INVISÍVEL AO OLHAR A CÂMERA
+                rightArmGroup.visible = !isMonitorUp; 
                 rightArmGroup.position.y += (rightArmTargetY - rightArmGroup.position.y) * 0.15;
-                if (isRightLightOn) { // Movimento subtil de respiração
+                if (isRightLightOn) { 
                     rightArmGroup.rotation.x = rightArmGroup.userData.baseRotX + Math.sin(Date.now() * 0.003) * 0.02;
                     rightArmGroup.rotation.y = rightArmGroup.userData.baseRotY + Math.sin(Date.now() * 0.002) * 0.01;
                 } else {
