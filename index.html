@@ -31,21 +31,130 @@
         .hidden { display: none !important; }
 
         /* --- Menus e Telas --- */
-        #menu-screen { background: linear-gradient(90deg, rgba(5,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%); justify-content: flex-end; align-items: flex-start; padding-left: 8%; padding-bottom: 8%; }
-        .menu-content { display: flex; flex-direction: column; align-items: flex-start; z-index: 2; }
-        .glitch-title { font-size: clamp(2.5rem, 8vw, 6rem); margin-bottom: 0.5rem; color: #aa0000; text-transform: uppercase; font-family: 'Arial Black', Impact, sans-serif; letter-spacing: -2px; text-shadow: 4px 4px 0 #330000, -2px -2px 0 #ff5555, 0 0 20px rgba(255,0,0,0.5); position: relative; font-style: italic; animation: title-breathe 4s infinite alternate ease-in-out; }
-        .menu-subtitle { font-size: clamp(1rem, 2.5vw, 1.8rem); color: #888; margin-bottom: 3rem; letter-spacing: 8px; text-transform: uppercase; text-shadow: 2px 2px 4px #000; font-weight: bold; }
-        .menu-options { display: flex; flex-direction: column; gap: 15px; border-left: 2px solid rgba(170, 0, 0, 0.3); padding-left: 20px; }
-        .menu-btn { background: none; border: none; border-left: 3px solid transparent; color: #fff; font-size: clamp(1.2rem, 3.5vw, 2rem); font-family: 'Courier New', Courier, monospace; cursor: pointer; padding: 10px 20px; transition: all 0.3s; text-align: left; position: relative; overflow: hidden; text-shadow: 2px 2px 4px #000; font-weight: bold; pointer-events: auto;}
-        .menu-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(170, 0, 0, 0.3), transparent); transition: left 0.3s; z-index: -1; }
-        .menu-btn:hover::before { left: 0; }
-        .menu-btn:hover, .menu-btn:active { color: #ff5555; transform: translateX(15px); border-left: 3px solid #f00; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 4px #000; }
+        #menu-screen { 
+            background: transparent; /* Removido o gradiente opaco para vermos o 3D puro */
+            justify-content: center; 
+            align-items: flex-start; 
+            padding-left: 10%; 
+            perspective: 1200px; /* Profundidade 3D para a UI */
+            overflow: visible;
+        }
+        
+        .menu-content { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
+            z-index: 2; 
+            background: rgba(10, 2, 2, 0.4); 
+            padding: 40px 60px; 
+            border-radius: 12px; 
+            border-left: 4px solid #8a2929; 
+            box-shadow: -15px 15px 30px rgba(0,0,0,0.8), inset 0 0 30px rgba(255,0,0,0.1); 
+            backdrop-filter: blur(4px); 
+            -webkit-backdrop-filter: blur(4px); 
+            border-top: 1px solid rgba(255,0,0,0.2); 
+            border-bottom: 1px solid rgba(255,0,0,0.2); 
+            
+            /* Efeito 3D Base */
+            transform-style: preserve-3d;
+            transform: rotateY(20deg) rotateX(5deg) translateZ(0px);
+            transition: transform 0.1s linear; /* Suavidade no parallax */
+        }
+        
+        .glitch-title { 
+            font-size: clamp(2.5rem, 7vw, 5rem); 
+            margin-bottom: 0.2rem; 
+            color: #fff; 
+            text-transform: uppercase; 
+            font-family: 'Arial Black', Impact, sans-serif; 
+            letter-spacing: -1px; 
+            text-shadow: 4px 4px 0 rgba(150,0,0,0.9), -3px -3px 0 rgba(0,255,255,0.4), 0 0 30px rgba(255,0,0,0.8); 
+            position: relative; 
+            font-style: italic; 
+            transform: translateZ(40px); /* Título salta mais para fora */
+        }
+        
+        .menu-subtitle { 
+            font-size: clamp(1rem, 2vw, 1.4rem); 
+            color: #ffaaaa; 
+            margin-bottom: 2.5rem; 
+            letter-spacing: 6px; 
+            text-transform: uppercase; 
+            text-shadow: 2px 2px 4px #000; 
+            font-weight: bold; 
+            border-bottom: 1px solid rgba(255,0,0,0.3); 
+            padding-bottom: 10px; 
+            width: 100%; 
+            text-align: left;
+            transform: translateZ(25px);
+        }
+        
+        .menu-options { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            width: 100%; 
+            transform-style: preserve-3d;
+        }
+        
+        .menu-btn { 
+            background: rgba(20, 0, 0, 0.7); 
+            border: 2px solid #500; 
+            border-right: 4px solid #800; /* Sensação de volume 3D */
+            border-bottom: 4px solid #800; /* Sensação de volume 3D */
+            border-radius: 6px; 
+            color: #ddd; 
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem); 
+            font-family: 'Courier New', Courier, monospace; 
+            cursor: pointer; 
+            padding: 12px 25px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-align: left; 
+            position: relative; 
+            text-shadow: 1px 1px 2px #000; 
+            font-weight: bold; 
+            pointer-events: auto; 
+            letter-spacing: 1px; 
+            transform: translateZ(10px); /* Profundidade base dos botões */
+        }
+        
+        .menu-btn:hover, .menu-btn:active { 
+            color: #fff; 
+            background: rgba(120, 0, 0, 0.85); 
+            border-color: #f00; 
+            border-right-color: #a00;
+            border-bottom-color: #a00;
+            box-shadow: -5px 5px 20px rgba(0,0,0,0.8), 0 0 20px rgba(255, 0, 0, 0.6), inset 0 0 10px rgba(255,100,100,0.4); 
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.9); 
+            transform: translateZ(50px) scale(1.05); /* Botão "pula" da tela ao passar o rato */
+        }
+        
         .menu-footer { position: absolute; bottom: 20px; right: 20px; color: #666; font-size: 0.9rem; text-align: right; text-shadow: 1px 1px 2px #000; }
-        .rec-indicator { position: absolute; top: 30px; right: 40px; color: #fff; font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Arial', sans-serif; display: flex; align-items: center; gap: 10px; opacity: 0.8; text-shadow: 2px 2px 4px #000; }
+        .rec-indicator { position: absolute; top: 30px; right: 40px; color: #fff; font-size: clamp(1rem, 3vw, 1.5rem); font-family: 'Arial', sans-serif; display: flex; align-items: center; gap: 10px; opacity: 0.8; text-shadow: 2px 2px 4px #000; z-index: 10; }
         .red-dot { width: 15px; height: 15px; background-color: #f00; border-radius: 50%; box-shadow: 0 0 15px #f00; animation: blink 1s infinite; }
 
-        @keyframes title-breathe { 0% { transform: scale(1); text-shadow: 4px 4px 0 #330000, -2px -2px 0 #ff5555, 0 0 20px rgba(255,0,0,0.5); } 100% { transform: scale(1.02); text-shadow: 5px 5px 0 #440000, -3px -3px 0 #ff2222, 0 0 35px rgba(255,0,0,0.8); } }
-        @keyframes glitch-anim { 0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 10% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 30% { clip-path: inset(40% 0 20% 0); transform: translate(2px, -2px); } 40% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); } 50% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); } 60% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 2px); } 70% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); } 80% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); } 90% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); } 100% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 2px); } }
+        @keyframes title-breathe { 0% { text-shadow: 4px 4px 0 rgba(150,0,0,0.9), -3px -3px 0 rgba(0,255,255,0.4), 0 0 20px rgba(255,0,0,0.5); } 100% { text-shadow: 6px 6px 0 rgba(200,0,0,0.9), -4px -4px 0 rgba(0,255,255,0.6), 0 0 40px rgba(255,0,0,0.9); } }
+        
+        /* --- TELA DE MODOS --- */
+        #modes-screen { background-color: #050505; z-index: 55; align-items: center; justify-content: center; padding: 20px; }
+        .modes-container { display: flex; flex-direction: row; gap: 30px; width: 90%; max-width: 1000px; background: rgba(15,10,10,0.8); padding: 30px; border-radius: 10px; border: 2px solid #441111; box-shadow: 0 0 30px rgba(255,0,0,0.2); }
+        .modes-col { flex: 1; display: flex; flex-direction: column; }
+        .modes-title { color: #f00; font-family: 'Arial Black', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 20px; text-shadow: 2px 2px 0 #330000; width: 100%; border-bottom: 2px solid #330000; padding-bottom: 10px; }
+        .modes-section-title { color: #fff; font-size: 1.5rem; margin-bottom: 15px; font-weight: bold; }
+        .diff-selector { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; background: #111; padding: 10px; border-radius: 5px; border: 1px solid #333; }
+        .diff-btn { background: #333; color: #fff; border: 1px solid #555; padding: 5px 15px; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-radius: 4px; }
+        .diff-btn:hover { background: #555; }
+        .diff-display { font-size: 1.3rem; font-weight: bold; width: 120px; text-align: center; color: #ffcc00; }
+        .diff-desc { font-size: 0.85rem; color: #aaa; margin-bottom: 20px; min-height: 40px; }
+        .mode-play-btn { background: #8a2929; color: #fff; border: 2px solid #f00; padding: 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; border-radius: 5px; transition: 0.3s; width: 100%; margin-bottom: 20px; }
+        .mode-play-btn:hover { background: #f00; box-shadow: 0 0 15px #f00; }
+        .mode-play-btn:disabled { background: #333; border-color: #555; color: #888; cursor: not-allowed; box-shadow: none; }
+        .monsters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .monster-card { background: #111; border: 1px solid #333; padding: 10px; display: flex; align-items: center; gap: 10px; border-radius: 5px; }
+        .monster-icon { width: 40px; height: 40px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; border: 1px solid #444; }
+        .monster-info { display: flex; flex-direction: column; }
+        .monster-name { color: #fff; font-weight: bold; font-size: 0.9rem; }
+        .monster-type { color: #888; font-size: 0.7rem; font-family: monospace; }
 
         #newspaper-screen { background-color: #222; }
         .newspaper { background-color: #ddd; color: #000; padding: 25px; width: 90%; max-width: 600px; border: 2px solid #555; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); transform: rotate(-1deg); font-family: 'Times New Roman', Times, serif; text-align: center; overflow-y: auto; max-height: 80vh; }
@@ -210,16 +319,33 @@
         #mute-btn { pointer-events: auto; background: #333; color: #fff; border: 1px solid #888; padding: 5px 15px; cursor: pointer; font-family: inherit; font-size: 0.9rem; border-radius: 3px; display: none; }
         #mute-btn:hover { background: #555; }
 
+        /* --- HUD CUSTOMIZÁVEL --- */
         .panel { position: absolute; top: 50%; transform: translateY(-50%); width: clamp(60px, 10vw, 80px); height: clamp(150px, 25vw, 200px); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px; pointer-events: auto; opacity: 0.3; transition: opacity 0.3s; }
         .panel:hover, .panel:active { opacity: 1; }
         #left-panel { left: 1%; } #right-panel { right: 1%; }
-        .btn-door, .btn-light { width: clamp(40px, 7vw, 50px); height: clamp(40px, 7vw, 50px); border-radius: 8px; border: 3px solid #222; cursor: pointer; box-shadow: inset 0 0 10px #000; transition: background-color 0.2s, box-shadow 0.2s; }
+        .btn-door, .btn-light { width: 100%; aspect-ratio: 1/1; border-radius: 8px; border: 3px solid #222; cursor: pointer; box-shadow: inset 0 0 10px #000; transition: background-color 0.2s, box-shadow 0.2s; }
         .btn-door { background-color: #800; } .btn-door.active { background-color: #f00; box-shadow: 0 0 20px #f00; border-color: #ffaaaa;}
         .btn-light { background-color: #040; } .btn-light.active { background-color: #0f0; box-shadow: 0 0 20px #0f0; border-color: #aaffaa;}
 
-        #monitor-btn { position: absolute; bottom: 0; left: 25%; width: 50%; height: clamp(30px, 5vw, 40px); background-color: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255,255,255,0.3); border-bottom: none; border-radius: 10px 10px 0 0; cursor: pointer; pointer-events: auto; z-index: 30; transition: height 0.2s, background-color 0.2s; display: flex; justify-content: center; align-items: center; }
-        #monitor-btn:hover, #monitor-btn:active { height: clamp(45px, 8vw, 60px); background-color: rgba(255, 255, 255, 0.3); }
-        #monitor-btn::after { content: ""; width: 50px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 5px; }
+        /* TABLET MONITOR */
+        #monitor-btn { 
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: clamp(200px, 40vw, 400px); height: clamp(35px, 6vw, 55px); 
+            background: linear-gradient(180deg, #444 0%, #111 100%); 
+            border: 4px solid #222; border-bottom: none; 
+            border-radius: 20px 20px 0 0; cursor: pointer; pointer-events: auto; z-index: 30; 
+            transition: height 0.2s, background 0.2s; display: flex; justify-content: center; align-items: flex-start;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.2);
+            padding-top: 10px;
+        }
+        #monitor-btn:hover, #monitor-btn:active { height: clamp(50px, 8vw, 70px); background: linear-gradient(180deg, #555 0%, #222 100%); }
+        #monitor-btn::after { content: "CÂMERAS"; color: #aaa; font-family: 'Courier New', monospace; font-weight: bold; font-size: clamp(0.8rem, 2vw, 1.2rem); letter-spacing: 2px; text-shadow: 1px 1px 2px #000; }
+
+        .draggable-hud { transform-origin: center center; }
+        
+        #hud-edit-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 20px; pointer-events: none; }
+        #hud-edit-toolbar { display: flex; gap: 15px; background: #222; padding: 15px; border-radius: 10px; border: 2px solid #555; pointer-events: auto; box-shadow: 0 5px 20px #000;}
+        .hud-edit-inst { position: absolute; bottom: 20%; color: #ff0; font-family: monospace; font-size: 1.2rem; text-shadow: 2px 2px 0 #000; text-align: center; }
 
         #camera-ui { display: flex; justify-content: flex-end; align-items: flex-end; padding: 5%; z-index: 15; }
         .static-noise { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.15; z-index: 15; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); animation: staticAnim 0.2s infinite; }
@@ -265,13 +391,16 @@
         .achieve-stats { width: 100%; display: flex; justify-content: space-between; font-size: 0.9rem; color: #00aaff; border-top: 1px solid #333; margin-top: 15px; padding-top: 10px;}
 
         @media (max-width: 768px) {
-            #menu-screen { padding-bottom: 20%; padding-left: 5%; background: linear-gradient(180deg, rgba(5,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); align-items: center; justify-content: center; }
-            .menu-content { align-items: center; text-align: center; }
-            .menu-options { border-left: none; padding-left: 0; align-items: center; }
-            .menu-btn { text-align: center; border-left: none; border-bottom: 3px solid transparent; }
-            .menu-btn:hover, .menu-btn:active { transform: translateY(-5px); border-left: none; border-bottom: 3px solid #f00; }
-            .menu-btn::before { top: 100%; left: 0; background: linear-gradient(0deg, rgba(170, 0, 0, 0.3), transparent); transition: top 0.3s; }
-            .menu-btn:hover::before { top: 0; }
+            #menu-screen { padding-left: 0; background: radial-gradient(circle at 50% 50%, rgba(20,0,0,0.8) 0%, rgba(0,0,0,0.9) 70%, #000 100%); align-items: center; justify-content: center; }
+            .menu-content { align-items: center; text-align: center; padding: 30px 20px; border-left: none; border-top: 4px solid #8a2929; width: 92%; max-width: 450px;}
+            .menu-subtitle { text-align: center; letter-spacing: 4px; }
+            .menu-options { align-items: stretch; width: 100%; }
+            .menu-btn { text-align: center; font-size: 1.2rem; }
+            .menu-btn:hover, .menu-btn:active { transform: translateY(-5px); }
+
+            .modes-container { flex-direction: column; overflow-y: auto; max-height: 90vh; }
+            .modes-title { font-size: 2rem; }
+            .diff-selector { flex-wrap: wrap; justify-content: center; }
 
             .pc-screen { height: 95%; width: 95%; padding: 10px; border-width: 8px; justify-content: flex-start; }
             .pc-screen h2 { font-size: 1.2rem; margin-bottom: 8px; padding-bottom: 5px; }
@@ -310,21 +439,98 @@
     
     <div id="toxic-filter"></div>
 
-    <div id="menu-screen" class="screen">
-        <div class="menu-content">
+    <!-- TELA DE AVISO -->
+    <div id="warning-screen" class="screen" onclick="window.dismissWarning()">
+        <div style="text-align: center; max-width: 800px; padding: 20px;">
+            <h1 style="color: #f00; font-family: 'Arial Black', sans-serif; margin-bottom: 20px; font-size: clamp(2rem, 5vw, 4rem);">AVISO</h1>
+            <p style="font-family: 'Courier New', monospace; font-size: clamp(1rem, 2.5vw, 1.5rem); line-height: 1.6; margin-bottom: 30px; text-shadow: 1px 1px 2px #000;">
+                Este jogo contém luzes intermitentes, barulhos altos e muitos sustos.<br><br>
+                Não é recomendado para pessoas com problemas cardíacos ou sensibilidade a luzes piscantes.
+            </p>
+            <p style="color: #888; font-family: 'Courier New', monospace; animation: blink 1.5s infinite; font-size: clamp(0.8rem, 2vw, 1.2rem);">Toque na tela para continuar</p>
+        </div>
+    </div>
+
+    <div id="menu-screen" class="screen hidden">
+        <div class="menu-content" id="menu-content-3d">
             <h1 class="glitch-title">REGIS PIZZAPLACE</h1>
             <h3 class="menu-subtitle">O Despertar do Alejado</h3>
             <div class="menu-options">
-                <button class="menu-btn" onclick="window.startGame(1)">> Novo Jogo</button>
-                <button class="menu-btn" onclick="window.continueGame()" id="continue-btn" style="color: #444; pointer-events: none;">> Continuar</button>
-                <button class="menu-btn hidden" id="custom-night-btn" onclick="window.openCustomNight()" style="color: #f00;">> Custom Night</button>
+                <button class="menu-btn" onclick="window.openModes()">> Modos</button>
                 <button class="menu-btn" onclick="window.startTutorial()" style="color: #00aaff;">> Tutorial</button>
                 <button class="menu-btn" onclick="window.openAchievements()">> Conquistas</button>
                 <button class="menu-btn" onclick="window.openSettings()">> Configurações</button>
             </div>
         </div>
         <div class="rec-indicator"><span class="red-dot"></span> REC</div>
-        <div class="menu-footer">v2.1 - The Paycheck Update<br>Feito por Haldo/Long</div>
+        <div class="menu-footer">v2.3 - The 3D UI Update<br>Feito por Haldo/Long</div>
+    </div>
+
+    <!-- UI DE MODOS -->
+    <div id="modes-screen" class="screen hidden">
+        <div class="modes-title">MODOS DE JOGO</div>
+        <div class="modes-container">
+            <div class="modes-col" style="flex: 1.2;">
+                <div class="modes-section-title">CAMPANHA PRINCIPAL</div>
+                <div style="color:#aaa; margin-bottom: 10px;">Progresso Atual: <span id="modes-night-display" style="color:#fff; font-weight:bold;">Noite 1</span></div>
+                
+                <div class="diff-selector">
+                    <button class="diff-btn" onclick="window.changeDifficulty(-1)">&#9664;</button>
+                    <div class="diff-display" id="diff-display">NORMAL</div>
+                    <button class="diff-btn" onclick="window.changeDifficulty(1)">&#9654;</button>
+                </div>
+                <div class="diff-desc" id="diff-desc">Experiência padrão projetada. Monstros com inteligência equilibrada.</div>
+                
+                <button id="btn-continue-mode" class="mode-play-btn" style="margin-bottom: 10px;" onclick="window.startModeGame('continue')">CONTINUAR TURNO</button>
+                <button class="mode-play-btn" style="background:#222; border-color:#555; font-size:1rem; padding: 10px;" onclick="window.startModeGame('new')">NOVO JOGO (VER CONTRATO)</button>
+                
+                <div class="modes-section-title" style="margin-top: 20px; border-top: 1px solid #441111; padding-top: 20px;">NOITE ESTRANHA (CUSTOM NIGHT)</div>
+                <div id="custom-night-lock" style="color:#888; font-style:italic; margin-bottom:10px;">Desbloqueia após vencer a Noite 5.</div>
+                <button id="custom-night-access-btn" class="mode-play-btn" style="background:#440000; border-color:#880000;" onclick="window.openCustomNight()" disabled>CONFIGURAR IA</button>
+            </div>
+            
+            <div class="modes-col" style="border-left: 2px solid #441111; padding-left: 30px;">
+                <div class="modes-section-title">AMEAÇAS DETECTADAS</div>
+                <div class="monsters-grid">
+                    <div class="monster-card">
+                        <div class="monster-icon" style="color:#a87fff;">B</div>
+                        <div class="monster-info">
+                            <span class="monster-name">Bonnie</span>
+                            <span class="monster-type">Abordagem Esquerda</span>
+                        </div>
+                    </div>
+                    <div class="monster-card">
+                        <div class="monster-icon" style="color:#ffcc00;">C</div>
+                        <div class="monster-info">
+                            <span class="monster-name">Chica</span>
+                            <span class="monster-type">Abordagem Direita</span>
+                        </div>
+                    </div>
+                    <div class="monster-card">
+                        <div class="monster-icon" style="color:#ff5555;">F</div>
+                        <div class="monster-info">
+                            <span class="monster-name">Foxy</span>
+                            <span class="monster-type">Velocista / Caixa de Música</span>
+                        </div>
+                    </div>
+                    <div class="monster-card">
+                        <div class="monster-icon" style="color:#885533;">Fr</div>
+                        <div class="monster-info">
+                            <span class="monster-name">Freddy</span>
+                            <span class="monster-type">Furtivo do Escuro</span>
+                        </div>
+                    </div>
+                    <div class="monster-card" style="grid-column: span 2; justify-content: center; background: #220000; border-color:#f00;">
+                        <div class="monster-icon" style="color:#f00; border-color:#f00; animation: blink 1s infinite;">?</div>
+                        <div class="monster-info" style="align-items: center;">
+                            <span class="monster-name" style="color:#f00;">O Alejado</span>
+                            <span class="monster-type" style="color:#ffaaaa;">Alimentado pela Toxicidade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="clean-btn" style="margin-top: 30px; font-size: 1.2rem; background: #222; border-color:#555; color:#fff;" onclick="window.closeModes()">VOLTAR AO MENU</button>
     </div>
 
     <!-- UI DE CUSTOM NIGHT -->
@@ -338,7 +544,7 @@
         </div>
         <div style="display:flex; gap: 20px;">
             <button class="cn-start-btn" style="background:#444; border-color:#888;" onclick="window.closeCustomNight()">VOLTAR</button>
-            <button class="cn-start-btn" onclick="window.startCustomNight()">PRONTO</button>
+            <button class="cn-start-btn" onclick="window.startModeGame('custom')">INICIAR NOITE</button>
         </div>
     </div>
 
@@ -376,10 +582,28 @@
                 <div style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">TELA CHEIA: 
                     <br><button class="clean-btn" id="fs-btn" style="background:#555; color:#fff; border-color:#fff; margin-top:10px; width: 150px;" onclick="window.toggleFullscreen()">ATIVAR</button>
                 </div>
+                <div style="font-size: clamp(1rem, 3vw, 1.2rem); text-align: center;">CONTROLES DA TELA: 
+                    <br><button class="clean-btn" style="background:#005588; color:#fff; border-color:#00aaff; margin-top:10px; width: 150px;" onclick="window.openHUDEditor()">EDITAR HUD</button>
+                </div>
                 <button class="clean-btn" id="reset-save-btn" style="background:#800; color:#fff; border-color:#f00; margin-top: 15px;" onclick="window.resetSaveData()">APAGAR PROGRESSO</button>
             </div>
             <button id="pc-exit-btn" style="border-color:#fff; color:#fff; margin-top: 30px;" onclick="window.closeSettings()">VOLTAR</button>
         </div>
+    </div>
+
+    <!-- HUD EDITOR OVERLAY -->
+    <div id="hud-edit-overlay" class="hidden">
+        <div id="hud-edit-toolbar">
+            <button class="clean-btn" style="background:#222; border-color:#fff; color:#fff;" onclick="window.closeHUDEditor(false)">CANCELAR</button>
+            <button class="clean-btn" style="background:#555; border-color:#ffcc00; color:#ffcc00;" onclick="window.resetHUDConfig()">RESTAURAR PADRÃO</button>
+            <div style="display:flex; align-items:center; gap: 5px; color:#fff; font-family:monospace; background:#111; padding:0 10px; border-radius:5px; border:1px solid #444;">
+                Tamanho:
+                <button style="background:#444; color:#fff; border:none; padding:5px 10px; cursor:pointer;" onclick="window.changeHUDSize(-0.1)">-</button>
+                <button style="background:#444; color:#fff; border:none; padding:5px 10px; cursor:pointer;" onclick="window.changeHUDSize(0.1)">+</button>
+            </div>
+            <button class="clean-btn" style="background:#00aaff; border-color:#fff; color:#000;" onclick="window.closeHUDEditor(true)">SALVAR</button>
+        </div>
+        <div class="hud-edit-inst">Toque e arraste os elementos da HUD para movê-los.<br>Selecione um elemento para mudar o tamanho.</div>
     </div>
 
     <div id="contract-screen" class="screen hidden">
@@ -491,7 +715,7 @@
         <div id="toxicity-display" class="hud-text">Toxicidade: 0%</div>
         <div id="power-display" class="hud-text">Energia: 100%</div>
 
-        <button id="exhaust-btn" onclick="window.toggleExhaust()">LIGAR EXAUSTOR</button>
+        <button id="exhaust-btn" class="draggable-hud" onclick="window.toggleExhaust()">LIGAR EXAUSTOR</button>
 
         <div id="phone-ui">
             <div id="phone-subtitles"></div>
@@ -499,16 +723,16 @@
         </div>
 
         <div id="office-panels">
-            <div id="left-panel" class="panel">
+            <div id="left-panel" class="panel draggable-hud">
                 <div class="btn-door" id="l-door" onclick="window.toggleDoor('left')"></div>
                 <div class="btn-light" id="l-light" onclick="window.toggleLight('left')"></div>
             </div>
-            <div id="right-panel" class="panel">
+            <div id="right-panel" class="panel draggable-hud">
                 <div class="btn-door" id="r-door" onclick="window.toggleDoor('right')"></div>
                 <div class="btn-light" id="r-light" onclick="window.toggleLight('right')"></div>
             </div>
         </div>
-        <div id="monitor-btn" onclick="window.toggleMonitor()"></div>
+        <div id="monitor-btn" class="draggable-hud" onclick="window.toggleMonitor()"></div>
     </div>
 
     <div id="camera-ui" class="overlay hidden">
@@ -540,13 +764,15 @@
 <script>
     // --- VARIÁVEIS GLOBAIS ---
     window.currentNight = 1;
-    let hour = 0, power = 100, gameState = 'MENU';
+    let hour = 0, power = 100, gameState = 'WARNING';
     let scene, camera, renderer, menuScene, menuCamera;
     let fanBlades, leftDoorMesh, rightDoorMesh, crtScreenMesh;
     let mainOfficeLight, leftLight, rightLight, cctvLight, ambientLight;
     let coveCurtainL, coveCurtainR;
     
     let targetRotationY = 0, mouseX = 0;
+    let menuMouseX = 0, menuMouseY = 0; // Variáveis para o Parallax do Menu
+    
     let isLeftDoorClosed = false, isRightDoorClosed = false;
     let isLeftLightOn = false, isRightLightOn = false;
     let leftDoorTargetY = 22.5, rightDoorTargetY = 22.5;
@@ -584,17 +810,27 @@
     if(isNaN(window.graphicsLevel)) window.graphicsLevel = 2; // 0: Baixo, 1: Médio, 2: Alto
     let defaultEnvMap = null;
 
-    // --- VARIÁVEIS DA CUSTOM NIGHT ---
+    // --- SISTEMA DE MODOS E DIFICULDADE ---
+    window.gameDifficulty = 'normal'; // 'facil', 'normal', 'dificil', 'hardcore'
+    const diffNames = ['FÁCIL', 'NORMAL', 'DIFÍCIL', 'HARDCORE'];
+    const diffDescs = [
+        "Monstros lentos e bateria extra. Ideal para aprender. (CONQUISTAS DESATIVADAS)",
+        "Experiência padrão projetada. Monstros com inteligência equilibrada.",
+        "Monstros mais reativos e bateria se esgota um pouco mais rápido.",
+        "Inteligência máxima desde o começo. Gasto de energia punitivo. Boa sorte."
+    ];
+    let currentDiffIndex = 1;
+
     window.customAI = { bonnie: 0, chica: 0, freddy: 0, foxy: 0 };
 
     const ACHIEVEMENTS_DATA = [
         { id: "tut_complete", title: "Bem-vindo à Família", desc: "Complete o treinamento do tutorial.", type: "Bronze" },
-        { id: "night_1", title: "Sobrevivente Iniciante", desc: "Sobreviva à Noite 1.", type: "Bronze" },
-        { id: "night_2", title: "Ganhando o Ritmo", desc: "Sobreviva à Noite 2.", type: "Bronze" },
-        { id: "night_3", title: "Metade do Caminho", desc: "Sobreviva à Noite 3.", type: "Prata" },
-        { id: "night_4", title: "Quase Lá", desc: "Sobreviva à Noite 4.", type: "Prata" },
-        { id: "night_5", title: "Fim de Semana", desc: "Sobreviva à Noite 5.", type: "Ouro" },
-        { id: "night_6", title: "Hora Extra", desc: "Sobreviva à Noite 6.", type: "Ouro" },
+        { id: "night_1", title: "Sobrevivente Iniciante", desc: "Sobreviva à Noite 1 (Normal+).", type: "Bronze" },
+        { id: "night_2", title: "Ganhando o Ritmo", desc: "Sobreviva à Noite 2 (Normal+).", type: "Bronze" },
+        { id: "night_3", title: "Metade do Caminho", desc: "Sobreviva à Noite 3 (Normal+).", type: "Prata" },
+        { id: "night_4", title: "Quase Lá", desc: "Sobreviva à Noite 4 (Normal+).", type: "Prata" },
+        { id: "night_5", title: "Fim de Semana", desc: "Sobreviva à Noite 5 (Normal+).", type: "Ouro" },
+        { id: "night_6", title: "Hora Extra", desc: "Sobreviva à Noite 6 (Normal+).", type: "Ouro" },
         { id: "night_7", title: "O Purgatório", desc: "Complete a Noite 7 (Máxima Dificuldade).", type: "Platina" },
         { id: "cn_20202020", title: "O Pesadelo Supremo", desc: "Vença a Custom Night no modo 20/20/20/20.", type: "Platina" },
         { id: "death_first", title: "Primeira Morte", desc: "Morra pela primeira vez.", type: "Bronze" },
@@ -612,10 +848,10 @@
         { id: "act_bake", title: "Pizzaiolo", desc: "Coloque uma pizza para assar.", type: "Bronze" },
         { id: "act_del", title: "Entregador", desc: "Entregue uma pizza com sucesso.", type: "Bronze" },
         { id: "mute", title: "Estou Ocupado!", desc: "Mute a gravação de voz.", type: "Bronze" },
-        { id: "surv_tox_95", title: "Quem Precisa de Ar?", desc: "Termine uma noite com 95% ou mais de toxicidade.", type: "Prata" },
-        { id: "surv_tox_0", title: "Pulmões Limpos", desc: "Termine uma noite com 0% de toxicidade.", type: "Prata" },
-        { id: "surv_pow_5", title: "No Fio da Navalha", desc: "Termine uma noite com menos de 5% de energia.", type: "Prata" },
-        { id: "surv_pow_50", title: "Eco-Friendly", desc: "Termine uma noite com mais de 50% de energia.", type: "Ouro" },
+        { id: "surv_tox_95", title: "Quem Precisa de Ar?", desc: "Termine uma noite (Normal+) com 95% ou mais de toxicidade.", type: "Prata" },
+        { id: "surv_tox_0", title: "Pulmões Limpos", desc: "Termine uma noite (Normal+) com 0% de toxicidade.", type: "Prata" },
+        { id: "surv_pow_5", title: "No Fio da Navalha", desc: "Termine uma noite (Normal+) com menos de 5% de energia.", type: "Prata" },
+        { id: "surv_pow_50", title: "Eco-Friendly", desc: "Termine uma noite (Normal+) com mais de 50% de energia.", type: "Ouro" },
         { id: "grind_piz_20", title: "Pizzaiolo Chefe", desc: "Entregue 20 pizzas no total.", type: "Prata" },
         { id: "grind_piz_50", title: "Pizzaiolo Mestre", desc: "Entregue 50 pizzas no total.", type: "Ouro" },
         { id: "grind_mon_100", title: "Paranoia", desc: "Abra o monitor 100 vezes no total.", type: "Prata" },
@@ -638,12 +874,12 @@
         { id: "fix_aud", title: "Consertador", desc: "Reinicie o sistema de Áudio.", type: "Bronze" },
         { id: "fix_vent", title: "Ar Fresco", desc: "Reinicie a Ventilação.", type: "Bronze" },
         { id: "foxy_out", title: "Caixa Quebrada", desc: "Deixe a caixa de música zerar e Foxy sair.", type: "Prata" },
-        { id: "foxy_stay", title: "Sempre Alerta", desc: "Mantenha o Foxy na fase 0 a noite inteira.", type: "Ouro" },
-        { id: "no_aud", title: "Silêncio Absoluto", desc: "Passe uma noite sem usar a distração de Áudio.", type: "Prata" },
+        { id: "foxy_stay", title: "Sempre Alerta", desc: "Mantenha o Foxy na fase 0 a noite inteira (Normal+).", type: "Ouro" },
+        { id: "no_aud", title: "Silêncio Absoluto", desc: "Passe uma noite sem usar a distração de Áudio (Normal+).", type: "Prata" },
         { id: "spend_fast", title: "Gastador", desc: "Use 10% da energia antes da 1 AM.", type: "Bronze" },
-        { id: "no_doors", title: "Coração de Ferro", desc: "Sobreviva uma noite (2+) sem fechar as portas.", type: "Ouro" },
-        { id: "surv_no_exh", title: "Pulmões de Aço", desc: "Sobreviva à noite 3 ou superior sem usar o exaustor.", type: "Ouro" },
-        { id: "surv_no_cam", title: "Visão Cega", desc: "Sobreviva à noite 1 sem abrir as câmeras.", type: "Ouro" },
+        { id: "no_doors", title: "Coração de Ferro", desc: "Sobreviva uma noite (2+) sem fechar portas (Normal+).", type: "Ouro" },
+        { id: "surv_no_exh", title: "Pulmões de Aço", desc: "Sobreviva à noite 3+ sem usar o exaustor (Normal+).", type: "Ouro" },
+        { id: "surv_no_cam", title: "Visão Cega", desc: "Sobreviva à noite 1 sem abrir as câmeras (Normal+).", type: "Ouro" },
         { id: "spam_door", title: "Ansiedade", desc: "Abra e feche a porta rapidamente.", type: "Prata" },
         { id: "all_achiev", title: "100% REGIS", desc: "Desbloqueie todas as outras conquistas do jogo.", type: "Platina" }
     ];
@@ -651,17 +887,13 @@
     function saveStats() { try { localStorage.setItem('regis_pizzaplace_stats', JSON.stringify(window.gameStats)); localStorage.setItem('regis_pizzaplace_achievements', JSON.stringify(window.unlockedAchievs)); } catch(e) {} }
     
     window.unlockAchievement = function(id) {
+        if (window.gameDifficulty === 'facil' && id !== 'tut_complete') return; // Bloqueia no modo fácil
         if (window.unlockedAchievs.includes(id)) return;
         window.unlockedAchievs.push(id);
         saveStats();
         
         const a = ACHIEVEMENTS_DATA.find(x => x.id === id);
         if(a) showAchievementPopup(a);
-
-        if (id === 'night_7') {
-            const cnBtn = document.getElementById('custom-night-btn');
-            if (cnBtn) cnBtn.classList.remove('hidden');
-        }
 
         // Verifica a Platina
         if (id !== 'all_achiev' && window.unlockedAchievs.length >= ACHIEVEMENTS_DATA.length - 1) {
@@ -759,6 +991,127 @@
         document.getElementById('menu-screen').classList.remove('hidden');
     };
 
+    // --- HUD EDITOR ---
+    let hudConfig = JSON.parse(localStorage.getItem('regis_hud')) || {};
+    let isEditingHUD = false;
+    let selectedHUDElement = null;
+    let dragOffset = {x: 0, y: 0};
+
+    function applyHUDTransforms() {
+        ['left-panel', 'right-panel', 'exhaust-btn', 'monitor-btn'].forEach(id => {
+            const el = document.getElementById(id);
+            if(hudConfig[id]) {
+                if(hudConfig[id].left !== undefined) el.style.left = hudConfig[id].left;
+                if(hudConfig[id].top !== undefined) el.style.top = hudConfig[id].top;
+                if(hudConfig[id].bottom !== undefined) el.style.bottom = hudConfig[id].bottom;
+                
+                let transformStr = '';
+                if(id === 'monitor-btn' || id === 'exhaust-btn') {
+                    if(!hudConfig[id].custom) transformStr += 'translateX(-50%) ';
+                }
+                if(id === 'left-panel' || id === 'right-panel') {
+                    if(!hudConfig[id].custom) transformStr += 'translateY(-50%) ';
+                }
+                
+                let scale = hudConfig[id].scale || 1.0;
+                el.setAttribute('data-scale', scale);
+                transformStr += `scale(${scale})`;
+                el.style.transform = transformStr;
+            } else {
+                el.removeAttribute('style'); // Reseta
+            }
+        });
+    }
+
+    window.openHUDEditor = function() {
+        document.getElementById('settings-screen').classList.add('hidden');
+        document.getElementById('hud-layer').classList.remove('hidden');
+        document.getElementById('hud-edit-overlay').classList.remove('hidden');
+        isEditingHUD = true;
+        selectedHUDElement = null;
+        applyHUDTransforms();
+    };
+
+    window.closeHUDEditor = function(save) {
+        if(save) {
+            ['left-panel', 'right-panel', 'exhaust-btn', 'monitor-btn'].forEach(id => {
+                const el = document.getElementById(id);
+                if(!hudConfig[id]) hudConfig[id] = {};
+                hudConfig[id].scale = parseFloat(el.getAttribute('data-scale')) || 1.0;
+            });
+            localStorage.setItem('regis_hud', JSON.stringify(hudConfig));
+        } else {
+            hudConfig = JSON.parse(localStorage.getItem('regis_hud')) || {};
+        }
+        isEditingHUD = false;
+        document.getElementById('hud-edit-overlay').classList.add('hidden');
+        document.getElementById('hud-layer').classList.add('hidden');
+        document.getElementById('settings-screen').classList.remove('hidden');
+        applyHUDTransforms();
+        document.querySelectorAll('.draggable-hud').forEach(el => el.style.border = '');
+    };
+
+    window.resetHUDConfig = function() {
+        hudConfig = {};
+        applyHUDTransforms();
+    };
+
+    window.changeHUDSize = function(delta) {
+        if(!selectedHUDElement) return;
+        let id = selectedHUDElement.id;
+        if(!hudConfig[id]) hudConfig[id] = {};
+        let currentScale = parseFloat(selectedHUDElement.getAttribute('data-scale')) || 1.0;
+        currentScale = Math.max(0.5, Math.min(2.5, currentScale + delta));
+        hudConfig[id].scale = currentScale;
+        selectedHUDElement.setAttribute('data-scale', currentScale);
+        applyHUDTransforms();
+    };
+
+    const hudElements = document.querySelectorAll('.draggable-hud');
+    const startDrag = (e) => {
+        if(!isEditingHUD) return;
+        selectedHUDElement = e.target.closest('.draggable-hud');
+        if(!selectedHUDElement) return;
+        e.preventDefault();
+        
+        document.querySelectorAll('.draggable-hud').forEach(el => el.style.border = '');
+        selectedHUDElement.style.border = '2px dashed #0f0';
+
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const rect = selectedHUDElement.getBoundingClientRect();
+        
+        dragOffset.x = clientX - rect.left;
+        dragOffset.y = clientY - rect.top;
+    };
+    
+    const onDrag = (e) => {
+        if(!isEditingHUD || !selectedHUDElement) return;
+        e.preventDefault();
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        let xPercent = ((clientX - dragOffset.x) / window.innerWidth) * 100;
+        let yPercent = ((clientY - dragOffset.y) / window.innerHeight) * 100;
+
+        let id = selectedHUDElement.id;
+        if(!hudConfig[id]) hudConfig[id] = {};
+        hudConfig[id].custom = true;
+        hudConfig[id].left = xPercent + '%';
+        hudConfig[id].top = yPercent + '%';
+        hudConfig[id].bottom = 'auto'; // Removeura defaults
+        applyHUDTransforms();
+    };
+
+    const stopDrag = () => { if(isEditingHUD && selectedHUDElement) { /* Keep selected for scaling */ } };
+
+    document.addEventListener('mousedown', startDrag, {passive: false});
+    document.addEventListener('mousemove', onDrag, {passive: false});
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchstart', startDrag, {passive: false});
+    document.addEventListener('touchmove', onDrag, {passive: false});
+    document.addEventListener('touchend', stopDrag);
+
     const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2();
     let isPCUp = false, isTaskActive = false, taskTimer = 30, taskFailTimer = 20; 
     let isAudioBroken = false, toxicity = 0, initialToxicity = 0; 
@@ -847,8 +1200,8 @@
         "<h2>ARQUIVO 07: O PURGATÓRIO DE REGIS</h2><p>As peças não encaixam, pois não? O salário que não existe, as portas soldadas, as memórias que começam a inundar a sua mente. Você não é um segurança contratado. Você É o próprio Regis. Amaldiçoado a reviver noites infinitas no seu próprio inferno, punido pelo que fez ao seu primo Martins e aos seus funcionários. O Alejado chora na porta, ele não quer apenas matar-te, ele quer que sintas a dor excruciante das engrenagens. Para sempre. Enfrente as suas criações na dificuldade máxima.</p>"
     ];
 
-    window.openSettings = function() { document.getElementById('settings-screen').classList.remove('hidden'); };
-    window.closeSettings = function() { document.getElementById('settings-screen').classList.add('hidden'); };
+    window.openSettings = function() { document.getElementById('settings-screen').classList.remove('hidden'); document.getElementById('menu-screen').classList.add('hidden'); };
+    window.closeSettings = function() { document.getElementById('settings-screen').classList.add('hidden'); document.getElementById('menu-screen').classList.remove('hidden'); };
     window.updateVolume = function(val) { masterVolume = parseFloat(val); document.getElementById('vol-label').innerText = `${Math.round(masterVolume * 100)}%`; };
     
     // --- FUNÇÕES DE GRÁFICOS ---
@@ -905,7 +1258,7 @@
                 renderer.shadowMap.enabled = true;
                 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-                renderer.toneMappingExposure = 1.0;
+                renderer.toneMappingExposure = 1.3;
             }
             crtClass.remove('off');
             crtClass.remove('medium');
@@ -1005,13 +1358,10 @@
             setTimeout(() => { confirmReset = false; btn.innerText = "APAGAR PROGRESSO"; btn.style.backgroundColor = "#800"; }, 3000);
         } else {
             saveGame(1); window.currentNight = 1;
-            const contBtn = document.getElementById('continue-btn');
-            if(contBtn) { contBtn.innerText = `> Continuar`; contBtn.style.color = "#444"; contBtn.style.pointerEvents = "none"; }
             btn.innerText = "APAGADO!"; confirmReset = false;
+            updateModesUI();
         }
     };
-
-    window.continueGame = function() { if (window.currentNight > 1 && window.currentNight !== 'CUSTOM') window.startGame(window.currentNight); };
 
     function saveGame(night) { if(night !== 'CUSTOM') { try { localStorage.setItem('regis_pizzaplace_night', night); } catch(e) {} } }
     
@@ -1020,28 +1370,71 @@
             let saved = localStorage.getItem('regis_pizzaplace_night');
             if (saved !== null) {
                 let n = parseInt(saved);
-                if (n > 1) {
-                    window.currentNight = n;
-                    const continueBtn = document.getElementById('continue-btn');
-                    if (continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
-                }
-            }
-            if (window.unlockedAchievs && window.unlockedAchievs.includes('night_7')) {
-                const cnBtn = document.getElementById('custom-night-btn');
-                if (cnBtn) cnBtn.classList.remove('hidden');
+                if (n >= 1) window.currentNight = n;
             }
         } catch(e) {}
+        updateModesUI();
+        applyHUDTransforms();
     }
 
-    // --- FUNÇÕES DA CUSTOM NIGHT ---
-    window.openCustomNight = function() {
+    // --- FUNÇÕES DA CUSTOM NIGHT E MODOS ---
+    window.openModes = function() {
         document.getElementById('menu-screen').classList.add('hidden');
+        document.getElementById('modes-screen').classList.remove('hidden');
+        updateModesUI();
+    };
+
+    window.closeModes = function() {
+        document.getElementById('modes-screen').classList.add('hidden');
+        document.getElementById('menu-screen').classList.remove('hidden');
+    };
+
+    window.changeDifficulty = function(dir) {
+        currentDiffIndex = Math.max(0, Math.min(3, currentDiffIndex + dir));
+        const diffKeys = ['facil', 'normal', 'dificil', 'hardcore'];
+        window.gameDifficulty = diffKeys[currentDiffIndex];
+        
+        const display = document.getElementById('diff-display');
+        display.innerText = diffNames[currentDiffIndex];
+        if(currentDiffIndex === 0) display.style.color = '#0f0';
+        else if(currentDiffIndex === 1) display.style.color = '#ffcc00';
+        else if(currentDiffIndex === 2) display.style.color = '#ff5555';
+        else display.style.color = '#f00';
+
+        document.getElementById('diff-desc').innerText = diffDescs[currentDiffIndex];
+    };
+
+    function updateModesUI() {
+        document.getElementById('modes-night-display').innerText = `Noite ${window.currentNight}`;
+        document.getElementById('btn-continue-mode').innerText = `CONTINUAR (NOITE ${window.currentNight})`;
+        
+        const cnLock = document.getElementById('custom-night-lock');
+        const cnBtn = document.getElementById('custom-night-access-btn');
+        
+        let hasWonN5 = window.unlockedAchievs.includes('night_5') || window.currentNight > 5;
+        if (hasWonN5) {
+            cnLock.style.display = 'none';
+            cnBtn.disabled = false;
+            cnBtn.style.background = '#8a2929';
+            cnBtn.style.borderColor = '#f00';
+            cnBtn.innerText = "CONFIGURAR I.A.";
+        } else {
+            cnLock.style.display = 'block';
+            cnBtn.disabled = true;
+            cnBtn.style.background = '#333';
+            cnBtn.style.borderColor = '#555';
+            cnBtn.innerText = "BLOQUEADO";
+        }
+    }
+
+    window.openCustomNight = function() {
+        document.getElementById('modes-screen').classList.add('hidden');
         document.getElementById('custom-night-screen').classList.remove('hidden');
     };
     
     window.closeCustomNight = function() {
         document.getElementById('custom-night-screen').classList.add('hidden');
-        document.getElementById('menu-screen').classList.remove('hidden');
+        document.getElementById('modes-screen').classList.remove('hidden');
     };
     
     window.adjAI = function(anim, dir) {
@@ -1049,13 +1442,25 @@
         document.getElementById('lvl-' + anim).innerText = window.customAI[anim];
     };
     
-    window.startCustomNight = function() {
-        document.getElementById('custom-night-screen').classList.add('hidden');
-        animatronics.bonnie.level = window.customAI.bonnie;
-        animatronics.chica.level = window.customAI.chica;
-        animatronics.freddy.level = window.customAI.freddy;
-        animatronics.foxy.level = window.customAI.foxy;
-        window.startGame('CUSTOM');
+    window.startModeGame = function(action) {
+        if (action === 'custom') {
+            document.getElementById('custom-night-screen').classList.add('hidden');
+            animatronics.bonnie.level = window.customAI.bonnie;
+            animatronics.chica.level = window.customAI.chica;
+            animatronics.freddy.level = window.customAI.freddy;
+            animatronics.foxy.level = window.customAI.foxy;
+            window.startGame('CUSTOM');
+        } else if (action === 'new') {
+            if (confirm("Iniciar um Novo Jogo apagará o seu progresso atual nas noites. Tem a certeza?")) {
+                saveGame(1);
+                window.currentNight = 1;
+                document.getElementById('modes-screen').classList.add('hidden');
+                window.startGame(1);
+            }
+        } else {
+            document.getElementById('modes-screen').classList.add('hidden');
+            window.startGame(window.currentNight);
+        }
     };
 
     // --- LÓGICA DE JOGO E TUTORIAL ---
@@ -1120,11 +1525,9 @@
 
     window.startGame = function(night) {
         initialToxicity = 0; isTutorial = false; document.getElementById('tutorial-ui').classList.add('hidden');
-        if (night === 1) {
+        if (night === 1) { // Removida a limitação de dificuldade, mostra sempre na Noite 1
             saveGame(night);
             window.currentNight = 1;
-            const continueBtn = document.getElementById('continue-btn');
-            if(continueBtn) { continueBtn.innerText = `> Continuar`; continueBtn.style.color = "#444"; continueBtn.style.pointerEvents = "none"; }
             document.getElementById('menu-screen').classList.add('hidden');
             startContractIntro(); 
         } else if (night === 'CUSTOM') {
@@ -1209,7 +1612,7 @@
                 let el = mgState.elements[i]; if (!el.placed) allPlaced = false;
                 if (!el.placed && mgIsDown && !mgState.elements.some(e => e.isDragging)) { let dist = Math.hypot(mgMouseX - el.x, mgMouseY - el.y); if (dist < el.r * 2.5) el.isDragging = true; }
                 if (el.isDragging) { el.x = mgMouseX; el.y = mgMouseY; if (!mgIsDown) { el.isDragging = false; if (Math.hypot(el.x - mgState.pizza.x, el.y - mgState.pizza.y) < mgState.pizza.r * 0.8) { el.placed = true; playMgSound(400); } } }
-                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
+                if (el.type === 'pep') { mgCtx.fillStyle = '#b32424'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); } else if (el.type === 'cheese') { mgCtx.fillStyle = '#ffdb58'; mgCtx.fillRect(el.x - el.r, el.y - el.r, el.r*2, el.r*2); } else if (el.type === 'eye') { mgCtx.fillStyle = '#fff'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#000'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r*0.4, 0, Math.PI*2); mgCtx.fill(); mgCtx.fillStyle = '#f00'; mgCtx.fillRect(el.x-el.r, el.y-2, el.r*2, 4); } else if (el.type === 'mush') { mgCtx.fillStyle = '#0f0'; mgCtx.beginPath(); mgCtx.arc(el.x, el.y, el.r, Math.PI, 0); mgCtx.fill(); mgCtx.fillStyle = '#fff'; mgCtx.fillRect(el.x-el.r*0.3, el.y, el.r*0.6, el.r*0.8); }
             } if (allPlaced) endMinigame(true);
         } else if (mgState.type === 'cleanup') {
             mgCtx.strokeStyle = '#222'; mgCtx.lineWidth = 2; for(let i=0; i<mgCanvas.width; i+=100) { mgCtx.beginPath(); mgCtx.moveTo(i,0); mgCtx.lineTo(i, mgCanvas.height); mgCtx.stroke(); } for(let j=0; j<mgCanvas.height; j+=100) { mgCtx.beginPath(); mgCtx.moveTo(0,j); mgCtx.lineTo(mgCanvas.width, j); mgCtx.stroke(); }
@@ -1297,7 +1700,13 @@
                 if (isLeftLightOn) drain += 0.1; if (isRightLightOn) drain += 0.1;
                 if (isMonitorUp) drain += 0.15; if (isTaskActive) drain += 0.2; if (isExhaustOn) drain += 0.1;
 
-                power -= drain; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
+                // Modificadores de Dificuldade para Energia
+                let diffMulti = 1.0;
+                if (window.gameDifficulty === 'facil') diffMulti = 0.8;
+                if (window.gameDifficulty === 'dificil') diffMulti = 1.1;
+                if (window.gameDifficulty === 'hardcore') diffMulti = 1.2;
+
+                power -= drain * diffMulti; document.getElementById('power-display').innerText = `Energia: ${Math.max(0, Math.floor(power))}%`;
             } else if (!isBlackout) triggerBlackout();
         }, 1000));
 
@@ -1326,6 +1735,11 @@
             } else {
                 foxyDrain = 0.07 + (window.currentNight * 0.04); 
             }
+
+            // Modificador Foxy
+            if (window.gameDifficulty === 'facil') foxyDrain *= 0.7;
+            if (window.gameDifficulty === 'dificil') foxyDrain *= 1.2;
+            if (window.gameDifficulty === 'hardcore') foxyDrain *= 1.5;
             
             if (foxyDrain > 0) {
                 window.foxyBox -= foxyDrain;
@@ -1375,7 +1789,7 @@
     }
 
     window.openPC = function() {
-        if (gameState !== 'OFFICE' || isMonitorUp || isBlackout) return;
+        if (gameState !== 'OFFICE' || isMonitorUp || isBlackout || isEditingHUD) return;
         
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
@@ -1484,7 +1898,7 @@
     window.fixVent = function() { isVentBroken = false; window.unlockAchievement('fix_vent'); if (isPCUp) window.openPC(); };
 
     window.toggleExhaust = function() {
-        if (power <= 0) return;
+        if (power <= 0 || isEditingHUD) return;
 
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
@@ -1519,7 +1933,7 @@
     function playScreech() { if (masterVolume <= 0) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc1 = ctx.createOscillator(); const osc2 = ctx.createOscillator(); const gain = ctx.createGain(); osc1.type = 'sawtooth'; osc2.type = 'square'; osc1.frequency.setValueAtTime(800, ctx.currentTime); osc1.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 1.5); osc2.frequency.setValueAtTime(850, ctx.currentTime); osc2.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 1.5); gain.gain.setValueAtTime(0.5 * masterVolume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5); osc1.connect(gain); osc2.connect(gain); gain.connect(ctx.destination); osc1.start(); osc2.start(); osc1.stop(ctx.currentTime + 1.5); osc2.stop(ctx.currentTime + 1.5); } catch(e) {} }
 
     function handleRaycast(clientX, clientY) {
-        if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout) return;
+        if (gameState !== 'OFFICE' || isMonitorUp || isPCUp || isBlackout || isEditingHUD) return;
         mouseVec.x = (clientX / window.innerWidth) * 2 - 1; mouseVec.y = -(clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouseVec, camera);
         const intersects = raycaster.intersectObjects(scene.children, true);
@@ -1596,10 +2010,9 @@
                 saveGame(1); 
             } else {
                 window.currentNight++;
-                const continueBtn = document.getElementById('continue-btn');
-                if(continueBtn) { continueBtn.innerText = `> Continuar (Noite ${window.currentNight})`; continueBtn.style.color = "#fff"; continueBtn.style.pointerEvents = "auto"; }
                 saveGame(window.currentNight); showNewspaperForNight(window.currentNight);
             }
+            updateModesUI();
         }, 6500);
     }
 
@@ -1618,16 +2031,23 @@
 
         let h = Math.floor(hour); 
         let baseDiff = (window.currentNight - 1) * 3; if (window.currentNight >= 7) baseDiff = 20;
+        
+        // Modificador de Dificuldade para IA
+        let diffAIOffset = 0;
+        if (window.gameDifficulty === 'facil') diffAIOffset = -3;
+        if (window.gameDifficulty === 'dificil') diffAIOffset = 2;
+        if (window.gameDifficulty === 'hardcore') diffAIOffset = 5;
+
         let exhaustPenalty = isExhaustOn ? 5 : 0; 
 
         if (window.currentNight === 1) {
-            animatronics.bonnie.level = Math.floor(h/2); 
-            animatronics.chica.level = Math.max(0, Math.floor(h/2) - 1); 
-            animatronics.freddy.level = 0 + Math.floor(exhaustPenalty/2); 
+            animatronics.bonnie.level = Math.max(0, Math.floor(h/2) + diffAIOffset); 
+            animatronics.chica.level = Math.max(0, Math.floor(h/2) - 1 + diffAIOffset); 
+            animatronics.freddy.level = Math.max(0, 0 + Math.floor(exhaustPenalty/2) + diffAIOffset); 
         } else {
-            animatronics.bonnie.level = baseDiff + Math.floor(h/2); 
-            animatronics.chica.level = Math.max(0, baseDiff - 2) + Math.floor(h/2); 
-            animatronics.freddy.level = Math.max(0, baseDiff - 1) + Math.floor(h/2) + exhaustPenalty;
+            animatronics.bonnie.level = Math.max(0, baseDiff + Math.floor(h/2) + diffAIOffset); 
+            animatronics.chica.level = Math.max(0, baseDiff - 2 + Math.floor(h/2) + diffAIOffset); 
+            animatronics.freddy.level = Math.max(0, baseDiff - 1 + Math.floor(h/2) + exhaustPenalty + diffAIOffset);
         }
         
         ['bonnie', 'chica', 'freddy'].forEach(anim => { let ai = animatronics[anim].level; if (ai > 0 && Math.random() * 25 <= ai) moveAnimatronic(anim); });
@@ -1917,53 +2337,80 @@
         return new THREE.CanvasTexture(canvas);
     }
 
+    // --- NOVA CENA DO MENU EXTERIOR (3D Street) ---
     window.buildExteriorMenu = function() {
-        menuScene = new THREE.Scene(); menuScene.background = new THREE.Color(0x020202); 
-        // Adicionando névoa pesada de terror
-        menuScene.fog = new THREE.FogExp2(0x020202, 0.035); 
+        menuScene = new THREE.Scene(); 
+        menuScene.background = new THREE.Color(0x020202); 
+        menuScene.fog = new THREE.FogExp2(0x020202, 0.035); // Nevoeiro para o exterior
         
         menuCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200); 
+        menuCamera.position.set(0, 4, 25); 
         
-        const topMat = new THREE.MeshStandardMaterial({color: 0x666666, roughness: 0.9}); const topBuilding = new THREE.Mesh(new THREE.BoxGeometry(45, 12, 10), topMat); topBuilding.position.set(0, 16, -5); menuScene.add(topBuilding);
-        const winMat = new THREE.MeshStandardMaterial({color: 0x000000, roughness: 0.1}); [-12, 0, 12].forEach(x => { const win = new THREE.Mesh(new THREE.PlaneGeometry(5, 4), winMat); win.position.set(x, 16, 0.05); menuScene.add(win); });
-        const leftMat = new THREE.MeshStandardMaterial({color: 0x444444, roughness: 0.9}); const leftStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), leftMat); leftStore.position.set(-15, 5, -5); menuScene.add(leftStore);
+        // Estrutura dos Edifícios
+        const topMat = new THREE.MeshStandardMaterial({color: 0x666666, roughness: 0.9}); 
+        const topBuilding = new THREE.Mesh(new THREE.BoxGeometry(45, 12, 10), topMat); 
+        topBuilding.position.set(0, 16, -5); menuScene.add(topBuilding);
         
-        // Canvas calls for textures
-        const s1C = document.createElement('canvas'); s1C.width = 512; s1C.height = 128; const s1Cx = s1C.getContext('2d'); s1Cx.fillStyle = "#111111"; s1Cx.fillRect(0, 0, 512, 128); s1Cx.fillStyle = "#ffffff"; s1Cx.textAlign = 'center'; s1Cx.textBaseline = 'middle'; s1Cx.font = 'bold 50px "Arial Black", sans-serif'; s1Cx.fillText("Curitibana", 256, 50); s1Cx.font = 'bold 24px Arial'; s1Cx.fillText("Panificadora", 256, 100);
-        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s1C)})); sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
+        const winMat = new THREE.MeshStandardMaterial({color: 0x000000, roughness: 0.1}); 
+        [-12, 0, 12].forEach(x => { 
+            const win = new THREE.Mesh(new THREE.PlaneGeometry(5, 4), winMat); 
+            win.position.set(x, 16, 0.05); menuScene.add(win); 
+        });
+
+        const leftMat = new THREE.MeshStandardMaterial({color: 0x444444, roughness: 0.9}); 
+        const leftStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), leftMat); 
+        leftStore.position.set(-15, 5, -5); menuScene.add(leftStore);
         
-        const centerMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.9}); const centerStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); centerStore.position.set(0, 5, -5); menuScene.add(centerStore);
-        const entrance = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshBasicMaterial({color: 0x000000})); entrance.position.set(0, 3.5, 0.05); menuScene.add(entrance);
+        // Letreiros
+        const s1C = document.createElement('canvas'); s1C.width = 512; s1C.height = 128; const s1Cx = s1C.getContext('2d'); 
+        s1Cx.fillStyle = "#111111"; s1Cx.fillRect(0, 0, 512, 128); s1Cx.fillStyle = "#ffffff"; s1Cx.textAlign = 'center'; s1Cx.textBaseline = 'middle'; s1Cx.font = 'bold 50px "Arial Black", sans-serif'; s1Cx.fillText("Curitibana", 256, 50); s1Cx.font = 'bold 24px Arial'; s1Cx.fillText("Panificadora", 256, 100);
+        const sign1 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s1C)})); 
+        sign1.position.set(-15, 8.5, 0.05); menuScene.add(sign1);
         
-        const s2C = document.createElement('canvas'); s2C.width = 512; s2C.height = 128; const s2Cx = s2C.getContext('2d'); s2Cx.fillStyle = "#ffffff"; s2Cx.fillRect(0, 0, 512, 128); s2Cx.fillStyle = "#000000"; s2Cx.textAlign = 'center'; s2Cx.textBaseline = 'middle'; s2Cx.font = 'bold 50px "Arial Black", sans-serif'; s2Cx.fillText("COSTELÃO", 256, 50); s2Cx.font = 'bold 24px Arial'; s2Cx.fillText("ASSADOS", 256, 100);
-        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s2C)})); sign2.position.set(0, 8.5, 0.05); menuScene.add(sign2);
+        const centerMat = new THREE.MeshStandardMaterial({color: 0x222222, roughness: 0.9}); 
+        const centerStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); 
+        centerStore.position.set(0, 5, -5); menuScene.add(centerStore);
         
-        for(let i of [-4, 4]) { const table = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), new THREE.MeshStandardMaterial({color: 0x111111})); table.position.set(i, 1, 4); menuScene.add(table); }
-        const rightStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); rightStore.position.set(15, 5, -5); menuScene.add(rightStore);
+        const entrance = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshBasicMaterial({color: 0x000000})); 
+        entrance.position.set(0, 3.5, 0.05); menuScene.add(entrance);
         
-        const rollC = document.createElement('canvas'); rollC.width = 256; rollC.height = 256; const rollCx = rollC.getContext('2d'); rollCx.fillStyle = '#333'; rollCx.fillRect(0, 0, 256, 256); rollCx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { rollCx.fillRect(0, y, 256, 3); } const rollT = new THREE.CanvasTexture(rollC); rollT.wrapS = THREE.RepeatWrapping; rollT.wrapT = THREE.RepeatWrapping; rollT.repeat.set(2, 2);
-        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({color: 0x555555, map: rollT, metalness: 0.6})); roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
+        const s2C = document.createElement('canvas'); s2C.width = 512; s2C.height = 128; const s2Cx = s2C.getContext('2d'); 
+        s2Cx.fillStyle = "#ffffff"; s2Cx.fillRect(0, 0, 512, 128); s2Cx.fillStyle = "#000000"; s2Cx.textAlign = 'center'; s2Cx.textBaseline = 'middle'; s2Cx.font = 'bold 50px "Arial Black", sans-serif'; s2Cx.fillText("COSTELÃO", 256, 50); s2Cx.font = 'bold 24px Arial'; s2Cx.fillText("ASSADOS", 256, 100);
+        const sign2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s2C)})); 
+        sign2.position.set(15, 8.5, 0.05); menuScene.add(sign2);
         
-        const s3C = document.createElement('canvas'); s3C.width = 512; s3C.height = 128; const s3Cx = s3C.getContext('2d'); s3Cx.fillStyle = "#110000"; s3Cx.fillRect(0, 0, 512, 128); s3Cx.fillStyle = "#ff2222"; s3Cx.textAlign = 'center'; s3Cx.textBaseline = 'middle'; s3Cx.font = 'bold 50px "Arial Black", sans-serif'; s3Cx.fillText("REGIS", 256, 50); s3Cx.font = 'bold 24px Arial'; s3Cx.fillText("PIZZAPLACE", 256, 100);
-        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s3C)})); sign3.position.set(15, 8.5, 0.05); menuScene.add(sign3);
+        const rightStore = new THREE.Mesh(new THREE.BoxGeometry(15, 10, 10), centerMat); 
+        rightStore.position.set(15, 5, -5); menuScene.add(rightStore);
         
-        const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(50, 0.5, 10), new THREE.MeshStandardMaterial({color: 0x333333})); sidewalk.position.set(0, 0.25, 5); menuScene.add(sidewalk);
-        const street = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), new THREE.MeshStandardMaterial({color: 0x111111})); street.rotation.x = -Math.PI/2; street.position.set(0, 0, 25); menuScene.add(street);
+        const rollC = document.createElement('canvas'); rollC.width = 256; rollC.height = 256; const rollCx = rollC.getContext('2d'); 
+        rollCx.fillStyle = '#333'; rollCx.fillRect(0, 0, 256, 256); rollCx.fillStyle = '#111'; for(let y=0; y<256; y+=12) { rollCx.fillRect(0, y, 256, 3); } 
+        const rollT = new THREE.CanvasTexture(rollC); rollT.wrapS = THREE.RepeatWrapping; rollT.wrapT = THREE.RepeatWrapping; rollT.repeat.set(2, 2);
+        const roller = new THREE.Mesh(new THREE.PlaneGeometry(13, 7), new THREE.MeshStandardMaterial({color: 0x555555, map: rollT, metalness: 0.6})); 
+        roller.position.set(15, 3.5, 0.05); menuScene.add(roller);
         
-        // --- ILUMINAÇÃO SOMBRIA DO MENU ---
-        menuScene.add(new THREE.AmbientLight(0x0a0a0a, 1.0)); // Muito escuro
+        const s3C = document.createElement('canvas'); s3C.width = 512; s3C.height = 128; const s3Cx = s3C.getContext('2d'); 
+        s3Cx.fillStyle = "#110000"; s3Cx.fillRect(0, 0, 512, 128); s3Cx.fillStyle = "#ff2222"; s3Cx.textAlign = 'center'; s3Cx.textBaseline = 'middle'; s3Cx.font = 'bold 50px "Arial Black", sans-serif'; s3Cx.fillText("REGIS", 256, 50); s3Cx.font = 'bold 24px Arial'; s3Cx.fillText("PIZZAPLACE", 256, 100);
+        const sign3 = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshStandardMaterial({color: 0xffffff, map: new THREE.CanvasTexture(s3C)})); 
+        sign3.position.set(0, 8.5, 0.05); menuScene.add(sign3);
         
-        // Luz noturna/luz da lua
+        // Chão da Rua e Passeio
+        const sidewalk = new THREE.Mesh(new THREE.BoxGeometry(50, 0.5, 10), new THREE.MeshStandardMaterial({color: 0x333333})); 
+        sidewalk.position.set(0, 0.25, 5); menuScene.add(sidewalk);
+        const street = new THREE.Mesh(new THREE.PlaneGeometry(100, 50), new THREE.MeshStandardMaterial({color: 0x111111})); 
+        street.rotation.x = -Math.PI/2; street.position.set(0, 0, 25); menuScene.add(street);
+        
+        // Iluminação Sombria
+        menuScene.add(new THREE.AmbientLight(0x0a0a0a, 1.0)); 
         const dl = new THREE.DirectionalLight(0x445566, 0.5); 
         dl.position.set(-20, 30, 20); 
         menuScene.add(dl);
 
-        // Luz vermelha sinistra saindo da pizzaria
+        // Luz vermelha sinistra da porta da pizzaria
         const entranceLight = new THREE.PointLight(0xff0000, 2.5, 20);
         entranceLight.position.set(0, 3.5, -2);
         menuScene.add(entranceLight);
 
-        // Poste de luz piscando
+        // Poste de luz intermitente na rua
         const postGeo = new THREE.CylinderGeometry(0.2, 0.2, 12);
         const post = new THREE.Mesh(postGeo, new THREE.MeshStandardMaterial({color: 0x111}));
         post.position.set(-10, 6, 15);
@@ -1971,6 +2418,26 @@
         window.menuFlickerLight = new THREE.PointLight(0xffeedd, 1.5, 30);
         window.menuFlickerLight.position.set(-10, 11.5, 15);
         menuScene.add(window.menuFlickerLight);
+
+        // Partículas atmosféricas de pó na rua
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = new Float32Array(400 * 3);
+        for(let i=0; i<400; i++) {
+            pPos[i*3] = (Math.random() - 0.5) * 40;
+            pPos[i*3+1] = Math.random() * 20;
+            pPos[i*3+2] = (Math.random() - 0.5) * 30 + 10;
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        
+        const pCanvas = document.createElement('canvas'); pCanvas.width = 16; pCanvas.height = 16;
+        const pCtx = pCanvas.getContext('2d');
+        const pGrad = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        pGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)'); pGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        pCtx.fillStyle = pGrad; pCtx.fillRect(0, 0, 16, 16);
+
+        const pMat = new THREE.PointsMaterial({color: 0x888888, size: 0.15, map: new THREE.CanvasTexture(pCanvas), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending});
+        window.menuParticles = new THREE.Points(pGeo, pMat);
+        menuScene.add(window.menuParticles);
     };
 
     // --- NOVO POSTER DO FUNCIONÁRIO DO MÊS ---
@@ -2036,7 +2503,30 @@
         lens.name = 'lens'; 
         group.add(lens);
 
-        // Spotlight - Agora saindo do vidro na ponta da lanterna e apontando pra frente
+        // Feixe Volumétrico (High Detail)
+        const beamGeo = new THREE.CylinderGeometry(0.33, 5, 20, 32, 1, true);
+        beamGeo.translate(0, -10, 0);
+        beamGeo.rotateX(Math.PI / 2);
+        
+        // Criando um gradiente pro feixe sumir suavemente
+        const canvas = document.createElement('canvas'); canvas.width = 16; canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, 0, 256);
+        grad.addColorStop(0, 'rgba(255,255,255,1)'); grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,16,256);
+        const beamTex = new THREE.CanvasTexture(canvas);
+
+        const beamMat = new THREE.MeshBasicMaterial({
+            map: beamTex, color: 0xccffcc, transparent: true, opacity: 0.08, 
+            blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+        });
+        const beam = new THREE.Mesh(beamGeo, beamMat);
+        beam.position.set(0, 0, -4.71);
+        beam.name = 'beam';
+        beam.visible = false;
+        group.add(beam);
+
+        // Spotlight
         const spot = new THREE.SpotLight(0xffffff, 0, 100, Math.PI/6, 0.3, 2);
         spot.position.set(0, 0, -4.71);
         const target = new THREE.Object3D();
@@ -2046,6 +2536,7 @@
         group.add(spot);
         
         group.userData.spot = spot;
+        group.userData.beam = beam;
 
         return group;
     }
@@ -2201,9 +2692,33 @@
             highDetailGroup.add(trash);
         }
 
-        // Extra ambient lighting for High Detail
-        const extraLight = new THREE.PointLight(0x4466aa, 0.5, 20);
-        extraLight.position.set(0, 15, -5);
+        // --- SISTEMA DE PARTÍCULAS DE ESPOROS TÓXICOS (ALTO) ---
+        const particleCount = 200;
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = new Float32Array(particleCount * 3);
+        for(let i=0; i<particleCount; i++) {
+            pPos[i*3] = (Math.random() - 0.5) * 25; // X
+            pPos[i*3+1] = Math.random() * 15;       // Y
+            pPos[i*3+2] = (Math.random() - 0.5) * 20; // Z
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+
+        const pCanvas = document.createElement('canvas'); pCanvas.width = 32; pCanvas.height = 32;
+        const pCtx = pCanvas.getContext('2d');
+        const pGrad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+        pGrad.addColorStop(0, 'rgba(180, 255, 180, 1)'); pGrad.addColorStop(1, 'rgba(180, 255, 180, 0)');
+        pCtx.fillStyle = pGrad; pCtx.fillRect(0, 0, 32, 32);
+        
+        const pMat = new THREE.PointsMaterial({
+            color: 0x88ff88, size: 0.25, map: new THREE.CanvasTexture(pCanvas),
+            transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false
+        });
+        window.sporeParticles = new THREE.Points(pGeo, pMat);
+        highDetailGroup.add(window.sporeParticles);
+
+        // Extra ambient lighting for High Detail - Tom esverdeado/azulado fúnebre
+        const extraLight = new THREE.PointLight(0x224433, 1.2, 30);
+        extraLight.position.set(0, 15, -2);
         highDetailGroup.add(extraLight);
     }
 
@@ -2217,7 +2732,7 @@
         
         container.appendChild(renderer.domElement);
 
-        window.buildExteriorMenu();
+        window.buildExteriorMenu(); // Chamamos a função do exterior em vez do palco interior
 
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(150, 200), new THREE.MeshStandardMaterial({color: 0x555555, map: createDirtyCheckeredFloor(), roughness:0.7})); 
         floor.rotation.x = -Math.PI/2; floor.position.z = -60; floor.receiveShadow = true; scene.add(floor);
@@ -2237,8 +2752,8 @@
         animatronics.freddy.mesh = buildAnimatronic('freddy'); scene.add(animatronics.freddy.mesh);
         animatronics.foxy.mesh = buildAnimatronic('foxy'); scene.add(animatronics.foxy.mesh);
 
-        ambientLight = new THREE.AmbientLight(0x1a1c22, 0.4); scene.add(ambientLight); 
-        mainOfficeLight = new THREE.PointLight(0xffeedd, 1.5, 40, 2); mainOfficeLight.position.set(0, 12, -2); mainOfficeLight.castShadow = true; mainOfficeLight.shadow.bias = -0.001; scene.add(mainOfficeLight);
+        ambientLight = new THREE.AmbientLight(0x2a2c35, 0.7); scene.add(ambientLight); 
+        mainOfficeLight = new THREE.PointLight(0xffebd6, 1.8, 40, 2); mainOfficeLight.position.set(0, 12, -2); mainOfficeLight.castShadow = true; mainOfficeLight.shadow.bias = -0.001; scene.add(mainOfficeLight);
         leftLight = new THREE.PointLight(0xddddff, 0, 25, 2); leftLight.position.set(-13.5, 8, 0); scene.add(leftLight);
         rightLight = new THREE.PointLight(0xddddff, 0, 25, 2); rightLight.position.set(13.5, 8, 0); scene.add(rightLight);
         cctvLight = new THREE.SpotLight(0xffffff, 0, 80, Math.PI/3, 0.5, 2); scene.add(cctvLight); scene.add(cctvLight.target);
@@ -2267,7 +2782,7 @@
     }
 
     window.toggleMonitor = function() {
-        if (power <= 0 || isPCUp) return; 
+        if (power <= 0 || isPCUp || isEditingHUD) return; 
 
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
@@ -2294,7 +2809,7 @@
             }
         } 
         else { 
-            camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.5; cctvLight.intensity = 0; 
+            camera.position.copy(officeCamPos); camera.rotation.set(0, 0, 0); mainOfficeLight.intensity = 1.8; cctvLight.intensity = 0; 
             window.isWinding = false;
         }
 
@@ -2338,7 +2853,7 @@
     function triggerStaticPulse() { const s = document.getElementById('static-overlay'); if(s) { s.style.opacity = '0.8'; setTimeout(() => s.style.opacity = '0.15', 150); } }
 
     window.toggleDoor = function(side) {
-        if (power <= 0) return;
+        if (power <= 0 || isEditingHUD) return;
         
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
@@ -2374,15 +2889,18 @@
         });
         if (group.userData.spot) {
             if (window.graphicsLevel > 0) {
-                group.userData.spot.intensity = isOn ? 4.0 : 0;
+                group.userData.spot.intensity = isOn ? 6.0 : 0;
             } else {
-                group.userData.spot.intensity = isOn ? 2.5 : 0; // Um pouco mais fraco no LOW
+                group.userData.spot.intensity = isOn ? 4.0 : 0; // Um pouco mais fraco no LOW
             }
+        }
+        if (group.userData.beam) {
+            group.userData.beam.visible = (isOn && window.graphicsLevel === 2); // Feixe visível apenas no ALTO
         }
     }
 
     window.toggleLight = function(side) {
-        if (power <= 0) return;
+        if (power <= 0 || isEditingHUD) return;
 
         if (isTutorial) {
             let act = tutSteps[tutStep]?.action;
@@ -2427,8 +2945,22 @@
         }
     };
 
-    window.addEventListener('mousemove', (e) => { if(gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.clientX/window.innerWidth)) * Math.PI; });
-    window.addEventListener('touchmove', (e) => { if(e.touches.length>0 && gameState==='OFFICE' && !isMonitorUp && !isPCUp) targetRotationY = (0.5 - (e.touches[0].clientX/window.innerWidth)) * Math.PI; }, {passive: false});
+    window.addEventListener('mousemove', (e) => { 
+        if(gameState==='OFFICE' && !isMonitorUp && !isPCUp && !isEditingHUD) {
+            targetRotationY = (0.5 - (e.clientX/window.innerWidth)) * Math.PI; 
+        } else if (gameState === 'MENU' || gameState === 'WARNING') {
+            menuMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            menuMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        }
+    });
+    window.addEventListener('touchmove', (e) => { 
+        if(e.touches.length>0 && gameState==='OFFICE' && !isMonitorUp && !isPCUp && !isEditingHUD) {
+            targetRotationY = (0.5 - (e.touches[0].clientX/window.innerWidth)) * Math.PI; 
+        } else if (e.touches.length>0 && (gameState === 'MENU' || gameState === 'WARNING')) {
+            menuMouseX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+            menuMouseY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+        }
+    }, {passive: false});
 
     window.addEventListener('resize', () => {
         if (renderer) {
@@ -2443,25 +2975,57 @@
 
         if (gameState === 'MENU') {
             if (menuCamera && menuScene) {
-                // Efeito de câmera rastejando no chão, movendo-se e respirando levemente
-                let t = Date.now() * 0.0005;
-                menuCamera.position.set(-22 + Math.sin(t*0.5)*2, 2.5 + Math.cos(t*0.7)*0.3, 25 + Math.cos(t*0.4)*2);
-                menuCamera.lookAt(5, 6, -5); 
+                let t = Date.now() * 0.001;
                 
-                if(window.menuFlickerLight) { window.menuFlickerLight.intensity = Math.random() > 0.05 ? 1.5 + Math.random()*0.5 : 0; }
+                // Parallax Suave da Câmera no 3D adaptado para a Rua Exterior
+                const targetCamX = menuMouseX * 5;
+                const targetCamY = 4 + (menuMouseY * 2);
+                menuCamera.position.x += (targetCamX - menuCamera.position.x) * 0.05;
+                menuCamera.position.y += (targetCamY - menuCamera.position.y) * 0.05;
+                menuCamera.position.z = 25; // Fixa a profundidade na rua
+                menuCamera.lookAt(0, 5, -5); // Olha para a entrada da Pizzaria
+                
+                // Piscar aterrorizante da luz do poste
+                if(window.menuFlickerLight) { 
+                    window.menuFlickerLight.intensity = Math.random() > 0.92 ? 2 + Math.random()*2 : 0; 
+                }
+
+                // Rodar partículas suavemente
+                if(window.menuParticles) {
+                    window.menuParticles.rotation.y = t * 0.05;
+                }
+
+                // Parallax Extremamente Satisfatório da UI (HTML CSS3D)
+                const menuContent = document.getElementById('menu-content-3d');
+                if (menuContent) {
+                    const rotY = 20 + (menuMouseX * 12); // Gira o HTML acompanhando o olhar
+                    const rotX = 5 - (menuMouseY * 8);
+                    menuContent.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) translateZ(0px)`;
+                }
 
                 renderer.render(menuScene, menuCamera);
             }
         }
         else if (gameState === 'OFFICE' || gameState === 'GAMEOVER') {
-            if (!isMonitorUp && gameState !== 'GAMEOVER') camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.1;
+            if (!isMonitorUp && gameState !== 'GAMEOVER' && !isEditingHUD) camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.1;
             else if (isMonitorUp) { camera.rotation.y = camData[currentCam].ry + Math.sin(Date.now() * 0.0005) * 0.02; cctvLight.target.position.copy(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion).add(camera.position)); }
             
             if (leftDoorMesh) leftDoorMesh.position.y += (leftDoorTargetY - leftDoorMesh.position.y) * 0.15;
             if (rightDoorMesh) rightDoorMesh.position.y += (rightDoorTargetY - rightDoorMesh.position.y) * 0.15;
             if (power > 0 && fanBlades) fanBlades.rotation.z -= 0.15;
-            if (power > 0 && mainOfficeLight && !isMonitorUp) mainOfficeLight.intensity = Math.random() > 0.95 ? 1.3 + Math.random() * 0.4 : 1.5;
+            if (power > 0 && mainOfficeLight && !isMonitorUp) mainOfficeLight.intensity = Math.random() > 0.95 ? 1.4 + Math.random() * 0.4 : 1.8;
             
+            // Animação das partículas de poeira/esporos no High Graphics
+            if (window.graphicsLevel === 2 && window.sporeParticles && !isMonitorUp) {
+                const pos = window.sporeParticles.geometry.attributes.position.array;
+                for(let i=1; i<pos.length; i+=3) {
+                    pos[i] += 0.01; // Sobe levemente
+                    if(pos[i] > 20) pos[i] = 0; // Retorna ao chão
+                }
+                window.sporeParticles.geometry.attributes.position.needsUpdate = true;
+                window.sporeParticles.rotation.y = Math.sin(Date.now() * 0.0002) * 0.1; // Gira lentamente
+            }
+
             // Animação fluida e realista das mãos com a lanterna
             if (leftArmGroup) {
                 leftArmGroup.visible = !isMonitorUp; 
@@ -2490,10 +3054,18 @@
         }
     }
 
+    window.dismissWarning = function() {
+        document.getElementById('warning-screen').classList.add('hidden');
+        document.getElementById('menu-screen').classList.remove('hidden');
+        gameState = 'MENU';
+        
+        // Inicializa o contexto de áudio logo no primeiro clique do usuário
+        try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); ctx.resume(); } catch(e){}
+    };
+
     window.onload = () => {
         init3D(); 
         loadGame(); 
-        document.getElementById('menu-screen').classList.remove('hidden');
     };
 </script>
 </body>
